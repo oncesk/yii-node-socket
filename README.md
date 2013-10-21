@@ -1,2 +1,2 @@
-yii-ext-socket.io
+yii-ext-socket-transport
 =================
