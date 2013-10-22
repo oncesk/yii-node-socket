@@ -67,3 +67,27 @@ Custom events:
 
 * `listener.on('update', function (data) {})` - emitted when PHP server emit update event
 * `listener.on('some_event', function (data) {})` - emitted when PHP server emit some_event event
+
+###Отправка события клиенту из PHP
+
+PHP:
+```php
+$frame = Yii::app()->socketTransport->createEventFrame();
+$frame
+	->setEventName('update.queue')
+	->setData(array(
+		array('client' => 'A100', 'table' => '10')
+	))
+	->send();
+
+```
+
+JS:
+```javascript
+var listener = new YiiSocketTransport();
+listener.on('update.queue', function (data) {
+	for (var i in data) {
+		updateBoard(data[i]);	//	update queue board
+	}
+});
+```
