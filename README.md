@@ -31,10 +31,39 @@ yii-ext-socket-transport
 `npm install socket.io`
 6. Добавить расширения как компонент в конфигурационные файлы **main.php и console.php**, указав в качестве компонент **ext.socket-transport.SocketTransport**
 
-> Обратите внимание на то, что если название компонента будет отличным от **socket-transport**, то придется передавать название компонента в команду используя ключ --componentName=название_компонента
+> Обратите внимание на то, что если название компонента будет отличным от **socketTransport**, то придется передавать название компонента в команду используя ключ --componentName=название_компонента
 
-###Nodejs socket.io server configuration
+###Запуск сокет сервера
 
-You need install nodejs socket.io library into lib/nodejs folder by command below
+Сервер запускается консольной коммандой Yii (**./yiic socketTransport**)
 
->*npm install socket.io*
+`./yiic socketTransport` покажет возможные действия команды
+<br>
+`./yiic socketTransport start` запуск сокет сервера
+
+###Сторона клиента
+
+Для возможности добавлять слушателей событий необходимо зарегестрировать скрипт расширения, делается это следующим образом
+
+> Где то в php<br>
+
+```php
+Yii::app()->socketTransport->registerClientScripts();
+```
+
+> Javscript клиента
+
+```javascript
+var listener = new YiiSocketTransport();
+```
+
+Default events:
+
+* `listener.on('connect', function () {})` - "connect" is emitted when the socket connected successfully
+* `listener.on('reconnect', function () {})` - "reconnect" is emitted when socket.io successfully reconnected to the server
+* `listener.on('disconnect', function () {})` - "disconnect" is emitted when the socket disconnected
+
+Custom events:
+
+* `listener.on('update', function (data) {})` - emitted when PHP server emit update event
+* `listener.on('some_event', function (data) {})` - emitted when PHP server emit some_event event
