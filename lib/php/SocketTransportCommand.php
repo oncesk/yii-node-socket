@@ -12,41 +12,52 @@ class SocketTransportCommand extends CConsoleCommand {
 	/**
 	 * @var string
 	 */
-	public $logFile;
-
-	/**
-	 * @var string
-	 */
-	public $host = 'localhost';
+	public $componentName = 'socketTransport';
 
 	/**
 	 * @var int
 	 */
-	public $port;
+	protected $_pid;
 
 	/**
 	 * @var string
 	 */
-	public $componentName = 'socketTransport';
+	protected $_command = 'node %s';
+
+	/**
+	 * @var string
+	 */
+	protected $_stopCommand = 'kill %s';
 
 	public function actionStart() {
-
+		if (!$this->_start()) {
+			$this->usageError("Cannot start server");
+		}
+		exit(1);
 	}
 
 	public function actionStop() {
-
+		if (!$this->_stop()) {
+			exit(1);
+		}
 	}
 
 	public function actionRestart() {
-
+		if ($this->_stop()) {
+			if (!$this->_start()) {
+				$this->usageError("Cannot start server");
+			}
+			exit(1);
+		} else {
+			$this->usageError('Cannot stop server');
+		}
 	}
 
 	public function actionGetPid() {
-		echo (int) $this->getPid() . "\n";
+		echo (int)$this->getPid() . "\n";
 	}
 
-	public function getHelp()
-	{
+	public function getHelp() {
 		return <<<EOD
 USAGE
   yiic socketTransport [action] [parameter]
@@ -74,6 +85,62 @@ EXAMPLES
 EOD;
 	}
 
+	protected function compileServer() {
+		printf("Compile server\n");
+		$socketTransport = $this->getComponent();
+		ob_start();
+		include __DIR__ . '/../nodejs/server.js.php';
+		$js = ob_get_clean();
+		return file_put_contents(__DIR__ . '/../nodejs/server.js', $js);
+	}
+
+	protected function compileClient() {
+		printf("Compile client\n");
+		$socketTransport = $this->getComponent();
+		ob_start();
+		include __DIR__ . '/../javascript/client.js.php';
+		$js = ob_get_clean();
+		return file_put_contents(__DIR__ . '/../javascript/client.js', $js);
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function makeCommand() {
+		$serverDir = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'nodejs' . DIRECTORY_SEPARATOR;
+		return sprintf($this->_command,
+			$serverDir . 'server.js'
+		);
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function getLogFile() {
+		$logFile = $this->getComponent()->socketLogFile;
+		if ($logFile) {
+			return $logFile;
+		}
+		return Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'socket-transport.server.log';
+	}
+
+	/**
+	 * @return bool
+	 */
+	protected function isInProgress() {
+		$pid = $this->getPid();
+		if ($pid == 0) {
+			return false;
+		}
+		$command = 'ps -p ' . $pid;
+		exec($command,$op);
+		if (!isset($op[1])) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 	/**
 	 * @return SocketTransport
 	 */
@@ -86,30 +153,83 @@ EOD;
 	}
 
 	/**
-	 * @param integer $pid
-	 *
 	 * @return int
 	 */
-	protected function writePid($pid) {
-		return file_put_contents($this->getPidFile(), $pid);
+	protected function writePid() {
+		printf("Update pid in file %s\n", $this->getPidFile());
+		return file_put_contents($this->getPidFile(), $this->getPid());
 	}
 
 	/**
 	 * @return int|null
 	 */
-	protected function getPid() {
-		$pid = null;
+	protected function getPid($update = false) {
+		if (isset($this->_pid) && !$update) {
+			return $this->_pid;
+		}
+		if ($update || !isset($this->_pid)) {
+			$this->updatePid();
+		}
+		return $this->_pid;
+	}
+
+	/**
+	 * Update process pid
+	 */
+	protected function updatePid() {
+		$this->_pid = 0;
 		$pidFile = $this->getPidFile();
 		if (file_exists($pidFile)) {
-			$pid = (int) file_get_contents($pidFile);
+			$this->_pid = (int)file_get_contents($pidFile);
 		}
-		return $pid;
 	}
 
 	/**
 	 * @return string
 	 */
 	protected function getPidFile() {
-		return Yii::getPathOfAlias('runtime') . DIRECTORY_SEPARATOR . $this->getComponent()->pidFile;
+		return Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . $this->getComponent()->pidFile;
+	}
+
+	/**
+	 * @return bool|int
+	 */
+	protected function _stop() {
+		$pid = $this->getPid();
+		if ($pid && $this->isInProgress()) {
+			printf("Stopping socket server\n");
+			$command = sprintf($this->_stopCommand, $this->getPid());
+			exec($command);
+			if (!$this->isInProgress()) {
+				printf("Server successfully stopped\n");
+				$this->_pid = 0;
+				return $this->writePid();
+			}
+			printf("Stopping server error\n");
+			return false;
+		}
+		printf("Server is stopped\n");
+		return true;
+	}
+
+	/**
+	 * @return bool|int
+	 */
+	protected function _start() {
+		if ($this->getPid() && $this->isInProgress()) {
+			printf("Server already started\n");
+			return true;
+		}
+		$this->compileServer();
+		$this->compileClient();
+		printf("Starting server\n");
+		$command = 'nohup ' . $this->makeCommand() . ' > ' . $this->getLogFile() . ' 2>&1 & echo $!';
+		exec($command, $op);
+		$this->_pid = (int) $op[0];
+		if ($this->_pid) {
+			printf("Server successfully started\n");
+			return $this->writePid();
+		}
+		return false;
 	}
 }

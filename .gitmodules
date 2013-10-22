@@ -1,0 +1,3 @@
+[submodule "lib/vendor/elephant.io"]
+	path = lib/vendor/elephant.io
+	url = git@github.com:oncesk/elephant.io.git

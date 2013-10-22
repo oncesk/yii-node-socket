@@ -47,13 +47,7 @@ abstract class AFrame {
 	}
 
 	public function send() {
-		if (Yii::app()->hasComponent($this->_socketTransport->elephantIOComponentName)) {
-			$component = Yii::app()->getComponent($this->_socketTransport->elephantIOComponentName);
-			if (!($component instanceof YiiElephantIOComponent)) {
-				throw new CException('For sending frame to socket your need connect yii-elephant.io-component. See https://github.com/oncesk/yii-elephant.io-component');
-			}
-			$component->emit('/', 'anything', $this->encodeFrame());
-		}
+		$this->emit();
 	}
 
 	/**
@@ -69,8 +63,37 @@ abstract class AFrame {
 	/**
 	 * @return string
 	 */
-	public function encodeFrame() {
+	public function getEncodedFrame() {
 		return json_encode($this->_container);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getFrame() {
+		return $this->_container;
+	}
+
+	protected function emit() {
+		$client = $this->createClient();
+		$client->setHandshakeTimeout(2000);
+		$client->init();
+		$client
+			->createFrame()
+			->endPoint($this->_socketTransport->socketNamespace)
+			->emit('socket.transport', array($this->getFrame()));
+	}
+
+	/**
+	 * @return \ElephantIO\Client
+	 */
+	protected function createClient() {
+		return new \ElephantIO\Client(
+			sprintf('http://%s:%s', $this->_socketTransport->host, $this->_socketTransport->port),
+			'socket.io',
+			1,
+			false
+		);
 	}
 
 	protected function createContainer() {
