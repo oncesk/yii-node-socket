@@ -20,16 +20,16 @@ yii-ext-socket-transport
 4. Необходимо добавить путь к консольной команде в конфиг (console.php) приложения.
 Сделать это можно добавивь следующие строки
 <br>
-```
+```php
 'commandMap' => array(
 		'socketTransport' => 'application.extensions.socket-transport.lib.php.SocketTransportCommand'
 )
 ```
 **socket-transport** - директория в которой находится расширение
 <br>
-5. Зайди в директорию lib/nodejs и выполнить в консоле команду установки socket.io расширения
+5. Зайди в директорию application.path_to_yii_ext_socket_transport.lib.nodejs и выполнить в консоле команду установки socket.io расширения
 `npm install socket.io`
-6. Добавить расширения как компонент в конфигурационные файлы **main.php и console.php**, указав в качестве компонент **ext.socket-transport.SocketTransport**
+6. Добавить расширения как компонент в конфигурационные файлы **main.php и console.php**, указав в качестве класса компонент **ext.socket-transport.SocketTransport**
 
 > Обратите внимание на то, что если название компонента будет отличным от **socketTransport**, то придется передавать название компонента в команду используя ключ --componentName=название_компонента
 
