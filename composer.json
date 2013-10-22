@@ -1,0 +1,11 @@
+{
+	"name": "oncesk/yii-ext-socket-transport",
+	"description": "Реализует связь между php и client javascript по средству сокет соединения.",
+	"minimum-stability": "stable",
+	"authors": [
+		{
+			"name": "Alexey Panasik",
+			"email": "unnfly@gmail.com"
+		}
+	]
+}
