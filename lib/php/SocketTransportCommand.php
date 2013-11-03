@@ -89,18 +89,18 @@ EOD;
 		printf("Compile server\n");
 		$socketTransport = $this->getComponent();
 		ob_start();
-		include __DIR__ . '/../nodejs/server.js.php';
+		include __DIR__ . '/../nodejs/server.config.js.php';
 		$js = ob_get_clean();
-		return file_put_contents(__DIR__ . '/../nodejs/server.js', $js);
+		return file_put_contents(__DIR__ . '/../nodejs/server.config.js', $js);
 	}
 
 	protected function compileClient() {
 		printf("Compile client\n");
 		$socketTransport = $this->getComponent();
 		ob_start();
-		include __DIR__ . '/../javascript/client.js.php';
+		include __DIR__ . '/../js/client/client.template.js';
 		$js = ob_get_clean();
-		return file_put_contents(__DIR__ . '/../javascript/client.js', $js);
+		return file_put_contents(__DIR__ . '/../js/client/client.js', $js);
 	}
 
 	/**
