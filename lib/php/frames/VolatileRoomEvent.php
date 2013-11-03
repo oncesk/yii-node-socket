@@ -12,8 +12,6 @@ namespace YiiSocketTransport\Frame;
 /**
  * Class VolatileRoomEvent
  *
- * @method VolatileRoomEvent setEventName($eventName)
- *
  * @package YiiSocketTransport\Frame
  */
 class VolatileRoomEvent extends Event {
