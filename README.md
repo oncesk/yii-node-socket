@@ -1,60 +1,72 @@
-yii-ext-socket-transport
+Yii Node Socket
 =================
 
-Реализует связь между php и client javascript по средству сокет соединения.
-Сокет сервер реализован на nodejs (socket.io library).
+Реализует связь между php и javascript по средству сокет соединения.
+Сокет сервер реализован на nodejs (socket.io library http://socket.io/).
 
 #Установка
 
-1. Необходимо установить nodejs (в этом вам поможет http://nodejs.org/)
-2. Необходимо установить само расширение одним из следующих способов:<br>
-a. Клонирование<br>
-`$> git clone git@github.com:oncesk/yii-ext-socket-transport.git`<br>
-b. Скачать архив, и распаковать его в ***application.ext.yii-ext-socket-transport***
-3. Зайти в директорию установленного расширения ***application.ext.yii-ext-socket-transport*** и выполнить<br>
-`$> git submodule init`
-<br>
-`$> git submodule update`
-<br>
-4. Необходимо настроить Yii<br>
-a. Добавить путь к консольной команде в конфиг (main/console.php).
-Сделать это можно добавивь следующие строки
+Установите nodejs, если не установлено (в этом вам поможет http://nodejs.org/)<br>
+Установка расширения
+
+ * Клонирование
+
+```bash
+$> git clone git@github.com:oncesk/yii-node-socket.git
+```
+ * Скачать архив, и распаковать его в ***application.ext.yii-node-socket***<br>
+ * В качестве submodule<br>
+
+> ext_directory - директория куда следует установить сабмодуль
+
+```bash
+$> git submodule add git@github.com:oncesk/yii-node-socket.git ext_directory
+$> git submodule update
+```
+Зайдите в директорию установленного расширения ***application.ext.yii-node-socket*** и выполнить<br>
+```bash
+$> git submodule init
+$> git submodule update
+```
+
+Настраиваем Yii<br>
+ * Добавить путь к консольной команде в конфиг (***main/console.php***). Сделать это можно добавивь следующие строки:
 
 ```php
 'commandMap' => array(
-	'socketTransport' => 'application.ext.yii-ext-socket-transport.lib.php.SocketTransportCommand'
+	'node-socket' => 'application.ext.yii-node-socket.lib.php.NodeSocketCommand'
 )
 ```
 
-b. Зарегестрировать расширение в компонентах Yii, добавив в **main.php и console.php**:
+ * Регистрация в компонентах в компонентах Yii, добавив в **main.php и console.php**:
+
 ```php
 'socketTransport' => array(
-	'class' => 'ext.yii-ext-socket-transport.lib.php.SocketTransport',
+	'class' => 'ext.yii-node-socket.lib.php.NodeSocket',
 	'host' => '127.0.0.1',	// по умолчанию 127.0.0.1, может быть как ip так и доменом, только без http
 	'port' => 3001		// по умолчанию 3001, должен быть целочисленным integer-ом
 )
 ```
-<br>
-5. Необходимо зайт в директорию ***application.ext.yii-ext-socket-transport.lib.js.server*** и установить необходимые компоненты для nodejs
 
+Установим компоненты ***nodejs*** в директории ***application.ext.yii-node-socket.lib.js.server***:
 ```bash
 $> npm install
 ```
 
 На этом установка окончена!
 
-> Обратите внимание на то, что если название компонента будет отличным от **socketTransport**, то придется передавать название компонента в команду используя ключ --componentName=название_компонента
+> Обратите внимание на то, что если название компонента будет отличным от **nodeSocket**, то придется передавать название компонента в команду используя ключ --componentName=название_компонента
 
 ###Запуск сервера
 
-Сервер запускается консольной коммандой Yii (**./yiic socketTransport**)
+Сервер запускается консольной коммандой Yii (**./yiic node-socket**)
 
 ```bash
-$> ./yiic socketTransport # выведет хелп
-$> ./yiic socketTransport start # запуска сервера
-$> ./yiic socketTransport stop # остановка сервера
-$> ./yiic socketTransport restart # рестарт сервера
-$> ./yiic socketTransport getPid # выведет pid nodejs процесса
+$> ./yiic node-socket # выведет хелп
+$> ./yiic node-socket start # запуска сервера
+$> ./yiic node-socket stop # остановка сервера
+$> ./yiic node-socket restart # рестарт сервера
+$> ./yiic node-socket getPid # выведет pid nodejs процесса
 ```
 
 ##Javascript
@@ -64,7 +76,7 @@ $> ./yiic socketTransport getPid # выведет pid nodejs процесса
 ```php
 public function actionIndex() {
 	// регестрируем скрипты клиенат
-	Yii::app()->socketTransport->registerClientScripts();
+	Yii::app()->nodeSocket->registerClientScripts();
 	
 	// выполнение других действий
 }
@@ -85,14 +97,14 @@ public function actionIndex() {
 
 ###Работа в javascript
 
-Работа с расширением происходить через класс `YiiSocketTransport`
+Работа с расширением происходить через класс `YiiNodeSocket`
 
 ####Начало работы
 
 ```javascript
 
 // создаем обьект для работы с библиотекой
-var socket = new YiiSocketTransport();
+var socket = new YiiNodeSocket();
 
 // включение режима отладки
 socket.debug = true;
@@ -158,7 +170,7 @@ socket.getPublicData('error.strings', function (strings) {
 ```php
 public function actionIndex() {
 	// регестрируем скрипты клиенат
-	Yii::app()->socketTransport->registerClientScripts();
+	Yii::app()->nodeSocket->registerClientScripts();
 	
 	// выполнение других действий
 }
@@ -171,7 +183,7 @@ public function actionIndex() {
 ...
 
 // создаем фрейм
-$frame = Yii::app()->socketTransport->createEventFrame();
+$frame = Yii::app()->nodeSocket->createEventFrame();
 $frame->setEventName('updateBoard');
 $frame['boardId'] = 25;
 $frame['boardData'] = $html;
@@ -190,7 +202,7 @@ $frame->send();
 ...
 
 // создаем фрейм
-$frame = Yii::app()->socketTransport->createPublicDataFrame();
+$frame = Yii::app()->nodeSocket->createPublicDataFrame();
 
 // устанавливаем ключ в хранилище
 $frame->setKey('error.strings');
@@ -220,7 +232,7 @@ $frame->send();
 ...
 
 // создаем фрейм
-$frame = Yii::app()->socketTransport->createVolatileRoomEventFrame();
+$frame = Yii::app()->nodeSocket->createVolatileRoomEventFrame();
 
 // устанавливаем ключ в хранилище
 $frame->setEventName('updateBoard');
@@ -247,15 +259,15 @@ $frame->send();
 
 ```php
 
-$multipleFrame = Yii::app()->socketTransport->createMultipleFrame();
+$multipleFrame = Yii::app()->nodeSocket->createMultipleFrame();
 
-$eventFrame = Yii::app()->socketTransport->createEventFrame();
+$eventFrame = Yii::app()->nodeSocket->createEventFrame();
 
 $eventFrame->setEventName('updateBoard');
 $eventFrame['boardId'] = 25;
 $eventFrame['boardData'] = $html;
 
-$roomEvent = Yii::app()->socketTransport->createVolatileRoomEventFrame();
+$roomEvent = Yii::app()->nodeSocket->createVolatileRoomEventFrame();
 
 $roomEvent->setEventName('updateBoard');
 $roomEvent->setRoomId('testRoom');
@@ -271,7 +283,7 @@ $multipleFrame->send();
 
 ```php
 
-$multipleFrame = Yii::app()->socketTransport->createMultipleFrame();
+$multipleFrame = Yii::app()->nodeSocket->createMultipleFrame();
 
 $eventFrame = $multipleFrame->createEventFrame();
 
