@@ -151,7 +151,144 @@ socket.getPublicData('error.strings', function (strings) {
 ```
 
 
-###Отправка события клиенту из PHP
+##PHP
+
+####Регистрация клиентских скриптов
+
+```php
+public function actionIndex() {
+	// регестрируем скрипты клиенат
+	Yii::app()->socketTransport->registerClientScripts();
+	
+	// выполнение других действий
+}
+```
+
+####Создание и отправка события с данными
+
+```php
+
+...
+
+// создаем фрейм
+$frame = Yii::app()->socketTransport->createEventFrame();
+$frame->setEventName('updateBoard');
+$frame['boardId'] = 25;
+$frame['boardData'] = $html;
+$frame->send();
+
+...
+
+```
+
+####Установка общих публичных данных
+
+Данные могут устанавливаться на какоето время, для установки времени жизни необходимо воспользоваться методом ***setLifeTime(integer $lifetime)*** класса PublicData
+
+```php
+
+...
+
+// создаем фрейм
+$frame = Yii::app()->socketTransport->createPublicDataFrame();
+
+// устанавливаем ключ в хранилище
+$frame->setKey('error.strings');
+
+// записываем данные
+$frame->setData($errorStrings);
+
+// можно устанавливать с помощью интерфейса ArrayAccess
+// $frame['empty_name'] = 'Пожалуйста введите имя пользователя';
+
+// устанавливаем время жизни
+$frame->setLifeTime(3600*2);	// через два часа данные удалятся из памяти
+
+// отправляем
+$frame->send();
+
+...
+
+```
+
+####Отправка события в комнату
+
+Необходимо использовать класс VolatileRoomEvent, создание и отправка события ничем неотличается от обычного события, за исключением добавления идентификатора канала
+
+```php
+
+...
+
+// создаем фрейм
+$frame = Yii::app()->socketTransport->createVolatileRoomEventFrame();
+
+// устанавливаем ключ в хранилище
+$frame->setEventName('updateBoard');
+
+// записываем данные
+$frame->setRoomId('testRoom');
+
+// устанавливаем данные
+
+$frame['key'] = $value;
+
+// отправляем
+$frame->send();
+
+...
+
+```
+
+Событие смогут отловить клиенты, которые состоят в комнате testRoom
+
+####Отправка нескольких событий за один раз
+
+Для отправки нескольких событий используйте 
+
+```php
+
+$multipleFrame = Yii::app()->socketTransport->createMultipleFrame();
+
+$eventFrame = Yii::app()->socketTransport->createEventFrame();
+
+$eventFrame->setEventName('updateBoard');
+$eventFrame['boardId'] = 25;
+$eventFrame['boardData'] = $html;
+
+$roomEvent = Yii::app()->socketTransport->createVolatileRoomEventFrame();
+
+$roomEvent->setEventName('updateBoard');
+$roomEvent->setRoomId('testRoom');
+$roomEvent['key'] = $value;
+
+$multipleFrame->addFrame($eventFrame);
+$multipleFrame->addFrame($roomEvent);
+$multipleFrame->send();
+
+```
+
+Можно и так
+
+```php
+
+$multipleFrame = Yii::app()->socketTransport->createMultipleFrame();
+
+$eventFrame = $multipleFrame->createEventFrame();
+
+$eventFrame->setEventName('updateBoard');
+$eventFrame['boardId'] = 25;
+$eventFrame['boardData'] = $html;
+
+$roomEvent = $multipleFrame->createVolatileRoomEventFrame();
+
+$roomEvent->setEventName('updateBoard');
+$roomEvent->setRoomId('testRoom');
+$roomEvent['key'] = $value;
+
+$multipleFrame->send();
+
+```
+
 
 PHP:
 ```php
