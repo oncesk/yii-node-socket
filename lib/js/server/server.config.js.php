@@ -1,10 +1,10 @@
 <?php
 /**
- * @var SocketTransport $socketTransport
- * @var SocketTransportCommand $this
+ * @var NodeSocket $nodeSocket
+ * @var NodeSocketCommand $this
  */
 ?>
 module.exports = {
-	host : '<?php echo $socketTransport->host;?>',
-	port : parseInt('<?php echo $socketTransport->port;?>')
+	host : '<?php echo $nodeSocket->host;?>',
+	port : parseInt('<?php echo $nodeSocket->port;?>')
 };

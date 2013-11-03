@@ -4,14 +4,28 @@ require_once 'frames/FrameFactory.php';
 
 use YiiSocketTransport\Frame\IFrameFactory;
 
-class SocketTransport extends CApplicationComponent implements IFrameFactory {
+class NodeSocket extends CApplicationComponent implements IFrameFactory {
 
 	/**
+	 * Node js server host to bind http and socket server
+	 * Valid values is:
+	 *   - valid ip address
+	 *   - domain name
+	 *
+	 * Domain name must be withoud http or https
+	 * Example:
+	 *
+	 * 'host' => 'test.com'
+	 * // or
+	 * 'host' => '84.25.159.52'
+	 *
 	 * @var string
 	 */
 	public $host = '127.0.0.1';
 
 	/**
+	 * Port in integer type only
+	 *
 	 * @var int
 	 */
 	public $port = 3001;
@@ -26,32 +40,12 @@ class SocketTransport extends CApplicationComponent implements IFrameFactory {
 	/**
 	 * @var string
 	 */
-	public $serverNamespace = '/server';
-
-	/**
-	 * @var string
-	 */
-	public $clientNamespace = '/client';
-
-	/**
-	 * @var string
-	 */
 	public $pidFile = 'socket-transport.pid';
 
 	/**
 	 * @var int timeout for handshaking in miliseconds
 	 */
 	public $handshakeTimeout = 2000;
-
-	/**
-	 * @var bool
-	 */
-	public $allowClientSubscribe = true;
-
-	/**
-	 * @var bool
-	 */
-	public $allowClientUnSubscribe = true;
 
 	/**
 	 * @var string

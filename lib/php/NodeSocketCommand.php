@@ -7,12 +7,12 @@
  * To change this template use File | Settings | File Templates.
  */
 
-class SocketTransportCommand extends CConsoleCommand {
+class NodeSocketCommand extends CConsoleCommand {
 
 	/**
 	 * @var string
 	 */
-	public $componentName = 'socketTransport';
+	public $componentName = 'nodeSocket';
 
 	/**
 	 * @var int
@@ -60,43 +60,38 @@ class SocketTransportCommand extends CConsoleCommand {
 	public function getHelp() {
 		return <<<EOD
 USAGE
-  yiic socketTransport [action] [parameter]
+  yiic node-socket [action] [parameter]
 
 DESCRIPTION
-  This command provides support for database migrations. The optional
-  'action' parameter specifies which specific migration task to perform.
-  It can take these values: up, down, to, create, history, new, mark.
-  If the 'action' parameter is not given, it defaults to 'up'.
-  Each action takes different parameters. Their usage can be found in
-  the following examples.
+  This command provides support for node socket extension
 
 EXAMPLES
- * yiic socketTransport start
+ * yiic node-socket start
    Start socket server
 
- * yiic socketTransport stop
+ * yiic node-socket stop
    Stop socket server
 
- * yiic socketTransport restart
+ * yiic node-socket restart
    Restart socket server
 
- * yiic socketTransport getPid
+ * yiic node-socket getPid
    Display socket pid
 EOD;
 	}
 
 	protected function compileServer() {
 		printf("Compile server\n");
-		$socketTransport = $this->getComponent();
+		$nodeSocket = $this->getComponent();
 		ob_start();
-		include __DIR__ . '/../nodejs/server.config.js.php';
+		include __DIR__ . '/../js/server/server.config.js.php';
 		$js = ob_get_clean();
-		return file_put_contents(__DIR__ . '/../nodejs/server.config.js', $js);
+		return file_put_contents(__DIR__ . '/../js/server/server.config.js', $js);
 	}
 
 	protected function compileClient() {
 		printf("Compile client\n");
-		$socketTransport = $this->getComponent();
+		$nodeSocket = $this->getComponent();
 		ob_start();
 		include __DIR__ . '/../js/client/client.template.js';
 		$js = ob_get_clean();
@@ -142,7 +137,7 @@ EOD;
 	}
 
 	/**
-	 * @return SocketTransport
+	 * @return NodeSocket
 	 */
 	protected function getComponent() {
 		$component = Yii::app()->getComponent($this->componentName);

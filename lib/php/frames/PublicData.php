@@ -24,7 +24,7 @@ class PublicData extends AFrame {
 	 *
 	 * @return PublicData
 	 */
-	public function setLifeTime($lifetime) {
+		public function setLifeTime($lifetime) {
 		if (is_int($lifetime) || is_numeric($lifetime)) {
 			$this->addMetaData('lifetime', (int) $lifetime);
 		}

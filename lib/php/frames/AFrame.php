@@ -14,9 +14,9 @@ abstract class AFrame implements \ArrayAccess {
 	protected $_id;
 
 	/**
-	 * @var \SocketTransport
+	 * @var \NodeSocket
 	 */
-	protected $_socketTransport;
+	protected $_nodeSocket;
 
 	/**
 	 * @var array
@@ -39,10 +39,10 @@ abstract class AFrame implements \ArrayAccess {
 	abstract public function isValid();
 
 	/**
-	 * @param \SocketTransport $socketTransport
+	 * @param \NodeSocket $nodeSocket
 	 */
-	public function __construct(\SocketTransport $socketTransport) {
-		$this->_socketTransport = $socketTransport;
+	public function __construct(\NodeSocket $socketTransport) {
+		$this->_nodeSocket = $socketTransport;
 		$this->_createContainer();
 		$this->init();
 	}
@@ -144,11 +144,11 @@ abstract class AFrame implements \ArrayAccess {
 
 	protected function emit() {
 		$client = $this->createClient();
-		$client->setHandshakeTimeout($this->_socketTransport->handshakeTimeout);
+		$client->setHandshakeTimeout($this->_nodeSocket->handshakeTimeout);
 		$client->init();
 		$client
 			->createFrame()
-			->endPoint($this->_socketTransport->serverNamespace)
+			->endPoint($this->_nodeSocket->serverNamespace)
 			->emit($this->getType(), $this->getFrame());
 
 		$client->close();
@@ -159,7 +159,7 @@ abstract class AFrame implements \ArrayAccess {
 	 */
 	protected function createClient() {
 		return new \ElephantIO\Client(
-			sprintf('http://%s:%s', $this->_socketTransport->host, $this->_socketTransport->port),
+			sprintf('http://%s:%s', $this->_nodeSocket->host, $this->_nodeSocket->port),
 			'socket.io',
 			1,
 			false
