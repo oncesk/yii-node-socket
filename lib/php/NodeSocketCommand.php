@@ -7,12 +7,12 @@
  * To change this template use File | Settings | File Templates.
  */
 
-class SocketTransportCommand extends CConsoleCommand {
+class NodeSocketCommand extends CConsoleCommand {
 
 	/**
 	 * @var string
 	 */
-	public $componentName = 'socketTransport';
+	public $componentName = 'nodeSocket';
 
 	/**
 	 * @var int
@@ -87,16 +87,16 @@ EOD;
 
 	protected function compileServer() {
 		printf("Compile server\n");
-		$socketTransport = $this->getComponent();
+		$nodeSocket = $this->getComponent();
 		ob_start();
-		include __DIR__ . '/../nodejs/server.config.js.php';
+		include __DIR__ . '/../js/server/server.config.js.php';
 		$js = ob_get_clean();
-		return file_put_contents(__DIR__ . '/../nodejs/server.config.js', $js);
+		return file_put_contents(__DIR__ . '/../js/server/server.config.js', $js);
 	}
 
 	protected function compileClient() {
 		printf("Compile client\n");
-		$socketTransport = $this->getComponent();
+		$nodeSocket = $this->getComponent();
 		ob_start();
 		include __DIR__ . '/../js/client/client.template.js';
 		$js = ob_get_clean();
@@ -142,7 +142,7 @@ EOD;
 	}
 
 	/**
-	 * @return SocketTransport
+	 * @return NodeSocket
 	 */
 	protected function getComponent() {
 		$component = Yii::app()->getComponent($this->componentName);

@@ -4,7 +4,7 @@ require_once 'frames/FrameFactory.php';
 
 use YiiSocketTransport\Frame\IFrameFactory;
 
-class SocketTransport extends CApplicationComponent implements IFrameFactory {
+class NodeSocket extends CApplicationComponent implements IFrameFactory {
 
 	/**
 	 * Node js server host to bind http and socket server
