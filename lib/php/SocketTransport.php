@@ -1,9 +1,10 @@
 <?php
-require_once 'frames/AFrame.php';
-require_once 'frames/EventFrame.php';
-require_once 'frames/JsExecFrame.php';
+require_once 'frames/IFrameFactory.php';
+require_once 'frames/FrameFactory.php';
 
-class SocketTransport extends CApplicationComponent {
+use YiiSocketTransport\Frame\IFrameFactory;
+
+class SocketTransport extends CApplicationComponent implements IFrameFactory {
 
 	/**
 	 * @var string
@@ -25,7 +26,12 @@ class SocketTransport extends CApplicationComponent {
 	/**
 	 * @var string
 	 */
-	public $socketNamespace = '/';
+	public $serverNamespace = '/server';
+
+	/**
+	 * @var string
+	 */
+	public $clientNamespace = '/client';
 
 	/**
 	 * @var string
@@ -33,9 +39,29 @@ class SocketTransport extends CApplicationComponent {
 	public $pidFile = 'socket-transport.pid';
 
 	/**
+	 * @var int timeout for handshaking in miliseconds
+	 */
+	public $handshakeTimeout = 2000;
+
+	/**
+	 * @var bool
+	 */
+	public $allowClientSubscribe = true;
+
+	/**
+	 * @var bool
+	 */
+	public $allowClientUnSubscribe = true;
+
+	/**
 	 * @var string
 	 */
 	protected $_assetUrl;
+
+	/**
+	 * @var \YiiSocketTransport\Frame\FrameFactory
+	 */
+	protected $_frameFactory;
 
 	public function init() {
 		parent::init();
@@ -47,20 +73,42 @@ class SocketTransport extends CApplicationComponent {
 			'ElephantIO',
 			'Client.php'
 		));
+		$this->_frameFactory = new \YiiSocketTransport\Frame\FrameFactory($this);
 	}
 
 	/**
-	 * @return EventFrame
+	 * @return YiiSocketTransport\Frame\Event
 	 */
 	public function createEventFrame() {
-		return new EventFrame($this);
+		return $this->_frameFactory->createEventFrame();
 	}
 
 	/**
-	 * @return JsExecFrame
+	 * @return \YiiSocketTransport\Frame\ChannelEvent
 	 */
-	public function createJSExecFrame() {
-		return new JsExecFrame($this);
+	public function createChannelEventFrame() {
+		return $this->_frameFactory->createChannelEventFrame();
+	}
+
+	/**
+	 * @return \YiiSocketTransport\Frame\Multiple
+	 */
+	public function createMultipleFrame() {
+		return $this->_frameFactory->createMultipleFrame();
+	}
+
+	/**
+	 * @return \YiiSocketTransport\Frame\PublicData
+	 */
+	public function createPublicDataFrame() {
+		return $this->_frameFactory->createPublicDataFrame();
+	}
+
+	/**
+	 * @return \YiiSocketTransport\Frame\VolatileRoomEvent
+	 */
+	public function createVolatileRoomEventFrame() {
+		return $this->_frameFactory->createVolatileRoomEventFrame();
 	}
 
 	/**
@@ -70,8 +118,9 @@ class SocketTransport extends CApplicationComponent {
 		if ($this->_assetUrl) {
 			return true;
 		}
-		$this->_assetUrl = Yii::app()->assetManager->publish(__DIR__ . '/../javascript');
+		$this->_assetUrl = Yii::app()->assetManager->publish(__DIR__ . '/../js/client');
 		if ($this->_assetUrl) {
+			Yii::app()->clientScript->registerScriptFile(sprintf("http://%s:%d%s", $this->host, $this->port, '/socket.io/socket.io.js'));
 			Yii::app()->clientScript->registerScriptFile($this->_assetUrl . '/client.js');
 			return true;
 		}
