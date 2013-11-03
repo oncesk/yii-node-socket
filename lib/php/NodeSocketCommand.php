@@ -60,27 +60,22 @@ class NodeSocketCommand extends CConsoleCommand {
 	public function getHelp() {
 		return <<<EOD
 USAGE
-  yiic socketTransport [action] [parameter]
+  yiic node-socket [action] [parameter]
 
 DESCRIPTION
-  This command provides support for database migrations. The optional
-  'action' parameter specifies which specific migration task to perform.
-  It can take these values: up, down, to, create, history, new, mark.
-  If the 'action' parameter is not given, it defaults to 'up'.
-  Each action takes different parameters. Their usage can be found in
-  the following examples.
+  This command provides support for node socket extension
 
 EXAMPLES
- * yiic socketTransport start
+ * yiic node-socket start
    Start socket server
 
- * yiic socketTransport stop
+ * yiic node-socket stop
    Stop socket server
 
- * yiic socketTransport restart
+ * yiic node-socket restart
    Restart socket server
 
- * yiic socketTransport getPid
+ * yiic node-socket getPid
    Display socket pid
 EOD;
 	}
