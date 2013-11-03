@@ -14,7 +14,6 @@ Yii Node Socket
 ```bash
 $> git clone git@github.com:oncesk/yii-node-socket.git
 ```
- * Скачать архив, и распаковать его в ***application.ext.yii-node-socket***<br>
  * В качестве submodule<br>
 
 > ext_directory - директория куда следует установить сабмодуль
