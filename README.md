@@ -1,96 +1,308 @@
-yii-ext-socket-transport
+Yii Node Socket
 =================
 
-Реализует связь между php и client javascript по средству сокет соединения.
-Сокет сервер реализован на основе nodejs (socket.io library).
-
-###Добавления события в систему? Легко!
-
-Для добавления нового события в систему нет необходимости перезагружать nodejs сервер и ничего не надо туда дописывать. На стороне PHP необходимо отправить событие (+ данные), а на стороне клиента его отловить и выполнить какието действия.
+Реализует связь между php и javascript по средству сокет соединения.
+Сокет сервер реализован на nodejs (socket.io library http://socket.io/).
 
 #Установка
 
-1. Необходимо установить nodejs (в этом вам поможет http://nodejs.org/)
-2. Скопируйте содержимое в папку application.ext
-3. Зайди в директорию, куда было установлено рассширени и выполнить<br>
-`git submodule init`
-<br>
-`git submodule update`
-<br>
-4. Необходимо добавить путь к консольной команде в конфиг (console.php) приложения.
-Сделать это можно добавивь следующие строки
-<br>
+Установите nodejs, если не установлено (в этом вам поможет http://nodejs.org/)<br>
+Установка расширения
+
+ * Клонирование
+
+```bash
+$> git clone git@github.com:oncesk/yii-node-socket.git
+```
+ * Скачать архив, и распаковать его в ***application.ext.yii-node-socket***<br>
+ * В качестве submodule<br>
+
+> ext_directory - директория куда следует установить сабмодуль
+
+```bash
+$> git submodule add git@github.com:oncesk/yii-node-socket.git ext_directory
+$> git submodule update
+```
+Зайдите в директорию установленного расширения ***application.ext.yii-node-socket*** и выполнить<br>
+```bash
+$> git submodule init
+$> git submodule update
+```
+
+Настраиваем Yii<br>
+ * Добавить путь к консольной команде в конфиг (***main/console.php***). Сделать это можно добавивь следующие строки:
+
 ```php
 'commandMap' => array(
-		'socketTransport' => 'application.extensions.socket-transport.lib.php.SocketTransportCommand'
+	'node-socket' => 'application.ext.yii-node-socket.lib.php.NodeSocketCommand'
 )
 ```
-**socket-transport** - директория в которой находится расширение
-<br>
-5. Зайди в директорию application.path_to_yii_ext_socket_transport.lib.nodejs и выполнить в консоле команду установки socket.io и cookie расширения
-<br>
-`npm install socket.io`
-<br>
-`npm install cookie`
-6. Добавить расширения как компонент в конфигурационные файлы **main.php и console.php**, указав в качестве класса компонент **ext.socket-transport.SocketTransport**
 
-> Обратите внимание на то, что если название компонента будет отличным от **socketTransport**, то придется передавать название компонента в команду используя ключ --componentName=название_компонента
-
-###Запуск сокет сервера
-
-Сервер запускается консольной коммандой Yii (**./yiic socketTransport**)
-
-`./yiic socketTransport` покажет возможные действия команды
-<br>
-`./yiic socketTransport start` запуск сокет сервера
-
-###Сторона клиента
-
-Для возможности добавлять слушателей событий необходимо зарегестрировать скрипт расширения, делается это следующим образом
-
-> Где то в php<br>
+ * Регистрация в компонентах в компонентах Yii, добавив в **main.php и console.php**:
 
 ```php
-Yii::app()->socketTransport->registerClientScripts();
+'socketTransport' => array(
+	'class' => 'ext.yii-node-socket.lib.php.NodeSocket',
+	'host' => '127.0.0.1',	// по умолчанию 127.0.0.1, может быть как ip так и доменом, только без http
+	'port' => 3001		// по умолчанию 3001, должен быть целочисленным integer-ом
+)
 ```
 
-> Javscript клиента
-
-```javascript
-var listener = new YiiSocketTransport();
+Установим компоненты ***nodejs*** в директории ***application.ext.yii-node-socket.lib.js.server***:
+```bash
+$> npm install
 ```
 
-Default events:
+На этом установка окончена!
+
+> Обратите внимание на то, что если название компонента будет отличным от **nodeSocket**, то придется передавать название компонента в команду используя ключ --componentName=название_компонента
+
+###Запуск сервера
+
+Сервер запускается консольной коммандой Yii (**./yiic node-socket**)
+
+```bash
+$> ./yiic node-socket # выведет хелп
+$> ./yiic node-socket start # запуска сервера
+$> ./yiic node-socket stop # остановка сервера
+$> ./yiic node-socket restart # рестарт сервера
+$> ./yiic node-socket getPid # выведет pid nodejs процесса
+```
+
+##Javascript
+
+Перед работой необходимо зарегестировать скрипты клиента на необходимой нам странице
+
+```php
+public function actionIndex() {
+	// регестрируем скрипты клиенат
+	Yii::app()->nodeSocket->registerClientScripts();
+	
+	// выполнение других действий
+}
+```
+
+###События
+
+Предустановленные события:
 
 * `listener.on('connect', function () {})` - "connect" is emitted when the socket connected successfully
 * `listener.on('reconnect', function () {})` - "reconnect" is emitted when socket.io successfully reconnected to the server
 * `listener.on('disconnect', function () {})` - "disconnect" is emitted when the socket disconnected
 
-Custom events:
+Созднаия своего слушателя события:
 
 * `listener.on('update', function (data) {})` - emitted when PHP server emit update event
 * `listener.on('some_event', function (data) {})` - emitted when PHP server emit some_event event
 
-###Отправка события клиенту из PHP
+###Работа в javascript
 
-PHP:
-```php
-$frame = Yii::app()->socketTransport->createEventFrame();
-$frame
-	->setEventName('update.queue')
-	->setData(array(
-		array('client' => 'A100', 'table' => '10')
-	))
-	->send();
+Работа с расширением происходить через класс `YiiNodeSocket`
 
+####Начало работы
+
+```javascript
+
+// создаем обьект для работы с библиотекой
+var socket = new YiiNodeSocket();
+
+// включение режима отладки
+socket.debug = true;
 ```
 
-JS:
+####События
+
+На текущем этапе разработки события можно создавать только из PHP. Данные которые приходят в javascript передаются в формате json.
+В javascript данные приходят уже в обычном виде (обьекте)
+
 ```javascript
-var listener = new YiiSocketTransport();
-listener.on('update.queue', function (data) {
-	for (var i in data) {
-		updateBoard(data[i]);	//	update queue board
+// установка обработчика события
+socket.on('updateBoard', function (data) {
+	// обновляем доску, выполняем какие либо действия
+});
+```
+
+####Подключение к комнате
+
+Для подключения к комнате необходимо воспользоваться методом join и передать в него идентификатор комнаты
+
+```javascript
+join : function (string,integer id, callback fn)
+```
+
+Пример:
+
+```javascript
+var roomId = 'testRoom';
+socket.join(roomId, function (success, numberOfRoomSubscribers) {
+	// success - boolean, если при добавлении сокета произошла ошибка
+	// то success = false, и numberOfRoomSubscribers - содержит описание ошибки
+	// иначе numberOfRoomSubscribers - number, содержит количество клиентов в комнате
+	if (success) {
+		console.log(numberOfRoomSubscribers + ' clients in room: ' + roomId);
+		// do something
+	} else {
+		// numberOfRoomSubscribers - error message
+		alert(numberOfRoomSubscribers);
 	}
 });
 ```
+
+####Общие публичные данные
+
+Данные можно установить только из PHP используя PublicData фрейм (смотрите ниже), получить данные можно используя метод `getPublicData(string key, callback fn)`
+
+```javascript
+socket.getPublicData('error.strings', function (strings) {
+	// проверка обязательна, так как данные могут быть неустановлены,
+	// либо истек срок хранения (еще не реализовано)
+	if (strings) {
+		// делаем что-либо
+	}
+});
+```
+
+
+##PHP
+
+####Регистрация клиентских скриптов
+
+```php
+public function actionIndex() {
+	// регестрируем скрипты клиенат
+	Yii::app()->nodeSocket->registerClientScripts();
+	
+	// выполнение других действий
+}
+```
+
+####Создание и отправка события с данными
+
+```php
+
+...
+
+// создаем фрейм
+$frame = Yii::app()->nodeSocket->createEventFrame();
+$frame->setEventName('updateBoard');
+$frame['boardId'] = 25;
+$frame['boardData'] = $html;
+$frame->send();
+
+...
+
+```
+
+####Установка общих публичных данных
+
+Данные могут устанавливаться на какоето время, для установки времени жизни необходимо воспользоваться методом ***setLifeTime(integer $lifetime)*** класса PublicData
+
+```php
+
+...
+
+// создаем фрейм
+$frame = Yii::app()->nodeSocket->createPublicDataFrame();
+
+// устанавливаем ключ в хранилище
+$frame->setKey('error.strings');
+
+// записываем данные
+$frame->setData($errorStrings);
+
+// можно устанавливать с помощью интерфейса ArrayAccess
+// $frame['empty_name'] = 'Пожалуйста введите имя пользователя';
+
+// устанавливаем время жизни
+$frame->setLifeTime(3600*2);	// через два часа данные удалятся из памяти
+
+// отправляем
+$frame->send();
+
+...
+
+```
+
+####Отправка события в комнату
+
+Необходимо использовать класс VolatileRoomEvent, создание и отправка события ничем неотличается от обычного события, за исключением добавления идентификатора канала
+
+```php
+
+...
+
+// создаем фрейм
+$frame = Yii::app()->nodeSocket->createVolatileRoomEventFrame();
+
+// устанавливаем ключ в хранилище
+$frame->setEventName('updateBoard');
+
+// записываем данные
+$frame->setRoomId('testRoom');
+
+// устанавливаем данные
+
+$frame['key'] = $value;
+
+// отправляем
+$frame->send();
+
+...
+
+```
+
+Событие смогут отловить клиенты, которые состоят в комнате testRoom
+
+####Отправка нескольких событий за один раз
+
+Для отправки нескольких событий используйте 
+
+```php
+
+$multipleFrame = Yii::app()->nodeSocket->createMultipleFrame();
+
+$eventFrame = Yii::app()->nodeSocket->createEventFrame();
+
+$eventFrame->setEventName('updateBoard');
+$eventFrame['boardId'] = 25;
+$eventFrame['boardData'] = $html;
+
+$roomEvent = Yii::app()->nodeSocket->createVolatileRoomEventFrame();
+
+$roomEvent->setEventName('updateBoard');
+$roomEvent->setRoomId('testRoom');
+$roomEvent['key'] = $value;
+
+$multipleFrame->addFrame($eventFrame);
+$multipleFrame->addFrame($roomEvent);
+$multipleFrame->send();
+
+```
+
+Можно и так
+
+```php
+
+$multipleFrame = Yii::app()->nodeSocket->createMultipleFrame();
+
+$eventFrame = $multipleFrame->createEventFrame();
+
+$eventFrame->setEventName('updateBoard');
+$eventFrame['boardId'] = 25;
+$eventFrame['boardData'] = $html;
+
+$roomEvent = $multipleFrame->createVolatileRoomEventFrame();
+
+$roomEvent->setEventName('updateBoard');
+$roomEvent->setRoomId('testRoom');
+$roomEvent['key'] = $value;
+
+$multipleFrame->send();
+
+```
+
+##В планах
+
+1. Создать систему subscribe/unsibscribe, с созданием, удалением, сохранением каналов, добавления и удаления подписчиков
+2. Хранение информации и канале и подписчиках в базе данных, скорее всего mongoDB
+3. Возможность создавать каналы с разными правами (публичный канал, публичный ограниченный, приватный, приватный ограниченный)
