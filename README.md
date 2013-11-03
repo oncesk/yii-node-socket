@@ -289,25 +289,8 @@ $multipleFrame->send();
 
 ```
 
+##В планах
 
-PHP:
-```php
-$frame = Yii::app()->socketTransport->createEventFrame();
-$frame
-	->setEventName('update.queue')
-	->setData(array(
-		array('client' => 'A100', 'table' => '10')
-	))
-	->send();
-
-```
-
-JS:
-```javascript
-var listener = new YiiSocketTransport();
-listener.on('update.queue', function (data) {
-	for (var i in data) {
-		updateBoard(data[i]);	//	update queue board
-	}
-});
-```
+1. Создать систему subscribe/unsibscribe, с созданием, удалением, сохранением каналов, добавления и удаления подписчиков
+2. Хранение информации и канале и подписчиках в базе данных, скорее всего mongoDB, что позволит создавать каналы и подписывать клиентов лишь раз, выше отказоустойчиваость, так как данные будут храниться не в памяти а в бд, и загружать в память при старте сервера
+3. Возможность создавать каналы с разными правами (публичный канал, публичный ограниченный, приватный, приватный ограниченный)
