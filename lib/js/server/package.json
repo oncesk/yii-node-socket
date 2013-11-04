@@ -1,5 +1,5 @@
 {
-	"name" : "yii-socket-transport",
+	"name" : "yii-node-socket",
 	"version" : "0.0.1",
 	"dependencies" : {
 		"express" : ">=0.3.x",

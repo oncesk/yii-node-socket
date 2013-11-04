@@ -1,5 +1,5 @@
 {
-	"name": "oncesk/yii-ext-socket-transport",
+	"name": "oncesk/yii-node-socket",
 	"description": "Реализует связь между php и client javascript по средству сокет соединения.",
 	"minimum-stability": "stable",
 	"authors": [
