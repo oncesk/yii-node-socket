@@ -37,7 +37,7 @@ $> git submodule update
 )
 ```
 
- * Регистрация в компонентах в компонентах Yii, добавив в **main.php и console.php**:
+ * Регистрация в компонентах Yii, добавив в **main.php и console.php**:
 
 ```php
 'socketTransport' => array(
