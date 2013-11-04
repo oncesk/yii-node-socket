@@ -14,7 +14,6 @@ Yii Node Socket
 ```bash
 $> git clone git@github.com:oncesk/yii-node-socket.git
 ```
- * Скачать архив, и распаковать его в ***application.ext.yii-node-socket***<br>
  * В качестве submodule<br>
 
 > ext_directory - директория куда следует установить сабмодуль
@@ -38,7 +37,7 @@ $> git submodule update
 )
 ```
 
- * Регистрация в компонентах в компонентах Yii, добавив в **main.php и console.php**:
+ * Регистрация в компонентах Yii, добавив в **main.php и console.php**:
 
 ```php
 'socketTransport' => array(
@@ -112,7 +111,7 @@ socket.debug = true;
 
 ####События
 
-На текущем этапе разработки события можно создавать только из PHP. Данные которые приходят в javascript передаются в формате json.
+Сейчас события можно создавать только из PHP. Данные которые приходят в javascript передаются в формате json.
 В javascript данные приходят уже в обычном виде (обьекте)
 
 ```javascript
