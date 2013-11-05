@@ -1,5 +1,5 @@
 <?php
-namespace YiiSocketTransport\Frame;
+namespace YiiNodeSocket\Frame;
 
 /**
  * Class Multiple
@@ -21,7 +21,7 @@ namespace YiiSocketTransport\Frame;
  *      ->addFrame($subscriptionFrame)
  *      ->send();
  *
- * @package YiiSocketTransport\Frame
+ * @package YiiNodeSocket\Frame
  */
 class Multiple extends AFrame implements IFrameFactory {
 

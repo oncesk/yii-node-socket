@@ -1,5 +1,5 @@
 <?php
-namespace YiiSocketTransport\Frame;
+namespace YiiNodeSocket\Frame;
 
 abstract class AFrame implements \ArrayAccess {
 
@@ -41,8 +41,8 @@ abstract class AFrame implements \ArrayAccess {
 	/**
 	 * @param \NodeSocket $nodeSocket
 	 */
-	public function __construct(\NodeSocket $socketTransport) {
-		$this->_nodeSocket = $socketTransport;
+	public function __construct(\NodeSocket $nodeSocket) {
+		$this->_nodeSocket = $nodeSocket;
 		$this->_createContainer();
 		$this->init();
 	}

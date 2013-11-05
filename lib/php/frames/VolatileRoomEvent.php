@@ -7,12 +7,12 @@
  * To change this template use File | Settings | File Templates.
  */
 
-namespace YiiSocketTransport\Frame;
+namespace YiiNodeSocket\Frame;
 
 /**
  * Class VolatileRoomEvent
  *
- * @package YiiSocketTransport\Frame
+ * @package YiiNodeSocket\Frame
  */
 class VolatileRoomEvent extends Event {
 
