@@ -49,7 +49,7 @@ class Multiple extends AFrame implements IFrameFactory {
 	 */
 	public function createChannelEventFrame() {
 		return $this
-				->_socketTransport
+				->_nodeSocket
 				->createChannelEventFrame()
 				->setAsMultiple($this);
 	}
@@ -59,7 +59,7 @@ class Multiple extends AFrame implements IFrameFactory {
 	 */
 	public function createEventFrame() {
 		return $this
-				->_socketTransport
+				->_nodeSocket
 				->createEventFrame()
 				->setAsMultiple($this);
 	}
@@ -76,21 +76,10 @@ class Multiple extends AFrame implements IFrameFactory {
 	 */
 	public function createPublicDataFrame() {
 		return $this
-				->_socketTransport
+				->_nodeSocket
 				->createPublicDataFrame()
 				->setAsMultiple($this);
 	}
-
-	/**
-	 * @return VolatileRoomEvent
-	 */
-	public function createVolatileRoomEventFrame() {
-		return $this
-				->_socketTransport
-				->createVolatileRoomEventFrame()
-				->setAsMultiple($this);
-	}
-
 
 	/**
 	 * @param AFrame $frame

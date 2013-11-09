@@ -2,3 +2,4 @@
 node_modules
 server.js
 client.js
+lib/js/server/server.config.js
