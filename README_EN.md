@@ -21,14 +21,14 @@ $> git clone git@github.com:oncesk/yii-node-socket.git
 $> git submodule add git@github.com:oncesk/yii-node-socket.git ext_directory
 $> git submodule update
 ```
-Зайдите в директорию установленного расширения ***application.ext.yii-node-socket*** и выполнить<br>
+Now go to the folder where you install extension  ***application.ext.yii-node-socket*** and execute<br>
 ```bash
 $> git submodule init
 $> git submodule update
 ```
 
-Настраиваем Yii<br>
- * Добавить путь к консольной команде в конфиг (***main/console.php***). Сделать это можно добавивь следующие строки:
+Yii configuration<br>
+ * Configure console command in (***main/console.php***). You can use config below:
 
 ```php
 'commandMap' => array(
@@ -36,22 +36,22 @@ $> git submodule update
 )
 ```
 
- * Регистрация в компонентах Yii, добавив в **main.php и console.php**:
+ * Register Yii component, need to add into **main.php и console.php**:
 
 ```php
 'socketTransport' => array(
 	'class' => 'ext.yii-node-socket.lib.php.NodeSocket',
-	'host' => '127.0.0.1',	// по умолчанию 127.0.0.1, может быть как ip так и доменом, только без http
-	'port' => 3001		// по умолчанию 3001, должен быть целочисленным integer-ом
+	'host' => '127.0.0.1',	// default is 127.0.0.1, can be ip or domain name, without http
+	'port' => 3001		// default is 3001, should be integer
 )
 ```
 
-Установим компоненты ***nodejs*** в директории ***application.ext.yii-node-socket.lib.js.server***:
+Install ***nodejs*** components in ***application.ext.yii-node-socket.lib.js.server***:
 ```bash
 $> npm install
 ```
 
-На этом установка окончена!
+Congratulation, installation completed!
 
 > Обратите внимание на то, что если название компонента будет отличным от **nodeSocket**, то придется передавать название компонента в команду используя ключ --componentName=название_компонента
 
