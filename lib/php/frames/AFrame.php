@@ -144,11 +144,12 @@ abstract class AFrame implements \ArrayAccess {
 
 	protected function emit() {
 		$client = $this->createClient();
+		$client->origin = $this->_nodeSocket->getOrigin();
 		$client->setHandshakeTimeout($this->_nodeSocket->handshakeTimeout);
 		$client->init();
 		$client
 			->createFrame()
-			->endPoint($this->_nodeSocket->serverNamespace)
+			->endPoint('/server')
 			->emit($this->getType(), $this->getFrame());
 
 		$client->close();

@@ -31,6 +31,25 @@ class NodeSocket extends CApplicationComponent implements IFrameFactory {
 	public $port = 3001;
 
 	/**
+	 * Can be string, every domain|ip separated by a comma
+	 * or array
+	 *
+	 * @var string|array
+	 */
+	public $origin;
+
+	/**
+	 * List of allowed servers
+	 *
+	 * Who can send server frames
+	 *
+	 * If is string, ip addresses should be separated by a comma
+	 *
+	 * @var string|array
+	 */
+	public $allowedServerAddresses;
+
+	/**
 	 * Default is runtime/socket-transport.server.log
 	 *
 	 * @var string
@@ -99,13 +118,6 @@ class NodeSocket extends CApplicationComponent implements IFrameFactory {
 	}
 
 	/**
-	 * @return \YiiSocketTransport\Frame\VolatileRoomEvent
-	 */
-	public function createVolatileRoomEventFrame() {
-		return $this->_frameFactory->createVolatileRoomEventFrame();
-	}
-
-	/**
 	 * @return bool
 	 */
 	public function registerClientScripts() {
@@ -119,5 +131,44 @@ class NodeSocket extends CApplicationComponent implements IFrameFactory {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getOrigin() {
+		$origin = $this->host . ':*';
+
+		if ($this->origin) {
+			$o = array();
+			if (is_string($this->origin)) {
+				$o = explode(',', $this->origin);
+			}
+			$o = array_map('trim', $o);
+			if (in_array($origin, $o)) {
+				unset($o[array_search($origin, $o)]);
+			}
+			if (!empty($o)) {
+				$origin .= ' ' . implode(' ', $o);
+			}
+		}
+		return $origin;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getAllowedServersAddresses() {
+		$allow = array();
+		$serverIp = gethostbyname($this->host);
+		$allow[] = $serverIp;
+		if ($this->allowedServerAddresses && !empty($this->allowedServerAddresses)) {
+			if (is_string($this->allowedServerAddresses)) {
+				$allow = array_merge($allow, explode(',', $this->allowedServerAddresses));
+			} else if (is_array($this->allowedServerAddresses)) {
+				$allow = array_merge($allow, $this->allowedServerAddresses);
+			}
+		}
+		return array_unique($allow);
 	}
 }

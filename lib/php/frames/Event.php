@@ -22,6 +22,18 @@ class Event extends AFrame {
 		return $this;
 	}
 
+	/**
+	 * @param string $room
+	 *
+	 * @return Event
+	 */
+	public function setRoom($room) {
+		if ((is_string($room) || is_numeric($room)) && !empty($room)) {
+			$this->addMetaData('room', $room);
+		}
+		return $this;
+	}
+
 	protected function init() {
 		$this->setEventName('undefined');
 	}

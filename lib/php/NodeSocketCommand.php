@@ -102,10 +102,14 @@ EOD;
 	 * @return string
 	 */
 	protected function makeCommand() {
-		$serverDir = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'nodejs' . DIRECTORY_SEPARATOR;
-		return sprintf($this->_command,
-			$serverDir . 'server.js'
-		);
+		$server = implode(DIRECTORY_SEPARATOR, array(
+			__DIR__,
+			'..',
+			'js',
+			'server',
+			'server.js'
+		));
+		return sprintf($this->_command, $server);
 	}
 
 	/**
