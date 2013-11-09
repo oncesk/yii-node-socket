@@ -154,7 +154,7 @@ socket.room('testRoom').join(function (success, numberOfRoomSubscribers) {
 ```javascript
 socket.getPublicData('error.strings', function (strings) {
 	// проверка обязательна, так как данные могут быть неустановлены,
-	// либо истек срок хранения (еще не реализовано)
+	// либо истек срок хранения
 	if (strings) {
 		// делаем что-либо
 	}
