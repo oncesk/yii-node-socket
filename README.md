@@ -106,7 +106,7 @@ public function actionIndex() {
 var socket = new YiiNodeSocket();
 
 // включение режима отладки
-socket.debug = true;
+socket.debug(true);
 ```
 
 ####События
@@ -123,23 +123,23 @@ socket.on('updateBoard', function (data) {
 
 ####Подключение к комнате
 
-Для подключения к комнате необходимо воспользоваться методом join и передать в него идентификатор комнаты
-
 ```javascript
-join : function (string,integer id, callback fn)
-```
-
-Пример:
-
-```javascript
-var roomId = 'testRoom';
-socket.join(roomId, function (success, numberOfRoomSubscribers) {
+socket.room('testRoom').join(function (success, numberOfRoomSubscribers) {
 	// success - boolean, если при добавлении сокета произошла ошибка
 	// то success = false, и numberOfRoomSubscribers - содержит описание ошибки
 	// иначе numberOfRoomSubscribers - number, содержит количество клиентов в комнате
 	if (success) {
 		console.log(numberOfRoomSubscribers + ' clients in room: ' + roomId);
 		// do something
+		
+		// bind events
+		this.on('join', function (newMembersCount) {
+			// fire on client join
+		});
+		
+		this.on('data', function (data) {
+			// fire when server send frame into this room with 'data' event
+		});
 	} else {
 		// numberOfRoomSubscribers - error message
 		alert(numberOfRoomSubscribers);
@@ -224,20 +224,18 @@ $frame->send();
 
 ####Отправка события в комнату
 
-Необходимо использовать класс VolatileRoomEvent, создание и отправка события ничем неотличается от обычного события, за исключением добавления идентификатора канала
-
 ```php
 
 ...
 
 // создаем фрейм
-$frame = Yii::app()->nodeSocket->createVolatileRoomEventFrame();
+$frame = Yii::app()->nodeSocket->createEventFrame();
 
 // устанавливаем ключ в хранилище
 $frame->setEventName('updateBoard');
 
 // записываем данные
-$frame->setRoomId('testRoom');
+$frame->setRoom('testRoom');
 
 // устанавливаем данные
 
@@ -266,14 +264,13 @@ $eventFrame->setEventName('updateBoard');
 $eventFrame['boardId'] = 25;
 $eventFrame['boardData'] = $html;
 
-$roomEvent = Yii::app()->nodeSocket->createVolatileRoomEventFrame();
+$dataEvent = Yii::app()->nodeSocket->createPublicDataFrame();
 
-$roomEvent->setEventName('updateBoard');
-$roomEvent->setRoomId('testRoom');
-$roomEvent['key'] = $value;
+$dataEvent->setKey('error.strings');
+$dataEvent['key'] = $value;
 
 $multipleFrame->addFrame($eventFrame);
-$multipleFrame->addFrame($roomEvent);
+$multipleFrame->addFrame($dataEvent);
 $multipleFrame->send();
 
 ```
@@ -290,11 +287,10 @@ $eventFrame->setEventName('updateBoard');
 $eventFrame['boardId'] = 25;
 $eventFrame['boardData'] = $html;
 
-$roomEvent = $multipleFrame->createVolatileRoomEventFrame();
+$dataEvent = $multipleFrame->createPublicDataFrame();
 
-$roomEvent->setEventName('updateBoard');
-$roomEvent->setRoomId('testRoom');
-$roomEvent['key'] = $value;
+$dataEvent->setKey('error.strings');
+$dataEvent['key'] = $value;
 
 $multipleFrame->send();
 
@@ -305,3 +301,4 @@ $multipleFrame->send();
 1. Создать систему subscribe/unsibscribe, с созданием, удалением, сохранением каналов, добавления и удаления подписчиков
 2. Хранение информации и канале и подписчиках в базе данных, скорее всего mongoDB
 3. Возможность создавать каналы с разными правами (публичный канал, публичный ограниченный, приватный, приватный ограниченный)
+4. Аутентификация сокета
