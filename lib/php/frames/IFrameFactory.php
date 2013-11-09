@@ -22,9 +22,4 @@ interface IFrameFactory {
 	 * @return PublicData
 	 */
 	public function createPublicDataFrame();
-
-	/**
-	 * @return VolatileRoomEvent
-	 */
-	public function createVolatileRoomEventFrame();
 }
