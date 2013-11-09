@@ -252,11 +252,11 @@ $frame->send();
 
 ```
 
-Событие смогут отловить клиенты, которые состоят в комнате testRoom
+Only member of testRoom can catch this event
 
-####Отправка нескольких событий за один раз
+####Send more than one frame per a time
 
-Для отправки нескольких событий используйте 
+Example 1: 
 
 ```php
 
@@ -279,7 +279,7 @@ $multipleFrame->send();
 
 ```
 
-Можно и так
+Example 2:
 
 ```php
 
@@ -300,9 +300,9 @@ $multipleFrame->send();
 
 ```
 
-##В планах
+##In plans
 
-1. Создать систему subscribe/unsibscribe, с созданием, удалением, сохранением каналов, добавления и удаления подписчиков
-2. Хранение информации и канале и подписчиках в базе данных, скорее всего mongoDB
-3. Возможность создавать каналы с разными правами (публичный канал, публичный ограниченный, приватный, приватный ограниченный)
-4. Аутентификация сокета
+1. Create subscribe/unsibscribe system
+2. Store channel information into db (mongoDB, mysql)
+3. The ability to create private, public and etc. channels
+4. Socket Authentication and authorization
