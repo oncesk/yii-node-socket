@@ -1,7 +1,7 @@
 Yii Node Socket
 =================
 
-Connect php, javascript, nodejs in one application.
+Connect php, javascript, nodejs in one Yii application.
 
 #Installation
 
@@ -53,18 +53,18 @@ $> npm install
 
 Congratulation, installation completed!
 
-> Обратите внимание на то, что если название компонента будет отличным от **nodeSocket**, то придется передавать название компонента в команду используя ключ --componentName=название_компонента
+> Notice: if the name of the component will not be **nodeSocket**, your need to use special key in console command --componentName=component_name
 
-###Запуск сервера
+###Console command actions
 
-Сервер запускается консольной коммандой Yii (**./yiic node-socket**)
+Use (**./yiic node-socket**)
 
 ```bash
-$> ./yiic node-socket # выведет хелп
-$> ./yiic node-socket start # запуска сервера
-$> ./yiic node-socket stop # остановка сервера
-$> ./yiic node-socket restart # рестарт сервера
-$> ./yiic node-socket getPid # выведет pid nodejs процесса
+$> ./yiic node-socket # show help
+$> ./yiic node-socket start # start server
+$> ./yiic node-socket stop # stop server
+$> ./yiic node-socket restart # restart server
+$> ./yiic node-socket getPid # show pid of nodejs process
 ```
 
 ##Javascript
