@@ -36,7 +36,7 @@ Yii configuration<br>
 )
 ```
 
- * Register Yii component, need to add into **main.php и console.php**:
+ * Register Yii component, need to add into **main.php and console.php**:
 
 ```php
 'socketTransport' => array(
@@ -69,64 +69,61 @@ $> ./yiic node-socket getPid # show pid of nodejs process
 
 ##Javascript
 
-Перед работой необходимо зарегестировать скрипты клиента на необходимой нам странице
+Before use in javascript, register client stripts like here
 
 ```php
 public function actionIndex() {
-	// регестрируем скрипты клиенат
+	// register node socket scripts
 	Yii::app()->nodeSocket->registerClientScripts();
-	
-	// выполнение других действий
 }
 ```
 
-###События
+###Events
 
-Предустановленные события:
+Predefined events:
 
 * `listener.on('connect', function () {})` - "connect" is emitted when the socket connected successfully
 * `listener.on('reconnect', function () {})` - "reconnect" is emitted when socket.io successfully reconnected to the server
 * `listener.on('disconnect', function () {})` - "disconnect" is emitted when the socket disconnected
 
-Созднаия своего слушателя события:
+Your own events:
 
 * `listener.on('update', function (data) {})` - emitted when PHP server emit update event
 * `listener.on('some_event', function (data) {})` - emitted when PHP server emit some_event event
 
-###Работа в javascript
+###Work in javascript
 
-Работа с расширением происходить через класс `YiiNodeSocket`
+Use `YiiNodeSocket` class
 
-####Начало работы
+####Start work
 
 ```javascript
 
-// создаем обьект для работы с библиотекой
+// create object
 var socket = new YiiNodeSocket();
 
-// включение режима отладки
+// enable debug mode
 socket.debug(true);
 ```
 
-####События
+####Catch Events
 
-Сейчас события можно создавать только из PHP. Данные которые приходят в javascript передаются в формате json.
-В javascript данные приходят уже в обычном виде (обьекте)
+Now events can be created only on PHP side. All data transmitted in json format.
+Into callback function data was pasted as javascript native object (or string, integer, depends of  your PHP Frame config)
 
 ```javascript
-// установка обработчика события
+// add event listener
 socket.on('updateBoard', function (data) {
-	// обновляем доску, выполняем какие либо действия
+	// do any action
 });
 ```
 
-####Подключение к комнате
+####Rooms
 
 ```javascript
 socket.room('testRoom').join(function (success, numberOfRoomSubscribers) {
-	// success - boolean, если при добавлении сокета произошла ошибка
-	// то success = false, и numberOfRoomSubscribers - содержит описание ошибки
-	// иначе numberOfRoomSubscribers - number, содержит количество клиентов в комнате
+	// success - boolean, numberOfRoomSubscribers - number of room members
+	// if error occurred then success = false, and numberOfRoomSubscribers - contains error message
 	if (success) {
 		console.log(numberOfRoomSubscribers + ' clients in room: ' + roomId);
 		// do something
@@ -146,16 +143,16 @@ socket.room('testRoom').join(function (success, numberOfRoomSubscribers) {
 });
 ```
 
-####Общие публичные данные
+####Shared Public Data
 
-Данные можно установить только из PHP используя PublicData фрейм (смотрите ниже), получить данные можно используя метод `getPublicData(string key, callback fn)`
+You can set shared data only from PHP using PublicData Frame (see below into PHP section).
+To access data you can use `getPublicData(string key, callback fn)` method
 
 ```javascript
 socket.getPublicData('error.strings', function (strings) {
-	// проверка обязательна, так как данные могут быть неустановлены,
-	// либо истек срок хранения
+	// you need to check if strings exists, because strings can be not setted or expired,
 	if (strings) {
-		// делаем что-либо
+		// do something
 	}
 });
 ```
@@ -163,84 +160,92 @@ socket.getPublicData('error.strings', function (strings) {
 
 ##PHP
 
-####Регистрация клиентских скриптов
+####Client scripts registration
 
 ```php
 public function actionIndex() {
-	// регестрируем скрипты клиенат
+	...
+
 	Yii::app()->nodeSocket->registerClientScripts();
 	
-	// выполнение других действий
+	...
 }
 ```
 
-####Создание и отправка события с данными
+####Event frame
 
 ```php
 
 ...
 
-// создаем фрейм
+// create event frame
 $frame = Yii::app()->nodeSocket->createEventFrame();
+
+// set event name
 $frame->setEventName('updateBoard');
+
+// set data using ArrayAccess interface
 $frame['boardId'] = 25;
 $frame['boardData'] = $html;
+
+// or you can use setData(array $data) method
+// setData overwrite data setted before
+
 $frame->send();
 
 ...
 
 ```
 
-####Установка общих публичных данных
+####Set up shared data
 
-Данные могут устанавливаться на какоето время, для установки времени жизни необходимо воспользоваться методом ***setLifeTime(integer $lifetime)*** класса PublicData
+You can set expiration using ***setLifeTime(integer $lifetime)*** method of class PublicData
 
 ```php
 
 ...
 
-// создаем фрейм
+// create frame
 $frame = Yii::app()->nodeSocket->createPublicDataFrame();
 
-// устанавливаем ключ в хранилище
+// set key in storage
 $frame->setKey('error.strings');
 
-// записываем данные
+// set data
 $frame->setData($errorStrings);
 
-// можно устанавливать с помощью интерфейса ArrayAccess
-// $frame['empty_name'] = 'Пожалуйста введите имя пользователя';
+// you can set data via ArrayAccess interface
+// $frame['empty_name'] = 'Please enter name';
 
-// устанавливаем время жизни
-$frame->setLifeTime(3600*2);	// через два часа данные будут недоступны для использования
+// set data lifetime
+$frame->setLifeTime(3600*2);	// after two hours data will be deleted from storage
 
-// отправляем
+// send
 $frame->send();
 
 ...
 
 ```
 
-####Отправка события в комнату
+####Room events
 
 ```php
 
 ...
 
-// создаем фрейм
+// create frame
 $frame = Yii::app()->nodeSocket->createEventFrame();
 
-// устанавливаем ключ в хранилище
+// set event name
 $frame->setEventName('updateBoard');
 
-// записываем данные
+// set room name
 $frame->setRoom('testRoom');
 
-// устанавливаем данные
-
+// set data
 $frame['key'] = $value;
 
-// отправляем
+// send
 $frame->send();
 
 ...
