@@ -59,14 +59,11 @@ class Invoke extends Event {
 		return !empty($this->_functions) || !empty($this->_methods);
 	}
 
-	/**
-	 * @return bool
-	 */
-	protected function beforeSend() {
+	public function prepareFrame() {
+		parent::prepareFrame();
 		$this->setData(array(
 			'functions' => $this->_functions,
 			'methods' => $this->_methods
 		));
-		return true;
 	}
 }

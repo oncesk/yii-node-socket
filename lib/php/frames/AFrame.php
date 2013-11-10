@@ -66,10 +66,20 @@ abstract class AFrame implements \ArrayAccess {
 			//  check - if frame is not multiple
 			//  then send frame
 			if (!$this->_isAsMultiple) {
+
+				//  prepare frame to send
+				$this->prepareFrame();
+
+				//  emit
 				$this->emit();
 			}
 		}
 	}
+
+	/**
+	 * Will be called before emit and after isValid & beforeSend methods
+	 */
+	public function prepareFrame() {}
 
 	/**
 	 * @param array $data
