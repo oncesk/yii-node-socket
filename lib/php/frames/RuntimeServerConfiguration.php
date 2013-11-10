@@ -1,5 +1,5 @@
 <?php
-namespace YiiSocketTransport\Frame;
+namespace YiiNodeSocket\Frame;
 
 class RuntimeServerConfiguration extends AFrame {
 

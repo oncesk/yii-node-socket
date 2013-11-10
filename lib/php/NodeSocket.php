@@ -2,7 +2,7 @@
 require_once 'frames/IFrameFactory.php';
 require_once 'frames/FrameFactory.php';
 
-use YiiSocketTransport\Frame\IFrameFactory;
+use YiiNodeSocket\Frame\IFrameFactory;
 
 class NodeSocket extends CApplicationComponent implements IFrameFactory {
 
@@ -72,7 +72,7 @@ class NodeSocket extends CApplicationComponent implements IFrameFactory {
 	protected $_assetUrl;
 
 	/**
-	 * @var \YiiSocketTransport\Frame\FrameFactory
+	 * @var \YiiNodeSocket\Frame\FrameFactory
 	 */
 	protected $_frameFactory;
 
@@ -86,39 +86,39 @@ class NodeSocket extends CApplicationComponent implements IFrameFactory {
 			'ElephantIO',
 			'Client.php'
 		));
-		$this->_frameFactory = new \YiiSocketTransport\Frame\FrameFactory($this);
+		$this->_frameFactory = new \YiiNodeSocket\Frame\FrameFactory($this);
 	}
 
 	/**
-	 * @return YiiSocketTransport\Frame\Event
+	 * @return YiiNodeSocket\Frame\Event
 	 */
 	public function createEventFrame() {
 		return $this->_frameFactory->createEventFrame();
 	}
 
 	/**
-	 * @return \YiiSocketTransport\Frame\ChannelEvent
+	 * @return \YiiNodeSocket\Frame\ChannelEvent
 	 */
 	public function createChannelEventFrame() {
 		return $this->_frameFactory->createChannelEventFrame();
 	}
 
 	/**
-	 * @return \YiiSocketTransport\Frame\Multiple
+	 * @return \YiiNodeSocket\Frame\Multiple
 	 */
 	public function createMultipleFrame() {
 		return $this->_frameFactory->createMultipleFrame();
 	}
 
 	/**
-	 * @return \YiiSocketTransport\Frame\PublicData
+	 * @return \YiiNodeSocket\Frame\PublicData
 	 */
 	public function createPublicDataFrame() {
 		return $this->_frameFactory->createPublicDataFrame();
 	}
 
 	/**
-	 * @return YiiSocketTransport\Frame\Invoke
+	 * @return \YiiNodeSocket\Frame\Invoke
 	 */
 	public function createInvokeFrame() {
 		return $this->_frameFactory->createInvokeFrame();

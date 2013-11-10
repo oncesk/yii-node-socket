@@ -1,5 +1,5 @@
 <?php
-namespace YiiSocketTransport\Frame;
+namespace YiiNodeSocket\Frame;
 
 require_once 'AFrame.php';
 require_once 'Event.php';
