@@ -22,4 +22,9 @@ interface IFrameFactory {
 	 * @return PublicData
 	 */
 	public function createPublicDataFrame();
+
+	/**
+	 * @return Invoke
+	 */
+	public function createInvokeFrame();
 }
