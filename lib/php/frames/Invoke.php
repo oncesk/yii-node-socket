@@ -1,15 +1,10 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: once
- * Date: 11/10/13
- * Time: 1:09 PM
- * To change this template use File | Settings | File Templates.
- */
-
 namespace YiiSocketTransport\Frame;
 
-
+/**
+ * Class Invoke
+ * @package YiiSocketTransport\Frame
+ */
 class Invoke extends Event {
 
 	protected $_functions = array();

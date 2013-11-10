@@ -82,6 +82,17 @@ class Multiple extends AFrame implements IFrameFactory {
 	}
 
 	/**
+	 * @return Invoke
+	 */
+	public function createInvokeFrame() {
+		return $this
+				->_nodeSocket
+				->createInvokeFrame()
+				->setAsMultiple($this);
+	}
+
+
+	/**
 	 * @param AFrame $frame
 	 *
 	 * @return Multiple
