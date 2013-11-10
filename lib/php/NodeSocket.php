@@ -118,6 +118,14 @@ class NodeSocket extends CApplicationComponent implements IFrameFactory {
 	}
 
 	/**
+	 * @return YiiSocketTransport\Frame\Invoke
+	 */
+	public function createInvokeFrame() {
+		return $this->_frameFactory->createInvokeFrame();
+	}
+
+
+	/**
 	 * @return bool
 	 */
 	public function registerClientScripts() {
