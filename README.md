@@ -253,7 +253,7 @@ $frame->send();
 
 Only member of testRoom can catch this event
 
-####Invoke clien function or method
+####Invoke client function or method
 
 In your PHP application you can invoke javascript function or method of object in window context.
 
