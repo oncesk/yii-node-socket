@@ -10,6 +10,7 @@ abstract class AFrame implements \ArrayAccess {
 	const TYPE_MULTIPLE_FRAME = 'multi_frame';
 	const TYPE_RUNTIME_CONFIGURATION = 'runtime_configuration';
 	const TYPE_PUBLIC_DATA = 'public_data';
+	const TYPE_INVOKE = 'invoke';
 
 	protected $_id;
 
