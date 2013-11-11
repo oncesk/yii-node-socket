@@ -42,6 +42,6 @@ class Event extends AFrame {
 	 * @return bool
 	 */
 	public function isValid() {
-		return true;
+		return $this->hasMetaData('event');
 	}
 }
