@@ -260,10 +260,12 @@ In your PHP application you can invoke javascript function or method of object i
 ```php
 
 $invokeFrame = Yii::app()->nodeSocket->createInvokeFrame();
-$invokeFrame->invokeFunction('alert', array('Hi it is test alert'));
+$invokeFrame->invokeFunction('alert', array('Hello world'));
 $invokeFrame->send();	// alert will be showed on all clients
 
 ```
+
+Extends from Event frame => you can send it into specific room
 
 ####Send more than one frame per a time
 
