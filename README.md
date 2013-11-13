@@ -32,7 +32,7 @@ Yii configuration<br>
 
 ```php
 'commandMap' => array(
-	'node-socket' => 'application.ext.yii-node-socket.lib.php.NodeSocketCommand'
+	'node-socket' => 'application.extensions.yii-node-socket.lib.php.NodeSocketCommand'
 )
 ```
 
@@ -40,7 +40,7 @@ Yii configuration<br>
 
 ```php
 'nodeSocket' => array(
-	'class' => 'ext.yii-node-socket.lib.php.NodeSocket',
+	'class' => 'application.extensions.yii-node-socket.lib.php.NodeSocket',
 	'host' => '127.0.0.1',	// default is 127.0.0.1, can be ip or domain name, without http
 	'port' => 3001		// default is 3001, should be integer
 )
