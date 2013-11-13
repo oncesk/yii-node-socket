@@ -39,7 +39,7 @@ Yii configuration<br>
  * Register Yii component, need to add into **main.php and console.php**:
 
 ```php
-'socketTransport' => array(
+'nodeSocket' => array(
 	'class' => 'ext.yii-node-socket.lib.php.NodeSocket',
 	'host' => '127.0.0.1',	// default is 127.0.0.1, can be ip or domain name, without http
 	'port' => 3001		// default is 3001, should be integer
