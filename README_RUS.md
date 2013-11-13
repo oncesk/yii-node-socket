@@ -33,7 +33,7 @@ $> git submodule update
 
 ```php
 'commandMap' => array(
-	'node-socket' => 'application.ext.yii-node-socket.lib.php.NodeSocketCommand'
+	'node-socket' => 'application.extensions.yii-node-socket.lib.php.NodeSocketCommand'
 )
 ```
 
@@ -41,7 +41,7 @@ $> git submodule update
 
 ```php
 'nodeSocket' => array(
-	'class' => 'ext.yii-node-socket.lib.php.NodeSocket',
+	'class' => 'application.extensions.yii-node-socket.lib.php.NodeSocket',
 	'host' => '127.0.0.1',	// по умолчанию 127.0.0.1, может быть как ip так и доменом, только без http
 	'port' => 3001		// по умолчанию 3001, должен быть целочисленным integer-ом
 )
