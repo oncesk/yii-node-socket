@@ -12,7 +12,7 @@ namespace YiiNodeSocket\Behavior;
 use YiiNodeSocket\Component\Channel;
 use YiiNodeSocket\Component\Subscriber;
 
-class ArChannel extends ArBehavior {
+class ArChannel extends ArChannelEvent {
 
 	/**
 	 * @param \CModel $model
