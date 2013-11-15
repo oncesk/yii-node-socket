@@ -67,6 +67,10 @@ class ArChannelEvent extends ArBehavior {
 		}
 	}
 
+	public function createEventFrame($event, array $data = array()) {
+		if ($this->)
+	}
+
 	/**
 	 * @param integer $id
 	 */
