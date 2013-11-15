@@ -1,5 +1,5 @@
 <?php
-require_once '../bootstrap.php';
+require_once __DIR__ . '/../bootstrap.php';
 
 use YiiNodeSocket\Frame\Event;
 use YiiNodeSocket\Frame\Multiple;
