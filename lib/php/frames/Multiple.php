@@ -91,6 +91,12 @@ class Multiple extends AFrame implements IFrameFactory {
 				->setAsMultiple($this);
 	}
 
+	/**
+	 * @return DummyEvent
+	 */
+	public function createDummyEventFrame() {
+		return $this->_nodeSocket->createDummyEventFrame();
+	}
 
 	/**
 	 * @param AFrame $frame

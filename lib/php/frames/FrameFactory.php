@@ -57,5 +57,10 @@ class FrameFactory implements IFrameFactory {
 		return new Invoke($this->_nodeSocket);
 	}
 
-
+	/**
+	 * @return DummyEvent
+	 */
+	public function createDummyEventFrame() {
+		return new DummyEvent($this->_nodeSocket);
+	}
 }

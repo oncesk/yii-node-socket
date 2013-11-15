@@ -49,12 +49,20 @@ class Channel extends AComponent {
 	}
 
 	/**
+	 * @param null  $event
+	 * @param array $data
+	 *
 	 * @return \YiiNodeSocket\Frame\Event
 	 */
-	public function event() {
-		$event = $this->_nodeSocket->createEventFrame();
+	public function event($event = null, array $data = array()) {
 		if ($this->_id) {
+			$frame = $this->_nodeSocket->createEventFrame();
+		} else {
+			$frame = $this->_nodeSocket->createDummyEventFrame();
 		}
-		return $event;
+		return $frame
+				->setChannel($this->_id)
+				->setEventName($event)
+				->setData($data);
 	}
 }

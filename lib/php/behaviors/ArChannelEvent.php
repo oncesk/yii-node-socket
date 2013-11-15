@@ -31,7 +31,7 @@ class ArChannelEvent extends ArBehavior {
 	public $relatedAttribute;
 
 	/**
-	 * @var \CActiveRecord
+	 * @var ArChannel
 	 */
 	private $_channelModel;
 
@@ -40,6 +40,9 @@ class ArChannelEvent extends ArBehavior {
 	 */
 	private $_canSendEvent = false;
 
+	/**
+	 * @param \CComponent $owner
+	 */
 	public function attach($owner) {
 		parent::attach($owner);
 		if (
@@ -51,7 +54,6 @@ class ArChannelEvent extends ArBehavior {
 		} else {
 			$this->_channelModel = $this->getOwner();
 		}
-
 		if ($this->_channelModel && !$this->_channelModel->getIsNewRecord()) {
 			$this->_canSendEvent = true;
 		}
@@ -62,13 +64,20 @@ class ArChannelEvent extends ArBehavior {
 	 * @param array  $data
 	 */
 	public function emit($event, array $data = array()) {
-		if ($this->_canSendEvent) {
-			//  create and send frame
-		}
+		$this->createEventFrame($event, $data)->send();
 	}
 
+	/**
+	 * @param string $event
+	 * @param array  $data
+	 *
+	 * @return \YiiNodeSocket\Frame\Event
+	 */
 	public function createEventFrame($event, array $data = array()) {
-		if ($this->)
+		if ($this->_canSendEvent) {
+			return $this->_channelModel->getChannel()->event($event, $data);
+		}
+		return new \YiiNodeSocket\Frame\DummyEvent();
 	}
 
 	/**
