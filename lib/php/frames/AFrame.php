@@ -10,6 +10,7 @@ abstract class AFrame implements \ArrayAccess {
 	const TYPE_MULTIPLE_FRAME = 'multi_frame';
 	const TYPE_RUNTIME_CONFIGURATION = 'runtime_configuration';
 	const TYPE_PUBLIC_DATA = 'public_data';
+	const TYPE_INVOKE = 'invoke';
 
 	protected $_id;
 
@@ -65,10 +66,20 @@ abstract class AFrame implements \ArrayAccess {
 			//  check - if frame is not multiple
 			//  then send frame
 			if (!$this->_isAsMultiple) {
+
+				//  prepare frame to send
+				$this->prepareFrame();
+
+				//  emit
 				$this->emit();
 			}
 		}
 	}
+
+	/**
+	 * Will be called before emit and after isValid & beforeSend methods
+	 */
+	public function prepareFrame() {}
 
 	/**
 	 * @param array $data
@@ -144,11 +155,12 @@ abstract class AFrame implements \ArrayAccess {
 
 	protected function emit() {
 		$client = $this->createClient();
+		$client->origin = $this->_nodeSocket->getOrigin();
 		$client->setHandshakeTimeout($this->_nodeSocket->handshakeTimeout);
 		$client->init();
 		$client
 			->createFrame()
-			->endPoint($this->_nodeSocket->serverNamespace)
+			->endPoint('/server')
 			->emit($this->getType(), $this->getFrame());
 
 		$client->close();

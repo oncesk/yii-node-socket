@@ -49,7 +49,7 @@ class Multiple extends AFrame implements IFrameFactory {
 	 */
 	public function createChannelEventFrame() {
 		return $this
-				->_socketTransport
+				->_nodeSocket
 				->createChannelEventFrame()
 				->setAsMultiple($this);
 	}
@@ -59,7 +59,7 @@ class Multiple extends AFrame implements IFrameFactory {
 	 */
 	public function createEventFrame() {
 		return $this
-				->_socketTransport
+				->_nodeSocket
 				->createEventFrame()
 				->setAsMultiple($this);
 	}
@@ -76,18 +76,18 @@ class Multiple extends AFrame implements IFrameFactory {
 	 */
 	public function createPublicDataFrame() {
 		return $this
-				->_socketTransport
+				->_nodeSocket
 				->createPublicDataFrame()
 				->setAsMultiple($this);
 	}
 
 	/**
-	 * @return VolatileRoomEvent
+	 * @return Invoke
 	 */
-	public function createVolatileRoomEventFrame() {
+	public function createInvokeFrame() {
 		return $this
-				->_socketTransport
-				->createVolatileRoomEventFrame()
+				->_nodeSocket
+				->createInvokeFrame()
 				->setAsMultiple($this);
 	}
 
@@ -115,7 +115,14 @@ class Multiple extends AFrame implements IFrameFactory {
 			$data[$type] = array();
 			$metaData[$type] = array();
 			foreach ($f as $id => $frame) {
+
+				//  check if frame is valid frame
 				if ($frame->isValid()) {
+
+					//  prepare frame
+					$frame->prepareFrame();
+
+					//  collect frame data
 					$data[$type][$id] = $frame->getData();
 					$metaData[$type][$id] = $frame->getMeta();
 				}

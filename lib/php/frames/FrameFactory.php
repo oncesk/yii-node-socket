@@ -4,9 +4,9 @@ namespace YiiNodeSocket\Frame;
 require_once 'AFrame.php';
 require_once 'Event.php';
 require_once 'ChannelEvent.php';
-require_once 'VolatileRoomEvent.php';
 require_once 'Multiple.php';
 require_once 'PublicData.php';
+require_once 'Invoke.php';
 
 class FrameFactory implements IFrameFactory {
 
@@ -51,10 +51,10 @@ class FrameFactory implements IFrameFactory {
 	}
 
 	/**
-	 * @return VolatileRoomEvent
+	 * @return Invoke
 	 */
-	public function createVolatileRoomEventFrame() {
-		return new VolatileRoomEvent($this->_nodeSocket);
+	public function createInvokeFrame() {
+		return new Invoke($this->_nodeSocket);
 	}
 
 
