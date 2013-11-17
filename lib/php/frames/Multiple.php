@@ -1,5 +1,5 @@
 <?php
-namespace YiiSocketTransport\Frame;
+namespace YiiNodeSocket\Frame;
 
 /**
  * Class Multiple
@@ -91,6 +91,15 @@ class Multiple extends AFrame implements IFrameFactory {
 				->setAsMultiple($this);
 	}
 
+	/**
+	 * @return JQuery
+	 */
+	public function createJQueryFrame() {
+		return $this
+				->_nodeSocket
+				->createJQueryFrame()
+				->setAsMultiple($this);
+	}
 
 	/**
 	 * @param AFrame $frame
