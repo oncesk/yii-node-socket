@@ -131,6 +131,12 @@ class NodeSocket extends CApplicationComponent implements IFrameFactory {
 		return $this->_frameFactory->createDummyEventFrame();
 	}
 
+	/**
+	 * @return \YiiNodeSocket\Frame\JQuery
+	 */
+	public function createJQueryFrame() {
+		return $this->_frameFactory->createJQueryFrame();
+	}
 
 	/**
 	 * @return bool

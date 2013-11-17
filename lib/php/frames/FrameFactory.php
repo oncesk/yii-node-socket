@@ -7,6 +7,7 @@ require_once 'ChannelEvent.php';
 require_once 'Multiple.php';
 require_once 'PublicData.php';
 require_once 'Invoke.php';
+require_once 'JQuery.php';
 
 class FrameFactory implements IFrameFactory {
 
@@ -62,5 +63,12 @@ class FrameFactory implements IFrameFactory {
 	 */
 	public function createDummyEventFrame() {
 		return new DummyEvent($this->_nodeSocket);
+	}
+
+	/**
+	 * @return JQuery
+	 */
+	public function createJQueryFrame() {
+		return new JQuery($this->_nodeSocket);
 	}
 }

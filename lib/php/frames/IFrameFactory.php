@@ -32,4 +32,9 @@ interface IFrameFactory {
 	 * @return DummyEvent
 	 */
 	public function createDummyEventFrame();
+
+	/**
+	 * @return JQuery
+	 */
+	public function createJQueryFrame();
 }

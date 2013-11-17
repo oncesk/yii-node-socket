@@ -11,6 +11,7 @@ abstract class AFrame implements \ArrayAccess {
 	const TYPE_RUNTIME_CONFIGURATION = 'runtime_configuration';
 	const TYPE_PUBLIC_DATA = 'public_data';
 	const TYPE_INVOKE = 'invoke';
+	const TYPE_JQUERY = 'jquery';
 
 	protected $_id;
 
