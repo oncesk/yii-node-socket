@@ -17,6 +17,4 @@ class Subscriber extends AComponent {
 	public function getChannel() {
 
 	}
-
-
 }

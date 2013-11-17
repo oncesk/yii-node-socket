@@ -1,6 +1,12 @@
 <?php
 namespace YiiNodeSocket\Component;
 
+/**
+ *
+ *
+ * Class Channel
+ * @package YiiNodeSocket\Component
+ */
 class Channel extends AComponent {
 
 	const TYPE_PUBLIC = 1;
