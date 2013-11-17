@@ -267,6 +267,32 @@ $invokeFrame->send();	// alert will be showed on all clients
 
 Extends from Event frame => you can send it into specific room
 
+####DOM manipulations with jquery
+
+Task: you need update price on client side after price update in each product
+
+```php
+
+...
+
+$product = Product::model()->findByPk($productId);
+if ($product) {
+	$product->price = $newPrice;
+	if ($product->save()) {
+		$jFrame = Yii::app()->nodeSocket->createJQueryFrame();
+		$jFrame
+			->createQuery('#product' . $product->id)
+			->find('span.price')
+			->text($product->price);
+		$jFrame->send();
+		// and all connected clients will can see updated price
+	}
+}
+
+...
+
+```
+
 ####Send more than one frame per a time
 
 Example 1: 
