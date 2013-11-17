@@ -33,15 +33,15 @@ $> git submodule update
 
 ```php
 'commandMap' => array(
-	'node-socket' => 'application.ext.yii-node-socket.lib.php.NodeSocketCommand'
+	'node-socket' => 'application.extensions.yii-node-socket.lib.php.NodeSocketCommand'
 )
 ```
 
  * Регистрация в компонентах Yii, добавив в **main.php и console.php**:
 
 ```php
-'socketTransport' => array(
-	'class' => 'ext.yii-node-socket.lib.php.NodeSocket',
+'nodeSocket' => array(
+	'class' => 'application.extensions.yii-node-socket.lib.php.NodeSocket',
 	'host' => '127.0.0.1',	// по умолчанию 127.0.0.1, может быть как ip так и доменом, только без http
 	'port' => 3001		// по умолчанию 3001, должен быть целочисленным integer-ом
 )
@@ -249,6 +249,16 @@ $frame->send();
 ```
 
 Событие смогут отловить клиенты, которые состоят в комнате testRoom
+
+####Вызов функции или метода обьекта в контексте window
+
+```php
+$invokeFrame = Yii::app()->nodeSocket->createInvokeFrame();
+$invokeFrame->invokeFunction('alert', array('Hello world'));
+$invokeFrame->send();   // выполнится у всех клиентов
+```
+
+Является наследником Event, что позволяет отправить событие в комнату
 
 ####Отправка нескольких событий за один раз
 

@@ -32,15 +32,15 @@ Yii configuration<br>
 
 ```php
 'commandMap' => array(
-	'node-socket' => 'application.ext.yii-node-socket.lib.php.NodeSocketCommand'
+	'node-socket' => 'application.extensions.yii-node-socket.lib.php.NodeSocketCommand'
 )
 ```
 
  * Register Yii component, need to add into **main.php and console.php**:
 
 ```php
-'socketTransport' => array(
-	'class' => 'ext.yii-node-socket.lib.php.NodeSocket',
+'nodeSocket' => array(
+	'class' => 'application.extensions.yii-node-socket.lib.php.NodeSocket',
 	'host' => '127.0.0.1',	// default is 127.0.0.1, can be ip or domain name, without http
 	'port' => 3001		// default is 3001, should be integer
 )
@@ -157,7 +157,6 @@ socket.getPublicData('error.strings', function (strings) {
 });
 ```
 
-
 ##PHP
 
 ####Client scripts registration
@@ -253,6 +252,20 @@ $frame->send();
 ```
 
 Only member of testRoom can catch this event
+
+####Invoke client function or method
+
+In your PHP application you can invoke javascript function or method of object in window context.
+
+```php
+
+$invokeFrame = Yii::app()->nodeSocket->createInvokeFrame();
+$invokeFrame->invokeFunction('alert', array('Hello world'));
+$invokeFrame->send();	// alert will be showed on all clients
+
+```
+
+Extends from Event frame => you can send it into specific room
 
 ####Send more than one frame per a time
 
