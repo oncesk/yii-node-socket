@@ -27,4 +27,9 @@ interface IFrameFactory {
 	 * @return Invoke
 	 */
 	public function createInvokeFrame();
+
+	/**
+	 * @return JQuery
+	 */
+	public function createJQueryFrame();
 }
