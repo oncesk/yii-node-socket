@@ -16,6 +16,6 @@ namespace YiiNodeSocket\Behavior;
  *
  * @package YiiNodeSocket\Behavior
  */
-class ArBehavior extends ABehavior {
+class ArBehavior extends \CActiveRecordBehavior {
 
 }

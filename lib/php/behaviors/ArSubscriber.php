@@ -1,17 +1,11 @@
 <?php
 namespace YiiNodeSocket\Behavior;
 
-use YiiNodeSocket\Component\Channel;
+use YiiNodeSocket\Component\Subscription;
 use YiiNodeSocket\Component\Subscriber;
 
 class ArSubscriber extends ArBehavior {
 
-	/**
-	 * @return Channel[]
-	 */
-	public function getChannels() {
-
-	}
 
 	/**
 	 * @return null|string
