@@ -6,7 +6,7 @@ class Subscriber extends AModel {
 	/**
 	 * @var string
 	 */
-	public $id;
+	public $role = 'guest';
 
 	/**
 	 * @var integer|null
@@ -28,11 +28,25 @@ class Subscriber extends AModel {
 	 * @return array list of attribute names.
 	 */
 	public function attributeNames() {
-		return array(
-			'id',
+		return array_merge(parent::attributeNames(), array(
+			'role',
 			'user_id',
 			'sid',
 			'sid_expiration'
-		);
+		));
+	}
+
+	/**
+	 * @return Channel[]
+	 */
+	public function getChannels() {
+
+	}
+
+	/**
+	 * @return SubscriberChannel[]
+	 */
+	public function getSubscriberChannel() {
+
 	}
 }

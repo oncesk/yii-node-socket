@@ -12,9 +12,10 @@ class Channel extends AModel {
 	const EVENT_SOURCE_PHP_AND_JAVASCRIPT = 3;
 
 	/**
-	 * @var string|integer
+	 * @var string unique channel name
 	 */
-	public $id;
+	public $name;
+
 
 	public $can_client_subscribe = true;
 
@@ -51,12 +52,12 @@ class Channel extends AModel {
 	 * @return array list of attribute names.
 	 */
 	public function attributeNames() {
-		return array(
-			'id',
+		return array_merge(parent::attributeNames(), array(
+			'name',
 			'subscriber_source',
 			'event_source',
 			'create_date'
-		);
+		));
 	}
 
 	/**
