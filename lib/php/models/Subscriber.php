@@ -24,6 +24,20 @@ class Subscriber extends AModel {
 	public $sid_expiration;
 
 	/**
+	 * @var Channel[]
+	 */
+	private $_channels;
+
+	/**
+	 * @param string $class
+	 *
+	 * @return AModel
+	 */
+	public static function model($class = __CLASS__) {
+		return parent::model($class);
+	}
+
+	/**
 	 * Returns the list of attribute names of the model.
 	 * @return array list of attribute names.
 	 */
@@ -37,16 +51,16 @@ class Subscriber extends AModel {
 	}
 
 	/**
+	 * @param bool $refresh
+	 *
 	 * @return Channel[]
 	 */
-	public function getChannels() {
-
-	}
-
-	/**
-	 * @return SubscriberChannel[]
-	 */
-	public function getSubscriberChannel() {
-
+	public function getChannels($refresh = false) {
+		if ($this->_channels && !$refresh) {
+			return $this->_channels;
+		}
+		return $this->_channels = self::$driver->findByAttributes(array(
+			'subscriber_id' => $this->id
+		), Subscriber::model());
 	}
 }
