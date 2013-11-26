@@ -28,7 +28,7 @@ abstract class AModel extends \CModel{
 	/**
 	 * @var boolean
 	 */
-	protected $_isNewRecord = true;
+	private $_isNewRecord;
 
 	/**
 	 * @var AModel[]
@@ -36,7 +36,7 @@ abstract class AModel extends \CModel{
 	private static $_models = array();
 
 	/**
-	 * @param $class
+	 * @param string $class
 	 *
 	 * @return AModel
 	 */
@@ -44,7 +44,29 @@ abstract class AModel extends \CModel{
 		if (array_key_exists($class, self::$_models)) {
 			return self::$_models[$class];
 		}
-		return self::$_models[$class] = new $class();
+		return self::$_models[$class] = new $class(null);
+	}
+
+	/**
+	 * @param string $scenario
+	 */
+	public function __construct($scenario = 'insert') {
+		if ($scenario === null) {
+			return;
+		}
+
+		$this->_isNewRecord = ($scenario == 'insert');
+	}
+
+	/**
+	 * @param string $scenario
+	 *
+	 * @return AModel
+	 */
+	final public function newInstance($scenario = 'insert') {
+		$class = get_class($this);
+		$model = new $class($scenario);
+		return $model;
 	}
 
 	/**

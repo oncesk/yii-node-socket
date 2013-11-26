@@ -14,6 +14,7 @@ class m131126_114536_node_socket_migration extends CDbMigration {
 		), 'ENGINE=InnoDb default charset=utf8 collate utf8_general_ci');
 
 		$this->createIndex('ns_channel_unique_name', 'ns_channel', 'name', true);
+		$this->createIndex('ns_channel_name', 'ns_channel', 'name');
 
 		$this->createTable('ns_subscriber', array(
 			'id' => 'pk',

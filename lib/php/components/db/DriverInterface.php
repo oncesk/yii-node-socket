@@ -37,7 +37,15 @@ interface DriverInterface {
 	 * @param array  $attributes
 	 * @param AModel $model
 	 *
-	 * @return AModel[]
+	 * @return AModel
 	 */
 	public function findByAttributes(array $attributes, AModel $model);
+
+	/**
+	 * @param array  $attributes
+	 * @param AModel $model
+	 *
+	 * @return AModel[]
+	 */
+	public function findAllByAttributes(array $attributes, AModel $model);
 }

@@ -3,9 +3,6 @@ namespace YiiNodeSocket\Component\Db\Mysql;
 
 use YiiNodeSocket\Component\Db\BaseDriver;
 use YiiNodeSocket\Model\AModel;
-use YiiNodeSocket\Model\Channel;
-use YiiNodeSocket\Model\Subscriber;
-use YiiNodeSocket\Model\SubscriberChannel;
 
 class MysqlDriver extends BaseDriver {
 
@@ -15,7 +12,23 @@ class MysqlDriver extends BaseDriver {
 	 * @return boolean
 	 */
 	public function save(AModel $model) {
-		return $this->callMethod(__METHOD__, $model);
+		$modelClassName = $this->resolveModelName($model);
+		if ($model->getIsNewRecord()) {
+			$newModel = new $modelClassName();
+		} else {
+			$newModel = $this->_resolveModel($model)->findByPk($model->id);
+			if (!isset($newModel)) {
+				$newModel = new $modelClassName();
+			}
+		}
+		/** @var \CActiveRecord $model */
+		$newModel->attributes = $model->getAttributes();
+		if ($newModel->save()) {
+			$model->setAttributes($newModel->getAttributes());
+			return true;
+		}
+		$model->addErrors($newModel->getErrors());
+		return false;
 	}
 
 	/**
@@ -24,9 +37,15 @@ class MysqlDriver extends BaseDriver {
 	 * @return boolean
 	 */
 	public function refresh(AModel $model) {
-		return true;
+		if (!$model->getIsNewRecord()) {
+			$m = $this->_resolveModel($model)->findByPk($model->id);
+			if ($m) {
+				$model->setAttributes($m->getAttributes());
+				return true;
+			}
+		}
+		return false;
 	}
-
 
 	/**
 	 * @param AModel $model
@@ -34,7 +53,29 @@ class MysqlDriver extends BaseDriver {
 	 * @return boolean
 	 */
 	public function delete(AModel $model) {
-		return $this->callMethod(__METHOD__, $model);
+		if (!$model->getIsNewRecord()) {
+			$m = $this->_resolveModel($model)->findByPk($model->id);
+			if ($m) {
+				return $m->delete();
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * @param array  $attributes
+	 * @param AModel $model
+	 *
+	 * @return AModel
+	 */
+	public function findByAttributes(array $attributes, AModel $model) {
+		$arModel = $this->_resolveModel($model)->findByAttributes($attributes);
+		if ($arModel) {
+			$newModel = $model->newInstance('update');
+			$newModel->setAttributes($arModel->getAttributes());
+			return $newModel;
+		}
+		return null;
 	}
 
 	/**
@@ -43,19 +84,32 @@ class MysqlDriver extends BaseDriver {
 	 *
 	 * @return AModel[]
 	 */
-	public function findByAttributes(array $attributes, AModel $model) {
-		return $this->callMethod(__METHOD__, $model);
+	public function findAllByAttributes(array $attributes, AModel $model) {
+		$models = $this->_resolveModel($model)->findAllByAttributes($attributes);
+		$foundedModels = array();
+		foreach ($models as $m) {
+			$newInstance = $model->newInstance('update');
+			$newInstance->setAttributes($m->getAttributes());
+			$foundedModels[] = $newInstance;
+		}
+		return $foundedModels;
 	}
 
-	protected function saveChannel(Channel $channel) {
-
+	/**
+	 * @param AModel $model
+	 *
+	 * @return string
+	 */
+	protected function resolveModelName(AModel $model) {
+		return 'Ns' . parent::resolveModelName($model);
 	}
 
-	protected function saveSubscriber(Subscriber $subscriber) {
-
-	}
-
-	protected function saveSubscriberChannel(SubscriberChannel $subscriberChannel) {
-
+	/**
+	 * @param AModel $nsModel
+	 *
+	 * @return \CActiveRecord
+	 */
+	private function _resolveModel(AModel $nsModel) {
+		return call_user_func(array($this->resolveModelName($nsModel), 'model'));
 	}
 }
