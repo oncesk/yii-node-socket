@@ -22,7 +22,7 @@ class MysqlDriver extends BaseDriver {
 			}
 		}
 		/** @var \CActiveRecord $model */
-		$newModel->attributes = $model->getAttributes();
+		$newModel->setAttributes($model->getAttributes());
 		if ($newModel->save()) {
 			$model->setAttributes($newModel->getAttributes());
 			return true;

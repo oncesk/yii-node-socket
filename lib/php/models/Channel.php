@@ -29,12 +29,12 @@ class Channel extends AModel {
 	/**
 	 * @var integer
 	 */
-	public $subscriber_source;
+	public $subscriber_source = self::EVENT_SOURCE_PHP_OR_JAVASCRIPT;
 
 	/**
 	 * @var integer
 	 */
-	public $event_source;
+	public $event_source = self::EVENT_SOURCE_PHP;
 
 	/**
 	 * @var string
@@ -53,6 +53,18 @@ class Channel extends AModel {
 	 */
 	public static function model($class = __CLASS__) {
 		return parent::model($class);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function rules() {
+		return array(
+			array('name, is_authentication_required, subscriber_source, event_source', 'required'),
+			array('subscriber_source, event_source', 'numerical', 'integerOnly' => true),
+			array('allowed_roles', 'length', 'min' => 1, 'allowEmpty' => true),
+			array('create_date', 'safe')
+		);
 	}
 
 	/**
