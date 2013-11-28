@@ -41,10 +41,11 @@ Yii configuration<br>
 ```php
 'nodeSocket' => array(
 	'class' => 'application.extensions.yii-node-socket.lib.php.NodeSocket',
-	'host' => '127.0.0.1',	// default is 127.0.0.1, can be ip or domain name, without http
+	'host' => 'localhost',	// default is 127.0.0.1, can be ip or domain name, without http
 	'port' => 3001		// default is 3001, should be integer
 )
 ```
+> Notice: ***host*** should be a domain name like in you virtual host configuration or server ip address if you request page using ip address
 
 Install ***nodejs*** components in ***application.ext.yii-node-socket.lib.js.server***:
 ```bash
