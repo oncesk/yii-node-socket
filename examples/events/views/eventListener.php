@@ -7,8 +7,7 @@
  * To change this template use File | Settings | File Templates.
  */
 ?>
-<div id="state">
-</div>
+<div id="state"></div>
 <script type="text/javascript">
 $(function () {
 
@@ -20,15 +19,11 @@ $(function () {
 	var socket = new YiiNodeSocket();
 
 	socket.on('event.example', function (data) {
-		console.log('Fired "event.example" event');
-		console.log(data);
 		updateState('Fired "event.example" event', data);
 	});
 
 	socket.room('example').join(function (success, membersCount) {
 		if (success) {
-			console.log('Joined into room example');
-			console.log('Number of members: ' + membersCount);
 			updateState('Joined into room example: members count [' + membersCount + ']');
 
 			this.on('example.room.event', function (data) {
