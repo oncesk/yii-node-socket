@@ -59,12 +59,12 @@ class Channel extends AModel {
 	 * @return array
 	 */
 	public function rules() {
-		return array(
+		return array_merge(parent::rules(), array(
 			array('name, is_authentication_required, subscriber_source, event_source', 'required'),
 			array('subscriber_source, event_source', 'numerical', 'integerOnly' => true),
 			array('allowed_roles', 'length', 'min' => 1, 'allowEmpty' => true),
 			array('create_date', 'safe')
-		);
+		));
 	}
 
 	/**

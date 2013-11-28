@@ -2,7 +2,6 @@
 namespace YiiNodeSocket\Model;
 
 use YiiNodeSocket\Component\Db\DriverInterface;
-use YiiNodeSocket\Model\Driver\ADriver;
 
 /**
  * Class AModel
@@ -76,6 +75,12 @@ abstract class AModel extends \CModel{
 		return $this->_isNewRecord;
 	}
 
+	public function rules() {
+		return array(
+			array('id', 'length', 'allowEmpty' => true)
+		);
+	}
+
 	/**
 	 * @return bool
 	 */
@@ -116,20 +121,16 @@ abstract class AModel extends \CModel{
 	 * @return AModel[]
 	 */
 	public function findAllByAttributes(array $attributes) {
-		return self::$driver->findByAttributes($attributes, $this);
+		return self::$driver->findAllByAttributes($attributes, $this);
 	}
 
 	/**
 	 * @param array $attributes
 	 *
-	 * @return AModel|null
+	 * @return AModel
 	 */
 	public function findByAttributes(array $attributes) {
-		$result = $this->findAllByAttributes($attributes);
-		if (!empty($result)) {
-			return current($result);
-		}
-		return null;
+		return self::$driver->findByAttributes($attributes, $this);
 	}
 
 	/**
