@@ -13,14 +13,7 @@ Install extension
 ```bash
 $> git clone git@github.com:oncesk/yii-node-socket.git
 ```
- * As a submodule<br>
 
-> ext_directory - extension folder into your yii application (like protected/extensions/node-socket)
-
-```bash
-$> git submodule add git@github.com:oncesk/yii-node-socket.git ext_directory
-$> git submodule update
-```
 Now go to the folder where you install extension  ***application.ext.yii-node-socket*** and execute<br>
 ```bash
 $> git submodule init
