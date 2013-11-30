@@ -1,7 +1,7 @@
 <?php
-namespace YiiNodeSocket\Model;
+namespace YiiNodeSocket\Models;
 
-use YiiNodeSocket\Frame\ChannelEvent;
+use YiiNodeSocket\Frames\ChannelEvent;
 
 class SubscriberChannel extends AModel {
 

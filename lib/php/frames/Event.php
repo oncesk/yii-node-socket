@@ -1,5 +1,5 @@
 <?php
-namespace YiiNodeSocket\Frame;
+namespace YiiNodeSocket\Frames;
 
 class Event extends AFrame {
 

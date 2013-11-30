@@ -1,9 +1,9 @@
 <?php
-namespace YiiNodeSocket\Frame;
+namespace YiiNodeSocket\Frames;
 
 /**
  * Class Invoke
- * @package YiiNodeSocket\Frame
+ * @package YiiNodeSocket\Frames
  */
 class Invoke extends Event {
 

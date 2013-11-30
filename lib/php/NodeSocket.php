@@ -2,9 +2,7 @@
 require_once 'frames/IFrameFactory.php';
 require_once 'frames/FrameFactory.php';
 
-use YiiNodeSocket\Frame\IFrameFactory;
-
-class NodeSocket extends CApplicationComponent implements IFrameFactory {
+class NodeSocket extends CApplicationComponent {
 
 	/**
 	 * Node js server host to bind http and socket server
@@ -67,14 +65,24 @@ class NodeSocket extends CApplicationComponent implements IFrameFactory {
 	public $handshakeTimeout = 2000;
 
 	/**
+	 * @var array
+	 */
+	public $dbConfiguration = array();
+
+	/**
 	 * @var string
 	 */
 	protected $_assetUrl;
 
 	/**
-	 * @var \YiiNodeSocket\Frame\FrameFactory
+	 * @var \YiiNodeSocket\Frames\FrameFactory
 	 */
 	protected $_frameFactory;
+
+	/**
+	 * @var \YiiNodeSocket\Components\Db
+	 */
+	protected $_db;
 
 	public function init() {
 		parent::init();
@@ -86,63 +94,31 @@ class NodeSocket extends CApplicationComponent implements IFrameFactory {
 			'ElephantIO',
 			'Client.php'
 		));
-		$this->_frameFactory = new \YiiNodeSocket\Frame\FrameFactory($this);
+
+		spl_autoload_unregister(array('YiiBase','autoload'));
+		require_once 'components/Autoload.php';
+		\YiiNodeSocket\Component\Autoload::register(__DIR__);
+		spl_autoload_register(array('YiiBase','autoload'));
+
+		$this->_frameFactory = new \YiiNodeSocket\Frames\FrameFactory($this);
+		$this->_db = new YiiNodeSocket\Components\Db($this);
+		foreach ($this->dbConfiguration as $k => $v) {
+			$this->_db->$k = $v;
+		}
 	}
 
 	/**
-	 * @return YiiNodeSocket\Frame\Event
-	 */
-	public function createEventFrame() {
-		return $this->_frameFactory->createEventFrame();
-	}
-
-	/**
-	 * @return \YiiNodeSocket\Frame\ChannelEvent
-	 */
-	public function createChannelEventFrame() {
-		return $this->_frameFactory->createChannelEventFrame();
-	}
-
-	/**
-	 * @return \YiiNodeSocket\Frame\Multiple
-	 */
-	public function createMultipleFrame() {
-		return $this->_frameFactory->createMultipleFrame();
-	}
-
-	/**
-	 * @return \YiiNodeSocket\Frame\PublicData
-	 */
-	public function createPublicDataFrame() {
-		return $this->_frameFactory->createPublicDataFrame();
-	}
-
-	/**
-	 * @return \YiiNodeSocket\Frame\Invoke
-	 */
-	public function createInvokeFrame() {
-		return $this->_frameFactory->createInvokeFrame();
-	}
-
-	/**
-	 * @return \YiiNodeSocket\Frame\DummyEvent
-	 */
-	public function createDummyEventFrame() {
-		return $this->_frameFactory->createDummyEventFrame();
-	}
-
-	/**
-	 * @return \YiiNodeSocket\Frame\JQuery
-	 */
-	public function createJQueryFrame() {
-		return $this->_frameFactory->createJQueryFrame();
-	}
-
-	/**
-	 * @return \YiiNodeSocket\Frame\FrameFactory
+	 * @return \YiiNodeSocket\Frames\FrameFactory
 	 */
 	public function getFrameFactory() {
 		return $this->_frameFactory;
+	}
+
+	/**
+	 * @return \YiiNodeSocket\Components\Db
+	 */
+	public function getDb() {
+		return $this->_db;
 	}
 
 	/**

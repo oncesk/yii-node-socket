@@ -1,7 +1,7 @@
 <?php
-namespace YiiNodeSocket\Component\Frame;
+namespace YiiNodeSocket\Components\Frames;
 
-use YiiNodeSocket\Frame\JQuery;
+use YiiNodeSocket\Frames\JQuery;
 
 class JQuerySelector {
 
@@ -11,7 +11,7 @@ class JQuerySelector {
 	protected $_selector;
 
 	/**
-	 * @var \YiiNodeSocket\Frame\JQuery
+	 * @var \YiiNodeSocket\Frames\JQuery
 	 */
 	protected $_owner;
 	protected $_actions = array();

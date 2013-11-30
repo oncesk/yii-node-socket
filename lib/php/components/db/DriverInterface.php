@@ -1,7 +1,7 @@
 <?php
-namespace YiiNodeSocket\Component\Db;
+namespace YiiNodeSocket\Components\Db;
 
-use YiiNodeSocket\Model\AModel;
+use YiiNodeSocket\Models\AModel;
 
 interface DriverInterface {
 
@@ -32,6 +32,14 @@ interface DriverInterface {
 	 * @return boolean
 	 */
 	public function refresh(AModel $model);
+
+	/**
+	 * @param        $pk
+	 * @param AModel $model
+	 *
+	 * @return AModel|null
+	 */
+	public function findByPk($pk, AModel $model);
 
 	/**
 	 * @param array  $attributes

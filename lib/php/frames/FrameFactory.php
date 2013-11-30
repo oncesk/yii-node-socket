@@ -1,5 +1,5 @@
 <?php
-namespace YiiNodeSocket\Frame;
+namespace YiiNodeSocket\Frames;
 
 require_once 'AFrame.php';
 require_once 'Event.php';
@@ -56,13 +56,6 @@ class FrameFactory implements IFrameFactory {
 	 */
 	public function createInvokeFrame() {
 		return new Invoke($this->_nodeSocket);
-	}
-
-	/**
-	 * @return DummyEvent
-	 */
-	public function createDummyEventFrame() {
-		return new DummyEvent($this->_nodeSocket);
 	}
 
 	/**

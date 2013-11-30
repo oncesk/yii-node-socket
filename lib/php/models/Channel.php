@@ -1,5 +1,5 @@
 <?php
-namespace YiiNodeSocket\Model;
+namespace YiiNodeSocket\Models;
 
 class Channel extends AModel {
 
@@ -143,5 +143,9 @@ class Channel extends AModel {
 			'event_source',
 			'create_date'
 		));
+	}
+
+	protected function beforeValidate() {
+		return parent::beforeValidate();
 	}
 }

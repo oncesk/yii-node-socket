@@ -1,10 +1,18 @@
 <?php
-namespace YiiNodeSocket\Component\Db\Mysql;
+namespace YiiNodeSocket\Components\Db\Mysql;
 
-use YiiNodeSocket\Component\Db\BaseDriver;
-use YiiNodeSocket\Model\AModel;
+use YiiNodeSocket\Components\Db\BaseDriver;
+use YiiNodeSocket\Models\AModel;
 
 class MysqlDriver extends BaseDriver {
+
+	/**
+	 * @param array $config
+	 *
+	 * @return void
+	 */
+	public function init(array $config) {}
+
 
 	/**
 	 * @param AModel $model
@@ -63,6 +71,22 @@ class MysqlDriver extends BaseDriver {
 	}
 
 	/**
+	 * @param        $pk
+	 * @param AModel $model
+	 *
+	 * @return AModel
+	 */
+	public function findByPk($pk, AModel $model) {
+		$foundModel = $this->_resolveModel($model)->findByPk($pk);
+		if ($foundModel) {
+			$newInstance = $model->newInstance('update');
+			$newInstance->setAttributes($foundModel->getAttributes());
+			return $newInstance;
+		}
+		return null;
+	}
+
+	/**
 	 * @param array  $attributes
 	 * @param AModel $model
 	 *
@@ -101,7 +125,7 @@ class MysqlDriver extends BaseDriver {
 	 * @return string
 	 */
 	protected function resolveModelName(AModel $model) {
-		return 'Ns' . parent::resolveModelName($model);
+		return '\YiiNodeSocket\Components\Db\Mysql\Models\\' . 'Ns' . parent::resolveModelName($model);
 	}
 
 	/**

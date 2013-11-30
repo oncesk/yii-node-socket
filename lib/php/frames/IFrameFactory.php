@@ -1,5 +1,5 @@
 <?php
-namespace YiiNodeSocket\Frame;
+namespace YiiNodeSocket\Frames;
 
 interface IFrameFactory {
 
@@ -27,11 +27,6 @@ interface IFrameFactory {
 	 * @return Invoke
 	 */
 	public function createInvokeFrame();
-
-	/**
-	 * @return DummyEvent
-	 */
-	public function createDummyEventFrame();
 
 	/**
 	 * @return JQuery

@@ -1,5 +1,5 @@
 <?php
-namespace YiiNodeSocket\Component\Db\Mysql;
+namespace YiiNodeSocket\Components\Db\Mysql\Models;
 
 /**
  * This is the model class for table "ns_channel".

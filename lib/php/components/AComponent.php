@@ -1,10 +1,10 @@
 <?php
-namespace YiiNodeSocket\Component;
+namespace YiiNodeSocket\Components;
 
 /**
  * Class AComponent
  *
- * @package YiiNodeSocket\Component
+ * @package YiiNodeSocket\Components
  */
 abstract class AComponent {
 
@@ -13,15 +13,7 @@ abstract class AComponent {
 	 */
 	protected $_nodeSocket;
 
-	public function __construct(\NodeSocket $nodeSocket, array $config = array()) {
+	public function __construct(\NodeSocket $nodeSocket) {
 		$this->_nodeSocket = $nodeSocket;
-
-		$this->applyConfig($config);
-	}
-
-	protected function applyConfig(array $config) {
-		foreach ($config as $k => $v) {
-			$this->$k = $v;
-		}
 	}
 }

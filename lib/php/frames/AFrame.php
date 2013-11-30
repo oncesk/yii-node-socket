@@ -1,5 +1,5 @@
 <?php
-namespace YiiNodeSocket\Frame;
+namespace YiiNodeSocket\Frames;
 
 abstract class AFrame implements \ArrayAccess {
 

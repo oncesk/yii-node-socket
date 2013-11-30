@@ -1,5 +1,5 @@
 <?php
-namespace YiiNodeSocket\Frame;
+namespace YiiNodeSocket\Frames;
 
 /**
  * Class Multiple
@@ -92,12 +92,6 @@ class Multiple extends AFrame implements IFrameFactory {
 	}
 
 	/**
-<<<<<<< HEAD
-	 * @return DummyEvent
-	 */
-	public function createDummyEventFrame() {
-		return $this->_nodeSocket->createDummyEventFrame();
-=======
 	 * @return JQuery
 	 */
 	public function createJQueryFrame() {
@@ -105,7 +99,6 @@ class Multiple extends AFrame implements IFrameFactory {
 				->_nodeSocket
 				->createJQueryFrame()
 				->setAsMultiple($this);
->>>>>>> develop
 	}
 
 	/**

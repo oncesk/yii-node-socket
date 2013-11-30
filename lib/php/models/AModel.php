@@ -1,23 +1,13 @@
 <?php
-namespace YiiNodeSocket\Model;
+namespace YiiNodeSocket\Models;
 
-use YiiNodeSocket\Component\Db\DriverInterface;
+use YiiNodeSocket\Components\Db\DriverInterface;
 
 /**
  * Class AModel
- * @package YiiNodeSocket\Model
+ * @package YiiNodeSocket\Models
  */
 abstract class AModel extends \CModel{
-
-	/**
-	 * @var DriverInterface
-	 */
-	public static $driver;
-
-	/**
-	 * @var \NodeSocket
-	 */
-	public static $nodeSocket;
 
 	/**
 	 * @var string
@@ -69,6 +59,20 @@ abstract class AModel extends \CModel{
 	}
 
 	/**
+	 * @return \NodeSocket
+	 */
+	public function getNodeSocket() {
+		return \Yii::app()->nodeSocket;
+	}
+
+	/**
+	 * @return DriverInterface
+	 */
+	public function getDbDriver() {
+		return $this->getNodeSocket()->getDb()->getDriver();
+	}
+
+	/**
 	 * @return bool
 	 */
 	public function getIsNewRecord() {
@@ -77,7 +81,8 @@ abstract class AModel extends \CModel{
 
 	public function rules() {
 		return array(
-			array('id', 'length', 'allowEmpty' => true)
+			array('id', 'length', 'allowEmpty' => true),
+			array('id', 'safe')
 		);
 	}
 
@@ -86,10 +91,13 @@ abstract class AModel extends \CModel{
 	 */
 	public function save() {
 		if ($this->beforeSave()) {
-			$result = self::$driver->save($this);
-			$this->afterSave();
-			if ($result) {
-				$this->_isNewRecord = false;
+			$result = false;
+			if ($this->validate()) {
+				$result = $this->getDbDriver()->save($this);
+				$this->afterSave();
+				if ($result) {
+					$this->_isNewRecord = false;
+				}
 			}
 			return $result;
 		}
@@ -101,7 +109,7 @@ abstract class AModel extends \CModel{
 	 */
 	public function delete() {
 		if ($this->beforeDelete()) {
-			$result = self::$driver->delete($this);
+			$result = $this->getDbDriver()->delete($this);
 			$this->afterDelete();
 			return $result;
 		}
@@ -112,7 +120,16 @@ abstract class AModel extends \CModel{
 	 * @return bool
 	 */
 	public function refresh() {
-		return self::$driver->refresh($this);
+		return $this->getDbDriver()->refresh($this);
+	}
+
+	/**
+	 * @param $pk
+	 *
+	 * @return null|AModel
+	 */
+	public function findByPk($pk) {
+		return $this->getDbDriver()->findByPk($pk, $this);
 	}
 
 	/**
@@ -121,7 +138,7 @@ abstract class AModel extends \CModel{
 	 * @return AModel[]
 	 */
 	public function findAllByAttributes(array $attributes) {
-		return self::$driver->findAllByAttributes($attributes, $this);
+		return $this->getDbDriver()->findAllByAttributes($attributes, $this);
 	}
 
 	/**
@@ -130,21 +147,7 @@ abstract class AModel extends \CModel{
 	 * @return AModel
 	 */
 	public function findByAttributes(array $attributes) {
-		return self::$driver->findByAttributes($attributes, $this);
-	}
-
-	/**
-	 * @param string|int $pk
-	 *
-	 * @return AModel|null
-	 */
-	public function findByPk($pk) {
-		if ($pk) {
-			return $this->findByAttributes(array(
-				'id' => $pk
-			));
-		}
-		return null;
+		return $this->getDbDriver()->findByAttributes($attributes, $this);
 	}
 
 	/**
@@ -162,7 +165,7 @@ abstract class AModel extends \CModel{
 	}
 
 	protected function afterSave() {
-		$event = self::$nodeSocket->getFrameFactory()->createChannelEventFrame();
+		$event = $this->getNodeSocket()->getFrameFactory()->createChannelEventFrame();
 		$event
 				->setAction('save.' . get_class($this))
 				->setData($this->getAttributes())
@@ -174,7 +177,7 @@ abstract class AModel extends \CModel{
 	}
 
 	protected function afterDelete() {
-		$event = self::$nodeSocket->getFrameFactory()->createChannelEventFrame();
+		$event = $this->getNodeSocket()->getFrameFactory()->createChannelEventFrame();
 		$event
 				->setAction('delete.' . get_class($this))
 				->setData($this->getAttributes())

@@ -1,24 +1,13 @@
 <?php
-namespace YiiNodeSocket\Component\Db;
+namespace YiiNodeSocket\Components\Db;
 
-use YiiNodeSocket\Model\AModel;
+use YiiNodeSocket\Models\AModel;
 
 /**
  * Class BaseDriver
- * @package YiiNodeSocket\Component\Db
+ * @package YiiNodeSocket\Components\Db
  */
 abstract class BaseDriver implements DriverInterface {
-
-	/**
-	 * @param array $config
-	 *
-	 * @return void
-	 */
-	public function init(array $config) {
-		foreach ($config as $k => $v) {
-			$this->$k = $v;
-		}
-	}
 
 	/**
 	 * @param AModel $model
@@ -26,7 +15,11 @@ abstract class BaseDriver implements DriverInterface {
 	 * @return string
 	 */
 	protected function resolveModelName(AModel $model) {
-		return get_class($model);
+		$class = get_class($model);
+		if (strpos($class, '\\')) {
+			return substr($class, strrpos($class, '\\') + 1);
+		}
+		return $class;
 	}
 
 	/**
