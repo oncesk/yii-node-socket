@@ -45,6 +45,8 @@ abstract class AModel extends \CModel{
 		}
 
 		$this->_isNewRecord = ($scenario == 'insert');
+		$this->init();
+		$this->afterConstruct();
 	}
 
 	/**
@@ -57,6 +59,8 @@ abstract class AModel extends \CModel{
 		$model = new $class($scenario);
 		return $model;
 	}
+
+	protected function init() {}
 
 	/**
 	 * @return \NodeSocket
@@ -79,6 +83,37 @@ abstract class AModel extends \CModel{
 		return $this->_isNewRecord;
 	}
 
+	/**
+	 * @param \CModelEvent $event
+	 */
+	public function onBeforeSave(\CModelEvent $event) {
+		$this->raiseEvent('onBeforeSave', $event);
+	}
+
+	/**
+	 * @param \CModelEvent $event
+	 */
+	public function onAfterSave(\CModelEvent $event) {
+		$this->raiseEvent('onAfterSave', $event);
+	}
+
+	/**
+	 * @param \CModelEvent $event
+	 */
+	public function onBeforeDelete(\CModelEvent $event) {
+		$this->raiseEvent('onBeforeDelete', $event);
+	}
+
+	/**
+	 * @param \CModelEvent $event
+	 */
+	public function onAfterDelete(\CModelEvent $event) {
+		$this->raiseEvent('onAfterDelete', $event);
+	}
+
+	/**
+	 * @return array
+	 */
 	public function rules() {
 		return array(
 			array('id', 'length', 'allowEmpty' => true),
@@ -110,7 +145,9 @@ abstract class AModel extends \CModel{
 	public function delete() {
 		if ($this->beforeDelete()) {
 			$result = $this->getDbDriver()->delete($this);
-			$this->afterDelete();
+			if ($result) {
+				$this->afterDelete();
+			}
 			return $result;
 		}
 		return false;
@@ -124,12 +161,21 @@ abstract class AModel extends \CModel{
 	}
 
 	/**
-	 * @param $pk
+	 * @param int $pk
 	 *
 	 * @return null|AModel
 	 */
 	public function findByPk($pk) {
 		return $this->getDbDriver()->findByPk($pk, $this);
+	}
+
+	/**
+	 * @param array $pk
+	 *
+	 * @return AModel[]
+	 */
+	public function findAllByPk(array $pk) {
+		return $this->getDbDriver()->findAllByPk($pk, $this);
 	}
 
 	/**
@@ -161,26 +207,38 @@ abstract class AModel extends \CModel{
 	}
 
 	protected function beforeSave() {
-		return true;
+		$event = new \CModelEvent($this);
+		$this->onBeforeSave($event);
+		return $event->isValid;
 	}
 
 	protected function afterSave() {
-		$event = $this->getNodeSocket()->getFrameFactory()->createChannelEventFrame();
-		$event
-				->setAction('save.' . get_class($this))
-				->setData($this->getAttributes())
-				->send();
+		$modelEvent = new \CModelEvent($this);
+		$this->onAfterSave($modelEvent);
+		if ($modelEvent->isValid) {
+			$event = $this->getNodeSocket()->getFrameFactory()->createChannelEventFrame();
+			$event
+					->setAction('save.' . get_class($this))
+					->setData($this->getAttributes())
+					->send();
+		}
 	}
 
 	protected function beforeDelete() {
-		return true;
+		$event = new \CModelEvent($this);
+		$this->onBeforeDelete($event);
+		return $event->isValid;
 	}
 
 	protected function afterDelete() {
-		$event = $this->getNodeSocket()->getFrameFactory()->createChannelEventFrame();
-		$event
-				->setAction('delete.' . get_class($this))
-				->setData($this->getAttributes())
-				->send();
+		$modelEvent = new \CModelEvent($this);
+		$this->onAfterDelete($modelEvent);
+		if ($modelEvent->isValid) {
+			$event = $this->getNodeSocket()->getFrameFactory()->createChannelEventFrame();
+			$event
+					->setAction('delete.' . get_class($this))
+					->setData($this->getAttributes())
+					->send();
+		}
 	}
 }

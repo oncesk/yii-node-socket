@@ -3,13 +3,9 @@ namespace YiiNodeSocket\Models;
 
 class Channel extends AModel {
 
-	const SUBSCRIBER_SOURCE_PHP = 1;
-	const SUBSCRIBER_SOURCE_JAVASCRIPT = 2;
-	const SUBSCRIBER_SOURCE_PHP_OR_JAVASCRIPT = 3;
-
-	const EVENT_SOURCE_PHP = 1;
-	const EVENT_SOURCE_JAVASCRIPT = 2;
-	const EVENT_SOURCE_PHP_OR_JAVASCRIPT = 3;
+	const SOURCE_PHP = 1;
+	const SOURCE_JAVASCRIPT = 2;
+	const SOURCE_PHP_OR_JAVASCRIPT = 3;
 
 	/**
 	 * @var string unique channel name
@@ -29,22 +25,17 @@ class Channel extends AModel {
 	/**
 	 * @var integer
 	 */
-	public $subscriber_source = self::EVENT_SOURCE_PHP_OR_JAVASCRIPT;
+	public $subscriber_source = self::SOURCE_PHP;
 
 	/**
 	 * @var integer
 	 */
-	public $event_source = self::EVENT_SOURCE_PHP;
+	public $event_source = self::SOURCE_PHP;
 
 	/**
 	 * @var string
 	 */
 	public $create_date;
-
-	/**
-	 * @var Subscriber[]
-	 */
-	private $_subscribers;
 
 	/**
 	 * @param string $class
@@ -58,10 +49,24 @@ class Channel extends AModel {
 	/**
 	 * @return array
 	 */
+	public function getSourceList() {
+		return array(
+			self::SOURCE_PHP,
+			self::SOURCE_JAVASCRIPT,
+			self::SOURCE_PHP_OR_JAVASCRIPT
+		);
+	}
+
+	/**
+	 * @return array
+	 */
 	public function rules() {
 		return array_merge(parent::rules(), array(
 			array('name, is_authentication_required, subscriber_source, event_source', 'required'),
+			array('name', 'validateUniqueName'),
+			array('name', 'length', 'min' => 2),
 			array('subscriber_source, event_source', 'numerical', 'integerOnly' => true),
+			array('subscriber_source, event_source', 'in', 'range' => $this->getSourceList()),
 			array('allowed_roles', 'length', 'min' => 1, 'allowEmpty' => true),
 			array('create_date', 'safe')
 		));
@@ -84,17 +89,7 @@ class Channel extends AModel {
 		if ($subscriberChannel) {
 			return true;
 		}
-		$subscriberChannel = new SubscriberChannel();
-		$subscriberChannel->setOptions($subscribeOptions);
-		$subscriberChannel->subscriber_id = $subscriber->id;
-		$subscriberChannel->channel_id = $this->id;
-		if ($subscriberChannel->save()) {
-			if ($this->_subscribers) {
-				$this->_subscribers[] = $subscriber;
-			}
-			return true;
-		}
-		return false;
+		return SubscriberChannel::model()->createLink($this, $subscriber, $subscribeOptions);
 	}
 
 	/**
@@ -111,7 +106,18 @@ class Channel extends AModel {
 			'subscriber_id' => $subscriber->id
 		));
 		if ($subscriberChannel) {
-			return $subscriberChannel->delete();
+			if ($subscriberChannel->delete()) {
+				if (!empty($this->_subscribers)) {
+					foreach ($this->_subscribers as $k => $sub) {
+						if ($sub->id == $subscriber->id) {
+							unset($this->_subscribers[$k]);
+							break;
+						}
+					}
+				}
+				return true;
+			}
+			return false;
 		}
 		return true;
 	}
@@ -122,12 +128,7 @@ class Channel extends AModel {
 	 * @return Subscriber[]
 	 */
 	public function getSubscribers($refresh = false) {
-		if ($this->_subscribers && !$refresh) {
-			return $this->_subscribers;
-		}
-		return $this->_subscribers = self::$driver->findByAttributes(array(
-			'channel_id' => $this->id
-		), Subscriber::model());
+		return SubscriberChannel::model()->getSubscribers($this, $refresh);
 	}
 
 	/**
@@ -145,7 +146,34 @@ class Channel extends AModel {
 		));
 	}
 
-	protected function beforeValidate() {
-		return parent::beforeValidate();
+	/**
+	 * @return bool
+	 */
+	public function validateUniqueName() {
+		if (!empty($this->name)) {
+			$exists = $this->findByAttributes(array(
+				'name' => $this->name
+			));
+			if ($exists) {
+				if (!$this->getIsNewRecord() && $exists->id == $this->id) {
+					return true;
+				}
+				$this->addError('name', 'Channel name should be unique');
+				return false;
+			}
+		}
+		return true;
+	}
+
+
+
+	protected function beforeSave() {
+		$this->is_authentication_required = (int) $this->is_authentication_required;
+		if (is_array($this->allowed_roles)) {
+			$this->allowed_roles = implode(', ', $this->allowed_roles);
+		} else if (!is_string($this->allowed_roles)) {
+			$this->allowed_roles = '';
+		}
+		return parent::beforeSave();
 	}
 }

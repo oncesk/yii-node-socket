@@ -42,6 +42,14 @@ interface DriverInterface {
 	public function findByPk($pk, AModel $model);
 
 	/**
+	 * @param array  $pk
+	 * @param AModel $model
+	 *
+	 * @return mixed
+	 */
+	public function findAllByPk(array $pk, AModel $model);
+
+	/**
 	 * @param array  $attributes
 	 * @param AModel $model
 	 *

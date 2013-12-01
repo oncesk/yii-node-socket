@@ -17,9 +17,8 @@ class SubscriberTest extends AModelTest {
 		$this->assertEquals(false, $subscriber->getIsNewRecord());
 
 		$_subscriber = Subscriber::model()->findByPk($subscriber->id);
-		if ($_subscriber) {
-			$this->assertEquals(false, $_subscriber->getIsNewRecord());
-		}
+		$this->assertInstanceOf('YiiNodeSocket\Models\Subscriber', $_subscriber);
+		$this->assertFalse($_subscriber->getIsNewRecord());
 
 		$this->assertEquals(true, $subscriber->delete(), 'Can not delete subscriber');
 	}

@@ -87,6 +87,23 @@ class MysqlDriver extends BaseDriver {
 	}
 
 	/**
+	 * @param array  $pk
+	 * @param AModel $model
+	 *
+	 * @return AModel[]
+	 */
+	public function findAllByPk(array $pk, AModel $model) {
+		$foundModels = $this->_resolveModel($model)->findAllByPk($pk);
+		$result = array();
+		foreach ($foundModels as $m) {
+			$newInstance = $model->newInstance('update');
+			$newInstance->setAttributes($m->getAttributes());
+			$result[] = $newInstance;
+		}
+		return $result;
+	}
+
+	/**
 	 * @param array  $attributes
 	 * @param AModel $model
 	 *
