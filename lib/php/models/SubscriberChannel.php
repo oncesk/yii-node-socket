@@ -5,13 +5,39 @@ use YiiNodeSocket\Frames\ChannelEvent;
 
 class SubscriberChannel extends AModel {
 
+	/**
+	 * @var array
+	 */
 	protected static $_channelSubscribers = array();
+
+	/**
+	 * @var array
+	 */
 	protected static $_subscriberChannels = array();
 
+	/**
+	 * @var integer|string
+	 */
 	public $subscriber_id;
+
+	/**
+	 * @var integer|string
+	 */
 	public $channel_id;
+
+	/**
+	 * @var bool|integer
+	 */
 	public $can_send_event_from_php = true;
+
+	/**
+	 * @var bool|integer
+	 */
 	public $can_send_event_from_js = false;
+
+	/**
+	 * @var string|integer if string, will be converted to timestamp with strtotime function
+	 */
 	public $create_date;
 
 	/**
