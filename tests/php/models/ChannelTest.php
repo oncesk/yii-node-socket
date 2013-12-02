@@ -9,11 +9,11 @@ class ChannelTest extends AModelTest {
 
 	public function testSubscribe() {
 		$subscriber = new Subscriber();
-		$subscriber->user_id = 1324232;
+		$subscriber->user_id = time();
 		$this->assertEquals(true, $subscriber->save(), 'Can not save subscriber');
 
 		$channel = new Channel();
-		$channel->name = 'test';
+		$channel->name = 'test' . time();
 		$this->assertEquals(true, $channel->save());
 
 		$this->assertEmpty($channel->getSubscribers());
@@ -23,16 +23,16 @@ class ChannelTest extends AModelTest {
 		$subscribers = $channel->getSubscribers();
 		$this->assertNotEmpty($subscribers);
 		$this->assertCount(1, $subscribers);
-		$this->assertEquals(true, $subscriber->id == $subscribers[0]->id);
+		$this->assertEquals(true, $subscriber->id == $subscribers[$subscriber->id]->id);
 
 		$secondSubscriber = new Subscriber();
-		$secondSubscriber->sid = 'sdf0s9duf32';
+		$secondSubscriber->sid = 'sdf0s9duf32' . time();
 		$this->assertEquals(true, $secondSubscriber->save());
 
 		$this->assertEquals(true, $channel->subscribe($secondSubscriber));
 		$subscribers = $channel->getSubscribers();
 		$this->assertCount(2, $subscribers);
-		$this->assertEquals(true, $secondSubscriber->id == $subscribers[1]->id);
+		$this->assertEquals(true, $secondSubscriber->id == $subscribers[$secondSubscriber->id]->id);
 
 		//  load channel
 		$channel = Channel::model()->findByPk($channel->id);

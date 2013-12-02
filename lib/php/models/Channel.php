@@ -79,16 +79,6 @@ class Channel extends AModel {
 	 * @return bool
 	 */
 	public function subscribe(Subscriber $subscriber, array $subscribeOptions = array()) {
-		if ($this->getIsNewRecord() || $subscriber->getIsNewRecord()) {
-			return false;
-		}
-		$subscriberChannel = SubscriberChannel::model()->findByAttributes(array(
-			'channel_id' => $this->id,
-			'subscriber_id' => $subscriber->id
-		));
-		if ($subscriberChannel) {
-			return true;
-		}
 		return SubscriberChannel::model()->createLink($this, $subscriber, $subscribeOptions);
 	}
 

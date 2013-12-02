@@ -82,6 +82,7 @@ class SubscriberChannel extends AModel {
 			return true;
 		}
 
+
 		//  create link
 		$link = new self();
 		$link->channel_id = $channel->id;
@@ -93,6 +94,35 @@ class SubscriberChannel extends AModel {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * @param Channel    $channel
+	 * @param Subscriber $subscriber
+	 *
+	 * @return bool
+	 */
+	public static function destroyLink(Channel $channel, Subscriber $subscriber) {
+		if ($channel->getIsNewRecord() || $subscriber->getIsNewRecord()) {
+			return false;
+		}
+		$link = self::model()->findByAttributes(array(
+			'channel_id' => $channel->id,
+			'subscriber_id' => $subscriber->id
+		));
+		if ($link) {
+			if ($link->delete()) {
+				if (isset(self::$_channelSubscribers[$channel->id]) && isset(self::$_channelSubscribers[$channel->id][$subscriber->id])) {
+					unset(self::$_channelSubscribers[$channel->id][$subscriber->id]);
+				}
+				if (isset(self::$_subscriberChannels[$subscriber->id]) && isset(self::$_subscriberChannels[$subscriber->id][$channel->id])) {
+					unset(self::$_subscriberChannels[$subscriber->id][$channel->id]);
+				}
+				return true;
+			}
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -108,9 +138,9 @@ class SubscriberChannel extends AModel {
 
 	public function rules() {
 		return array(
-			array('subscription_id, channel_id, can_send_event_from_php, can_send_event_from_js', 'required'),
-			array('subscription_id, channel_id', 'length', 'min' => 1, 'max' => 255),
-			array('can_send_events_from_php, can_send_events_from_js', 'boolean')
+			array('subscriber_id, channel_id', 'required'),
+			array('subscriber_id, channel_id', 'length', 'min' => 1, 'max' => 255),
+			array('can_send_event_from_php, can_send_event_from_js', 'numerical', 'integerOnly' => true)
 		);
 	}
 
@@ -138,10 +168,10 @@ class SubscriberChannel extends AModel {
 		if ($channel->getIsNewRecord()) {
 			return array();
 		}
-		if (array_key_exists(self::$_channelSubscribers, $channel->id) && !$refresh) {
+		if (array_key_exists($channel->id, self::$_channelSubscribers) && !$refresh) {
 			return self::$_channelSubscribers[$channel->id];
 		}
-		$links = $this->findAllByAttributes(array(
+		$links = SubscriberChannel::model()->findAllByAttributes(array(
 			'channel_id' => $channel->id
 		));
 		$subscriberId = array();
@@ -165,7 +195,7 @@ class SubscriberChannel extends AModel {
 		if ($subscriber->getIsNewRecord()) {
 			return array();
 		}
-		if (array_key_exists(self::$_subscriberChannels, $subscriber->id) && !$refresh) {
+		if (array_key_exists($subscriber->id, self::$_subscriberChannels) && !$refresh) {
 			return self::$_subscriberChannels[$subscriber->id];
 		}
 		$links = $this->findAllByAttributes(array(
@@ -183,15 +213,24 @@ class SubscriberChannel extends AModel {
 	}
 
 	/**
+	 * @return bool
+	 */
+	protected function beforeValidate() {
+		$this->can_send_event_from_js = (int) $this->can_send_event_from_js;
+		$this->can_send_event_from_php = (int) $this->can_send_event_from_php;
+		return parent::beforeValidate();
+	}
+
+	/**
 	 * @param Channel    $channel
 	 * @param Subscriber $subscriber
 	 */
 	private static function _addToCache(Channel $channel, Subscriber $subscriber) {
-		if (!array_key_exists(self::$_channelSubscribers, $channel->id)) {
+		if (!array_key_exists($channel->id, self::$_channelSubscribers)) {
 			self::$_channelSubscribers[$channel->id] = array();
 		}
 		self::$_channelSubscribers[$channel->id][$subscriber->id] = $subscriber;
-		if (!array_key_exists(self::$_subscriberChannels, $subscriber->id)) {
+		if (!array_key_exists($subscriber->id, self::$_subscriberChannels)) {
 			self::$_subscriberChannels[$subscriber->id] = array();
 		}
 		self::$_channelSubscribers[$subscriber->id][$channel->id] = $channel;

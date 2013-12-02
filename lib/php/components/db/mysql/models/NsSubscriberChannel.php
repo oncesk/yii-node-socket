@@ -18,7 +18,7 @@ namespace YiiNodeSocket\Components\Db\Mysql\Models;
  * @property NsChannel    $channel
  * @property NsSubscriber $subscriber
  */
-class NsChannelSubscriber extends \CActiveRecord {
+class NsSubscriberChannel extends \CActiveRecord {
 
 
 	/**
@@ -26,7 +26,7 @@ class NsChannelSubscriber extends \CActiveRecord {
 	 *
 	 * @param string $className active record class name.
 	 *
-	 * @return NsChannelSubscriber the static model class
+	 * @return NsSubscriberChannel the static model class
 	 */
 	public static function model($className = __CLASS__) {
 		return parent::model($className);
