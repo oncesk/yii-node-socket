@@ -6,6 +6,7 @@ class m131126_114536_node_socket_migration extends CDbMigration {
 		$this->createTable('ns_channel', array(
 			'id' => 'pk',
 			'name' => 'string not null',
+			'properties' => 'text',
 			'is_authentication_required' => 'boolean not null',
 			'allowed_roles' => 'string',
 			'subscriber_source' => 'boolean not null',

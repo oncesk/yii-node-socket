@@ -33,6 +33,11 @@ class Channel extends AModel {
 	public $event_source = self::SOURCE_PHP;
 
 	/**
+	 * @var string|array
+	 */
+	public $properties;
+
+	/**
 	 * @var string
 	 */
 	public $create_date;
@@ -65,6 +70,7 @@ class Channel extends AModel {
 			array('name, is_authentication_required, subscriber_source, event_source', 'required'),
 			array('name', 'validateUniqueName'),
 			array('name', 'length', 'min' => 2),
+			array('properties', 'length', 'max' => 65000, 'allowEmpty' => true),
 			array('subscriber_source, event_source', 'numerical', 'integerOnly' => true),
 			array('subscriber_source, event_source', 'in', 'range' => $this->getSourceList()),
 			array('allowed_roles', 'length', 'min' => 1, 'allowEmpty' => true),
@@ -88,28 +94,7 @@ class Channel extends AModel {
 	 * @return bool
 	 */
 	public function unSubscribe(Subscriber $subscriber) {
-		if ($this->getIsNewRecord() || $subscriber->getIsNewRecord()) {
-			return true;
-		}
-		$subscriberChannel = SubscriberChannel::model()->findByAttributes(array(
-			'channel_id' => $this->id,
-			'subscriber_id' => $subscriber->id
-		));
-		if ($subscriberChannel) {
-			if ($subscriberChannel->delete()) {
-				if (!empty($this->_subscribers)) {
-					foreach ($this->_subscribers as $k => $sub) {
-						if ($sub->id == $subscriber->id) {
-							unset($this->_subscribers[$k]);
-							break;
-						}
-					}
-				}
-				return true;
-			}
-			return false;
-		}
-		return true;
+		return SubscriberChannel::model()->destroyLink($this, $subscriber);
 	}
 
 	/**
@@ -128,6 +113,7 @@ class Channel extends AModel {
 	public function attributeNames() {
 		return array_merge(parent::attributeNames(), array(
 			'name',
+			'properties',
 			'is_authentication_required',
 			'allowed_roles',
 			'subscriber_source',
@@ -155,8 +141,21 @@ class Channel extends AModel {
 		return true;
 	}
 
+	/**
+	 * @return bool
+	 */
+	protected function beforeValidate() {
+		if (is_array($this->properties) || is_object($this->properties)) {
+			$this->properties = \CJSON::encode($this->properties);
+		} else if (!is_string($this->properties)) {
+			$this->properties = '';
+		}
+		return parent::beforeValidate();
+	}
 
-
+	/**
+	 * @return bool
+	 */
 	protected function beforeSave() {
 		$this->is_authentication_required = (int) $this->is_authentication_required;
 		if (is_array($this->allowed_roles)) {
@@ -165,5 +164,11 @@ class Channel extends AModel {
 			$this->allowed_roles = '';
 		}
 		return parent::beforeSave();
+	}
+
+	protected function afterLoad() {
+		if ($this->properties) {
+			$this->properties = \CJSON::decode($this->properties);
+		}
 	}
 }

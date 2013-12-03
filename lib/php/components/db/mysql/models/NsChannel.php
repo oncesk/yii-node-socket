@@ -7,6 +7,7 @@ namespace YiiNodeSocket\Components\Db\Mysql\Models;
  * The followings are the available columns in table 'ns_channel':
  * @property integer               $id
  * @property string                $name
+ * @property string                $properties
  * @property integer               $is_authentication_required
  * @property string                $allowed_roles
  * @property integer               $subscriber_source
@@ -48,10 +49,11 @@ class NsChannel extends \CActiveRecord {
 		return array(
 			array('name, is_authentication_required, subscriber_source, event_source', 'required'),
 			array('is_authentication_required, subscriber_source, event_source', 'numerical', 'integerOnly' => true),
+			array('properties', 'length', 'max' => 65000, 'allowEmpty' => true),
 			array('name, allowed_roles', 'length', 'max' => 255),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, is_authentication_required, allowed_roles, subscriber_source, event_source, create_date', 'safe', 'on' => 'search'),
+			array('id, name, properties, is_authentication_required, allowed_roles, subscriber_source, event_source, create_date', 'safe', 'on' => 'search'),
 		);
 	}
 

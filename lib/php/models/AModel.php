@@ -60,6 +60,16 @@ abstract class AModel extends \CModel{
 		return $model;
 	}
 
+	/**
+	 * @param array $attributes
+	 */
+	final public function load(array $attributes) {
+		if ($this->beforeLoad($attributes)) {
+			$this->setAttributes($attributes);
+			$this->afterLoad();
+		}
+	}
+
 	protected function init() {}
 
 	/**
@@ -241,4 +251,10 @@ abstract class AModel extends \CModel{
 					->send();
 		}
 	}
+
+	protected function beforeLoad(array $attributes) {
+		return true;
+	}
+
+	protected function afterLoad() {}
 }

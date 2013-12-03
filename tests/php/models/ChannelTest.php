@@ -9,11 +9,11 @@ class ChannelTest extends AModelTest {
 
 	public function testSubscribe() {
 		$subscriber = new Subscriber();
-		$subscriber->user_id = time();
+		$subscriber->sid = microtime();
 		$this->assertEquals(true, $subscriber->save(), 'Can not save subscriber');
 
 		$channel = new Channel();
-		$channel->name = 'test' . time();
+		$channel->name = microtime();
 		$this->assertEquals(true, $channel->save());
 
 		$this->assertEmpty($channel->getSubscribers());
@@ -64,7 +64,7 @@ class ChannelTest extends AModelTest {
 		$subscribers = $channel->getSubscribers();
 		$this->assertCount(0, $subscribers);
 
-		$this->assertCount(0, $channel->getSubscribers(true));
+		$this->assertCount(0, $channel->getSubscribers());
 		$this->assertTrue($channel->delete());
 	}
 
@@ -123,7 +123,7 @@ class ChannelTest extends AModelTest {
 	public function testDelete() {
 		$channel = new Channel();
 		$channel->attributes = array(
-			'name' => 'test6',
+			'name' => 'test6' . time(),
 			'subscriber_source' => Channel::SOURCE_PHP,
 			'event_source' => Channel::SOURCE_PHP
 		);
@@ -156,6 +156,7 @@ class ChannelTest extends AModelTest {
 	public function validDataProviderForTestSave() {
 		$provider = array();
 		foreach ($this->getValidChannelDataArray() as $attributes) {
+			$attributes['name'] .= time();
 			$channel = new Channel();
 			$channel->attributes = $attributes;
 			$provider[] = array($channel);
@@ -167,13 +168,18 @@ class ChannelTest extends AModelTest {
 		return array(
 			array(
 				'name' => '',
+				'properties' => false
 			),
 			array(
 				'name' => array(),
+				'properties' => 12.2
 			),
 			array(
 				'name' => false,
 				'is_authentication_required' => '1dssds',
+				'properties' => function () {
+					
+				}
 			),
 			array(
 				'name' => 'test3',
@@ -195,14 +201,19 @@ class ChannelTest extends AModelTest {
 		return array(
 			array(
 				'name' => 'test',
+				'properties' => '{}'
 			),
 			array(
 				'name' => 'test1',
 				'is_authentication_required' => true,
+				'properties' => array(
+					'test' => 'value'
+				)
 			),
 			array(
 				'name' => 'test2',
 				'is_authentication_required' => false,
+				'properties' => new stdClass()
 			),
 			array(
 				'name' => 'test3',

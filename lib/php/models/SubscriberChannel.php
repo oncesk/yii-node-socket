@@ -82,9 +82,8 @@ class SubscriberChannel extends AModel {
 			return true;
 		}
 
-
 		//  create link
-		$link = new self();
+		$link = new SubscriberChannel();
 		$link->channel_id = $channel->id;
 		$link->subscriber_id = $subscriber->id;
 		$link->setOptions($options);

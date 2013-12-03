@@ -32,7 +32,7 @@ class MysqlDriver extends BaseDriver {
 		/** @var \CActiveRecord $model */
 		$newModel->setAttributes($model->getAttributes());
 		if ($newModel->save()) {
-			$model->setAttributes($newModel->getAttributes());
+			$model->load($newModel->getAttributes());
 			return true;
 		}
 		$model->addErrors($newModel->getErrors());
@@ -48,7 +48,7 @@ class MysqlDriver extends BaseDriver {
 		if (!$model->getIsNewRecord()) {
 			$m = $this->_resolveModel($model)->findByPk($model->id);
 			if ($m) {
-				$model->setAttributes($m->getAttributes());
+				$model->load($m->getAttributes());
 				return true;
 			}
 		}
@@ -80,7 +80,7 @@ class MysqlDriver extends BaseDriver {
 		$foundModel = $this->_resolveModel($model)->findByPk($pk);
 		if ($foundModel) {
 			$newInstance = $model->newInstance('update');
-			$newInstance->setAttributes($foundModel->getAttributes());
+			$newInstance->load($foundModel->getAttributes());
 			return $newInstance;
 		}
 		return null;
@@ -97,7 +97,7 @@ class MysqlDriver extends BaseDriver {
 		$result = array();
 		foreach ($foundModels as $m) {
 			$newInstance = $model->newInstance('update');
-			$newInstance->setAttributes($m->getAttributes());
+			$newInstance->load($m->getAttributes());
 			$result[] = $newInstance;
 		}
 		return $result;
@@ -113,7 +113,7 @@ class MysqlDriver extends BaseDriver {
 		$arModel = $this->_resolveModel($model)->findByAttributes($attributes);
 		if ($arModel) {
 			$newModel = $model->newInstance('update');
-			$newModel->setAttributes($arModel->getAttributes());
+			$newModel->load($arModel->getAttributes());
 			return $newModel;
 		}
 		return null;
@@ -130,7 +130,7 @@ class MysqlDriver extends BaseDriver {
 		$foundedModels = array();
 		foreach ($models as $m) {
 			$newInstance = $model->newInstance('update');
-			$newInstance->setAttributes($m->getAttributes());
+			$newInstance->load($m->getAttributes());
 			$foundedModels[] = $newInstance;
 		}
 		return $foundedModels;
