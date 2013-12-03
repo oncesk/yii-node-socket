@@ -178,7 +178,7 @@ class ChannelTest extends AModelTest {
 				'name' => false,
 				'is_authentication_required' => '1dssds',
 				'properties' => function () {
-					
+
 				}
 			),
 			array(
