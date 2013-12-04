@@ -107,6 +107,18 @@ class Channel extends AModel {
 	}
 
 	/**
+	 * @param string $name
+	 *
+	 * @return \YiiNodeSocket\Frames\Event
+	 */
+	public function createEvent($name) {
+		$event = $this->getNodeSocket()->getFrameFactory()->createEventFrame();
+		$event->setEventName($name);
+		$event->setChannel($this->name);
+		return $event;
+	}
+
+	/**
 	 * Returns the list of attribute names of the model.
 	 * @return array list of attribute names.
 	 */
