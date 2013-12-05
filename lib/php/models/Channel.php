@@ -111,9 +111,11 @@ class Channel extends AModel {
 	 *
 	 * @return \YiiNodeSocket\Frames\Event
 	 */
-	public function createEvent($name) {
+	public function createEvent($name = null) {
 		$event = $this->getNodeSocket()->getFrameFactory()->createEventFrame();
-		$event->setEventName($name);
+		if ($name) {
+			$event->setEventName($name);
+		}
 		$event->setChannel($this->name);
 		return $event;
 	}

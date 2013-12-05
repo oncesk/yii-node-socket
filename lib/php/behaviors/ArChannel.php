@@ -4,7 +4,7 @@ namespace YiiNodeSocket\Behaviors;
 use YiiNodeSocket\Components\ArEvent;
 use YiiNodeSocket\Models\Channel;
 
-class ArChannel extends \YiiNodeSocket\Behaviors\ArEvent {
+class ArChannel extends ArBehavior {
 
 	/**
 	 * @var string if set in javascript you can catch events for this alias
@@ -19,7 +19,7 @@ class ArChannel extends \YiiNodeSocket\Behaviors\ArEvent {
 	/**
 	 * @var array
 	 */
-	public $attributes;
+	public $attributes = array();
 
 	/**
 	 * @var bool
@@ -72,12 +72,13 @@ class ArChannel extends \YiiNodeSocket\Behaviors\ArEvent {
 	/**
 	 * @param string $name
 	 *
-	 * @return \YiiNodeSocket\Frames\Event
+	 * @return \YiiNodeSocket\Frames\Event|null
 	 */
 	public function createEvent($name) {
-		$event = parent::createEvent($name);
-		$event->setChannel($this->getChannel()->name);
-		return $event;
+		if ($channel = $this->getChannel()) {
+			return $channel->createEvent($name);
+		}
+		return null;
 	}
 
 	public function createChannel() {
