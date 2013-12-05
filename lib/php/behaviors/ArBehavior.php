@@ -12,9 +12,25 @@ use YiiNodeSocket\Components\ArEvent;
  */
 abstract class ArBehavior extends \CActiveRecordBehavior {
 
+	/**
+	 * @var string
+	 */
+	public $componentName = 'nodeSocket';
+
 	const ERROR_CAN_NOT_CREATE = 1;
 	const ERROR_CAN_NOT_UPDATE = 2;
 	const ERROR_CAN_NOT_DELETE = 3;
+
+	/**
+	 * @return \NodeSocket
+	 * @throws \CException
+	 */
+	public function getNodeSocketComponent() {
+		if (!\Yii::app()->hasComponent($this->componentName)) {
+			throw new \CException('Node socket component not found with the name `' . $this->componentName . "`");
+		}
+		return \Yii::app()->getComponent($this->componentName);
+	}
 
 	/**
 	 * @param ArEvent $event
