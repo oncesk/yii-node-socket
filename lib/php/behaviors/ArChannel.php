@@ -1,13 +1,10 @@
 <?php
-namespace YiiNodeSocket\Behavior;
+namespace YiiNodeSocket\Behaviors;
 
+use YiiNodeSocket\Components\ArEvent;
 use YiiNodeSocket\Models\Channel;
 
 class ArChannel extends ArBehavior {
-
-	const ERROR_CAN_NOT_CREATE = 1;
-	const ERROR_CAN_NOT_UPDATE = 2;
-	const ERROR_CAN_NOT_DELETE = 3;
 
 	/**
 	 * @var string if set in javascript you can catch events for this alias
@@ -25,11 +22,6 @@ class ArChannel extends ArBehavior {
 	public $attributes;
 
 	/**
-	 * @var string
-	 */
-	public $nodeSocketComponent = 'nodeSocket';
-
-	/**
 	 * @var bool
 	 */
 	public $createOnSave = true;
@@ -40,51 +32,50 @@ class ArChannel extends ArBehavior {
 	public $updateOnSave = false;
 
 	/**
+	 * @var bool
+	 */
+	public $deleteOnDelete = true;
+
+	/**
 	 * @var Channel
 	 */
 	protected $_channel;
 
-	public function attach($owner) {
-		parent::attach($owner);
-		if (!\Yii::app()->hasComponent($this->nodeSocketComponent)) {
-			throw new \CException('Node socket component not found');
-		}
+	/**
+	 * @param \CActiveRecord $model
+	 */
+	public function subscribe(\CActiveRecord $model) {
+
 	}
-
-
 
 	public function createChannel() {
 		$this->_channel = new Channel();
 		$this->attributesToChannel($this->_channel);
 		$this->_channel->name = $this->getChannelName();
-		if ($this->_channel->save()) {
-			$event = new \CEvent($this);
-			$this->onChannelCreate($event);
-		} else {
-			$this->onChannelError('Can not create', self::ERROR_CAN_NOT_CREATE, new \CEvent($this));
-		}
+
+		$event = new ArEvent($this);
+		$event->name = 'onChannelSave';
+		$event->error = !$this->_channel->save();
+		$this->triggerModelEvent($event);
 	}
 
 	public function updateChannel() {
 		if ($channel = $this->getChannel()) {
 			$this->attributesToChannel($channel);
-			if ($this->_channel->save()) {
-				$event = new \CEvent($this);
-				$this->onChannelUpdate($event);
-			} else {
-				$this->onChannelError('Can not update', self::ERROR_CAN_NOT_UPDATE, new \CEvent($this));
-			}
+
+			$event = new ArEvent($this);
+			$event->name = 'onChannelSave';
+			$event->error = !$channel->save();
+			$this->triggerModelEvent($event);
 		}
 	}
 
 	public function deleteChannel() {
 		if ($channel = $this->getChannel()) {
-			if ($channel->delete()) {
-				$event = new \CEvent($this);
-				$this->onChannelDelete($event);
-			} else {
-				$this->onChannelError('Can not delete', self::ERROR_CAN_NOT_DELETE, new \CEvent($this));
-			}
+			$event = new ArEvent($this);
+			$event->name = 'onChannelDelete';
+			$event->error = !$channel->delete();
+			$this->triggerModelEvent($event);
 		}
 	}
 
@@ -102,38 +93,6 @@ class ArChannel extends ArBehavior {
 	}
 
 	/**
-	 * @param \CEvent $event
-	 */
-	public function onChannelCreate(\CEvent $event) {
-		$this->raiseEvent('onChannelCreate', $event);
-	}
-
-	/**
-	 * @param \CEvent $event
-	 */
-	public function onChannelUpdate(\CEvent $event) {
-		$this->raiseEvent('onChannelUpdate', $event);
-	}
-
-	/**
-	 * @param \CEvent $event
-	 */
-	public function onChannelDelete(\CEvent $event) {
-		$this->raiseEvent('onChannelDelete', $event);
-	}
-
-	/**
-	 * @param string  $error
-	 * @param integer $errorCode
-	 * @param \CEvent $event
-	 */
-	public function onChannelError($error, $errorCode, \CEvent $event) {
-		$event->params['error'] = $error;
-		$event->params['errorCode'] = $errorCode;
-		$this->raiseEvent('onChannelError', $event);
-	}
-
-	/**
 	 * @param \CModelEvent $event
 	 */
 	protected function afterSave(\CModelEvent $event) {
@@ -148,7 +107,9 @@ class ArChannel extends ArBehavior {
 	 * @param \CModelEvent $event
 	 */
 	protected function afterDelete(\CModelEvent $event) {
-		$this->deleteChannel();
+		if ($this->deleteOnDelete) {
+			$this->deleteChannel();
+		}
 	}
 
 	/**

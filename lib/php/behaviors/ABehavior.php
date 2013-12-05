@@ -1,5 +1,5 @@
 <?php
-namespace YiiNodeSocket\Behavior;
+namespace YiiNodeSocket\Behaviors;
 
 /**
  * Class ABehavior
