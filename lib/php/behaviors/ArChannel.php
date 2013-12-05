@@ -43,9 +43,30 @@ class ArChannel extends ArBehavior {
 
 	/**
 	 * @param \CActiveRecord $model
+	 *
+	 * @return bool
 	 */
 	public function subscribe(\CActiveRecord $model) {
+		try {
+			if ($channel = $this->getChannel()) {
+				return $channel->subscribe($model->getSubscriber());
+			}
+		} catch (\CException $e) {}
+		return false;
+	}
 
+	/**
+	 * @param \CActiveRecord $model
+	 *
+	 * @return bool
+	 */
+	public function unSubscriber(\CActiveRecord $model) {
+		try {
+			if ($channel = $this->getChannel()) {
+				return $channel->unSubscribe($model->getSubscriber());
+			}
+		} catch(\CException $e) {}
+		return false;
 	}
 
 	public function createChannel() {
