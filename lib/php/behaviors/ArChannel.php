@@ -4,6 +4,11 @@ namespace YiiNodeSocket\Behaviors;
 use YiiNodeSocket\Components\ArEvent;
 use YiiNodeSocket\Models\Channel;
 
+/**
+ *
+ * Class ArChannel
+ * @package YiiNodeSocket\Behaviors
+ */
 class ArChannel extends ArBehavior {
 
 	/**
@@ -12,7 +17,7 @@ class ArChannel extends ArBehavior {
 	public $alias;
 
 	/**
-	 * @var array list of model attributes which can be accessed from javascript
+	 * @var array list of model attributes which will be fetched in channel properties
 	 */
 	public $properties = array();
 
@@ -60,7 +65,7 @@ class ArChannel extends ArBehavior {
 	 *
 	 * @return bool
 	 */
-	public function unSubscriber(\CActiveRecord $model) {
+	public function unSubscribe(\CActiveRecord $model) {
 		try {
 			if ($channel = $this->getChannel()) {
 				return $channel->unSubscribe($model->getSubscriber());
@@ -126,9 +131,19 @@ class ArChannel extends ArBehavior {
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getAlias() {
+		if ($this->alias) {
+			return $this->alias;
+		}
+		return $this->alias = strtolower(get_class($this->getOwner()));
+	}
+
+	/**
 	 * @param \CModelEvent $event
 	 */
-	protected function afterSave(\CModelEvent $event) {
+	public function afterSave($event) {
 		if ($this->getOwner()->getIsNewRecord() && $this->createOnSave) {
 			$this->createChannel();
 		} else if (!$this->getOwner()->getIsNewRecord() && $this->updateOnSave) {
@@ -139,7 +154,7 @@ class ArChannel extends ArBehavior {
 	/**
 	 * @param \CModelEvent $event
 	 */
-	protected function afterDelete(\CModelEvent $event) {
+	public function afterDelete($event) {
 		if ($this->deleteOnDelete) {
 			$this->deleteChannel();
 		}
@@ -149,11 +164,14 @@ class ArChannel extends ArBehavior {
 	 * @param Channel $channel
 	 */
 	protected function attributesToChannel(Channel $channel) {
-		foreach ($this->attributes as $attribute) {
+		foreach ($this->attributes as $attribute => $value) {
 			if ($attribute != 'name') {
-				$channel->$attribute = $this->getOwner()->getAttribute($attribute);
+				$channel->$attribute = $value;
 			}
 		}
+		$properties = $this->getOwner()->getAttributes($this->properties);
+		$properties['alias'] = $this->getAlias();
+		$channel->properties = $properties;
 	}
 
 	/**

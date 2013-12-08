@@ -36,6 +36,9 @@ abstract class ArBehavior extends \CActiveRecordBehavior {
 	 * @param ArEvent $event
 	 */
 	protected function triggerModelEvent(ArEvent $event) {
-		$this->getOwner()->raiseEvent($event->name, $event);
+		$owner = $this->getOwner();
+		if ($owner->hasEvent($event->name)) {
+			$owner->raiseEvent($event->name, $event);
+		}
 	}
 }

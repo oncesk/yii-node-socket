@@ -88,7 +88,7 @@ class ArSubscriber extends ArBehavior {
 		}
 	}
 
-	protected function afterSave(\CModelEvent $event) {
+	public function afterSave($event) {
 		if ($this->getOwner()->getIsNewRecord()) {
 			if ($this->createOnSave) {
 				$this->createSubscriber();
@@ -100,7 +100,7 @@ class ArSubscriber extends ArBehavior {
 		}
 	}
 
-	protected function afterDelete(\CModelEvent $event) {
+	public function afterDelete($event) {
 		if ($this->deleteOnDelete) {
 			$this->deleteSubscriber();
 		}

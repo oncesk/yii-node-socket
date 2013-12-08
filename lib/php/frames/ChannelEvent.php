@@ -26,6 +26,6 @@ class ChannelEvent extends Event {
 	 * @return bool
 	 */
 	public function isValid() {
-		return false;
+		return $this->hasMetaData('action');
 	}
 }
