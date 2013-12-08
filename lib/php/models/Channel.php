@@ -173,9 +173,11 @@ class Channel extends AModel {
 	protected function beforeSave() {
 		$this->is_authentication_required = (int) $this->is_authentication_required;
 		if (is_array($this->allowed_roles)) {
-			$this->allowed_roles = implode(', ', $this->allowed_roles);
+			$this->allowed_roles = implode(',', $this->allowed_roles);
 		} else if (!is_string($this->allowed_roles)) {
 			$this->allowed_roles = '';
+		} else {
+			$this->allowed_roles = implode(',', array_map('trim', explode(',', $this->allowed_roles)));
 		}
 		return parent::beforeSave();
 	}
