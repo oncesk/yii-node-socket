@@ -1,7 +1,10 @@
 <?php
 namespace YiiNodeSocket\Console;
 
-
+/**
+ * Class WinConsole
+ * @package YiiNodeSocket\Console
+ */
 class WinConsole implements ConsoleInterface {
 
 	public function __construct() {
