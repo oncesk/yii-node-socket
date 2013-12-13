@@ -31,6 +31,16 @@ class Db extends AComponent {
 	}
 
 	/**
+	 * @return array
+	 */
+	public function getConnectionOptions() {
+		return array_merge($this->getDriver()->getConnectionOptions(), array(
+			'driver' => $this->driver,
+			'config' => $this->config
+		));
+	}
+
+	/**
 	 * @return DriverInterface
 	 * @throws \CException
 	 */

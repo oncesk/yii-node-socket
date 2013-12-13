@@ -13,6 +13,11 @@ interface DriverInterface {
 	public function init(array $config);
 
 	/**
+	 * @return array
+	 */
+	public function getConnectionOptions();
+
+	/**
 	 * @param AModel $model
 	 *
 	 * @return boolean

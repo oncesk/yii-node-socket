@@ -13,6 +13,17 @@ class MysqlDriver extends BaseDriver {
 	 */
 	public function init(array $config) {}
 
+	/**
+	 * @return array
+	 */
+	public function getConnectionOptions() {
+		return array(
+			'dsn' => \Yii::app()->db->connectionString,
+			'username' => \Yii::app()->db->username,
+			'password' => \Yii::app()->db->password,
+			'charset' => \Yii::app()->db->charset
+		);
+	}
 
 	/**
 	 * @param AModel $model
