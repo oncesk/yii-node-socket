@@ -67,7 +67,7 @@ class NodeSocket extends CApplicationComponent {
 	/**
 	 * @var array
 	 */
-	public $dbConfiguration = array();
+	public $dbConfiguration = array('driver' => 'dummy');
 
 	/**
 	 * @var string

@@ -24,7 +24,7 @@ class WinConsole implements ConsoleInterface {
 	 * @return integer pid
 	 */
 	public function startServer($command, $logFile) {
-		echo "Start method not implemented in WinConsole class\n";
+		echo "Start method is not implemented in WinConsole class\n";
 		// TODO: Implement startServer() method.
 		return false;
 	}
