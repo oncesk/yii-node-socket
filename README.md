@@ -176,6 +176,7 @@ socket.getPublicData('error.strings', function (strings) {
 /**
  *
  * @method \YiiNodeSocket\Models\Channel getChannel()
+ * @method \YiiNodeSocket\Frames\Event|null createEvent($name)
  */
 class User extends CActiveRecord {
 
@@ -206,25 +207,62 @@ class User extends CActiveRecord {
 	
 }
 
-// And we can create new user and channel will be created automatically
+// Example of subscribe
+
 $user1 = new User();
 $user1->setAttributes($attributes);
 if ($user1->save()) {
+	// imagine that $user1->id == 122
 	// user channel was created and sent to nodejs server
 	// subscriber was created and sent to nodejs server
 	
 	// create second user
-	$user2 = new User();
-	$user2->setAttributes($attributes2);
-	if ($user2->save()) {
-		// now we can subscribe one user to second user
-		$user1->subscribe($user2);
-		// $user2 can catch events in $user1 channel
-		
-		$userChannel = $user1->getChannel();
+	$user2 = User::model()->findByPk(121);
+	
+	// now we can subscribe one user to second user
+	$user1->subscribe($user2);
+	// and $user2 can catch events from $user1 channel like in twitter
+	
+	
+}
+
+
+// Example of emit event in concrete channel
+
+$user = User::model()->findByPk(122);
+if ($user) {
+
+	// First method
+	$event = $user->createEvent('test_event');
+	if ($event) {
+		// set event data
+		$event->setData(array(
+			'black', 'red', 'white'
+		));
+		// send event to user channel
+		$event->send();
+	}
+	
+	// Second method with getting channel
+	$channel = $user->getChannel();
+	if ($channel) {
+		$event = $channel->createEvent('test_event');
+		// set event data
+		$event->setData(array(
+			'black', 'red', 'white'
+		));
+		// send event to user channel
+		$event->send();
 	}
 }
 
+
+// Example of unsubscribe
+
+$user1 = User::model()->findByPk(122);
+$user2 = User::model()->findByPk(121);
+
+$user1->unSubscribe($user2); // now $user2 can not catch events in channel of $user1
 
 ```
  
