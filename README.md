@@ -187,14 +187,7 @@ class User extends CActiveRecord {
 			// attach channel behavior
 			'channel' => array(
 				'class' => '\YiiNodeSocket\Behaviors\ArChannel',
-				'updateOnSave' => true,
-				'attributes' => array(
-					'is_authentication_required' => true,
-					'allowed_roles' => array(
-						self::ROLE_USER,
-						self::ROLE_ADMIN
-					)
-				)
+				'updateOnSave' => true
 			),
 			// attach subscriber behavior
 			'subscriber' => array(
