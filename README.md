@@ -9,6 +9,7 @@ Connect php, javascript, nodejs in one Yii application.
 - call some function or object method in window context
 - you can change DOM model with jquery from php
 - ability to set up data and get it in your javascript application
+- send events from javascript for all clients or clients in concrete room or channel
 
 #Installation
 
@@ -67,6 +68,11 @@ $> ./yiic node-socket stop # stop server
 $> ./yiic node-socket restart # restart server
 $> ./yiic node-socket getPid # show pid of nodejs process
 ```
+
+##Definitions
+
+ - Frame - data package for nodejs server wrapped into Class. Per one request to nodejs server you can send only 1 frame. For send several frames at a time use Multiple frame.
+ - room - one or more clients in concrete namespace: every client can create room, other clients can join into concrete room, any client in room can send event in this room.
 
 ##Javascript
 
@@ -160,6 +166,69 @@ socket.getPublicData('error.strings', function (strings) {
 
 ##PHP
 
+####Behaviors
+
+ - YiiNodeSocket\Behaviors\ArChannel - can be used for create new channel. Example: You can attach this behavior to User, in result any user will have own channel, and other user can subscribe to events of concrete user.
+ - YiiNodeSocket\Behaviors\ArSubscriber - should be attached to object which can subscribe to some channel. Example: model User at a time can be channel and subscriber.
+
+```php
+
+/**
+ *
+ * @method \YiiNodeSocket\Models\Channel getChannel()
+ */
+class User extends CActiveRecord {
+
+...
+
+	public function behaviors() {
+		return array(
+			// attach channel behavior
+			'channel' => array(
+				'class' => '\YiiNodeSocket\Behaviors\ArChannel',
+				'updateOnSave' => true,
+				'attributes' => array(
+					'is_authentication_required' => true,
+					'allowed_roles' => array(
+						self::ROLE_USER,
+						self::ROLE_ADMIN
+					)
+				)
+			),
+			// attach subscriber behavior
+			'subscriber' => array(
+				'class' => '\YiiNodeSocket\Behaviors\ArSubscriber'
+			)
+		);
+	}
+	
+...
+	
+}
+
+// And we can create new user and channel will be created automatically
+$user1 = new User();
+$user1->setAttributes($attributes);
+if ($user1->save()) {
+	// user channel was created and sent to nodejs server
+	// subscriber was created and sent to nodejs server
+	
+	// create second user
+	$user2 = new User();
+	$user2->setAttributes($attributes2);
+	if ($user2->save()) {
+		// now we can subscribe one user to second user
+		$user1->subscribe($user2);
+		// $user2 can catch events in $user1 channel
+		
+		$userChannel = $user1->getChannel();
+	}
+}
+
+
+```
+ 
+ 
 ####Client scripts registration
 
 ```php
