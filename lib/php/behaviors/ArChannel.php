@@ -17,7 +17,7 @@ class ArChannel extends ArBehavior {
 	public $alias;
 
 	/**
-	 * @var array list of model attributes which will be fetched in channel properties
+	 * @var array list of model (owner) attributes which will be fetched in channel properties
 	 */
 	public $properties = array();
 
