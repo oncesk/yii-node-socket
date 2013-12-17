@@ -150,6 +150,67 @@ socket.room('testRoom').join(function (success, numberOfRoomSubscribers) {
 });
 ```
 
+####Emit events
+
+You can emit event to:
+ - all clients
+ - clients in concrete room
+
+
+Global events:
+
+```javascript
+
+socket.emit('global.event', {
+	message : {
+		id : 12,
+		title : 'This is a test message'
+	}
+});
+
+socket.on('global.event', function (data) {
+	console.log(data.message.title); // you will see in console `This is a test message`
+});
+
+```
+
+Room event:
+
+```javascript
+
+var testRoom = socket.room('testRoom').join(function (success, numberOfRoomSubscribers) {
+	// success - boolean, numberOfRoomSubscribers - number of room members
+	// if error occurred then success = false, and numberOfRoomSubscribers - contains error message
+	if (success) {
+		console.log(numberOfRoomSubscribers + ' clients in room: ' + roomId);
+		// do something
+		
+		// bind events
+		this.on('message', function (message) {
+			console.log(message);
+		});
+		
+		this.on('ping', function () {
+			console.log('Ping!');
+		});
+		
+		this.emit('ping'); // emit ping event
+	} else {
+		// numberOfRoomSubscribers - error message
+		alert(numberOfRoomSubscribers);
+	}
+});
+
+// emit message event
+testRoom.emit('message', {
+	message : {
+		id : 12,
+		title : 'This is a test message'
+	}
+});
+
+```
+
 ####Shared Public Data
 
 You can set shared data only from PHP using PublicData Frame (see below into PHP section).
