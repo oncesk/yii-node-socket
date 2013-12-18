@@ -11,6 +11,15 @@ Connect php, javascript, nodejs in one Yii application.
 - ability to set up data and get it in your javascript application
 - send events from javascript for all clients or clients in concrete room or channel
 
+##Changes
+
+ - for frames creation you should use Yii::app()->nodeSocket->getFrameFactory()
+
+##Requirements
+
+ - linux/unix
+ - git
+
 #Installation
 
 Install nodejs, if not installed see http://nodejs.org/<br>
@@ -47,6 +56,17 @@ Yii configuration<br>
 )
 ```
 > Notice: ***host*** should be a domain name like in you virtual host configuration or server ip address if you request page using ip address
+
+
+> Notice: if you will be use ***behaviors*** or node-socket models, you need to add nodeSocket component in ***preload*** components list
+
+```php
+
+'preload' => array(
+	'nodeSocket'
+)
+
+```
 
 Install ***nodejs*** components in ***application.ext.yii-node-socket.lib.js.server***:
 ```bash
@@ -148,6 +168,96 @@ socket.room('testRoom').join(function (success, numberOfRoomSubscribers) {
 		alert(numberOfRoomSubscribers);
 	}
 });
+```
+
+####Channels
+
+Channel is very similar to the room, but you can controll access to channel for clients
+
+```javascript
+
+// join to channel, join needed when you try subscribe to channel from javascript, if you subscribed to channel in php you can bind events without join
+var testChannel = socket.channel('test').join(function (success) {
+	// success - boolean
+	if (success) {
+		// fore getting channel attributes
+		console.log(this.getAttributes());
+		
+		// bind event listeners
+		this.on('some_event', function (data) {
+			// fire when server send frame into this room with 'data' event
+		});
+	} else {
+		console.log(this.getError());
+	}
+});
+
+// you can bind events handlers for some events without join
+// in this case you should be subscribed to `test` channel
+socket.channel('test').on('some_event', function (data) {
+});
+
+```
+
+####Emit events
+
+You can emit event to:
+ - all clients
+ - clients in concrete room
+
+
+Global events:
+
+```javascript
+
+socket.emit('global.event', {
+	message : {
+		id : 12,
+		title : 'This is a test message'
+	}
+});
+
+socket.on('global.event', function (data) {
+	console.log(data.message.title); // you will see in console `This is a test message`
+});
+
+```
+
+Room event:
+
+```javascript
+
+var testRoom = socket.room('testRoom').join(function (success, numberOfRoomSubscribers) {
+	// success - boolean, numberOfRoomSubscribers - number of room members
+	// if error occurred then success = false, and numberOfRoomSubscribers - contains error message
+	if (success) {
+		console.log(numberOfRoomSubscribers + ' clients in room: ' + roomId);
+		// do something
+		
+		// bind events
+		this.on('message', function (message) {
+			console.log(message);
+		});
+		
+		this.on('ping', function () {
+			console.log('Ping!');
+		});
+		
+		this.emit('ping'); // emit ping event
+	} else {
+		// numberOfRoomSubscribers - error message
+		alert(numberOfRoomSubscribers);
+	}
+});
+
+// emit message event
+testRoom.emit('message', {
+	message : {
+		id : 12,
+		title : 'This is a test message'
+	}
+});
+
 ```
 
 ####Shared Public Data
@@ -279,7 +389,7 @@ public function actionIndex() {
 ...
 
 // create event frame
-$frame = Yii::app()->nodeSocket->createEventFrame();
+$frame = Yii::app()->nodeSocket->getFrameFactory()->createEventFrame();
 
 // set event name
 $frame->setEventName('updateBoard');
@@ -306,7 +416,7 @@ You can set expiration using ***setLifeTime(integer $lifetime)*** method of clas
 ...
 
 // create frame
-$frame = Yii::app()->nodeSocket->createPublicDataFrame();
+$frame = Yii::app()->nodeSocket->getFrameFactory()->createPublicDataFrame();
 
 // set key in storage
 $frame->setKey('error.strings');
@@ -334,7 +444,7 @@ $frame->send();
 ...
 
 // create frame
-$frame = Yii::app()->nodeSocket->createEventFrame();
+$frame = Yii::app()->nodeSocket->getFrameFactory()->createEventFrame();
 
 // set event name
 $frame->setEventName('updateBoard');
@@ -360,7 +470,7 @@ In your PHP application you can invoke javascript function or method of object i
 
 ```php
 
-$invokeFrame = Yii::app()->nodeSocket->createInvokeFrame();
+$invokeFrame = Yii::app()->nodeSocket->getFrameFactory()->createInvokeFrame();
 $invokeFrame->invokeFunction('alert', array('Hello world'));
 $invokeFrame->send();	// alert will be showed on all clients
 
@@ -380,7 +490,7 @@ $product = Product::model()->findByPk($productId);
 if ($product) {
 	$product->price = $newPrice;
 	if ($product->save()) {
-		$jFrame = Yii::app()->nodeSocket->createJQueryFrame();
+		$jFrame = Yii::app()->nodeSocket->getFrameFactory()->createJQueryFrame();
 		$jFrame
 			->createQuery('#product' . $product->id)
 			->find('span.price')
@@ -400,15 +510,15 @@ Example 1:
 
 ```php
 
-$multipleFrame = Yii::app()->nodeSocket->createMultipleFrame();
+$multipleFrame = Yii::app()->nodeSocket->getFrameFactory()->createMultipleFrame();
 
-$eventFrame = Yii::app()->nodeSocket->createEventFrame();
+$eventFrame = Yii::app()->nodeSocket->getFrameFactory()->createEventFrame();
 
 $eventFrame->setEventName('updateBoard');
 $eventFrame['boardId'] = 25;
 $eventFrame['boardData'] = $html;
 
-$dataEvent = Yii::app()->nodeSocket->createPublicDataFrame();
+$dataEvent = Yii::app()->nodeSocket->getFrameFactory()->createPublicDataFrame();
 
 $dataEvent->setKey('error.strings');
 $dataEvent['key'] = $value;
@@ -423,7 +533,7 @@ Example 2:
 
 ```php
 
-$multipleFrame = Yii::app()->nodeSocket->createMultipleFrame();
+$multipleFrame = Yii::app()->nodeSocket->getFrameFactory()->createMultipleFrame();
 
 $eventFrame = $multipleFrame->createEventFrame();
 
@@ -439,10 +549,3 @@ $dataEvent['key'] = $value;
 $multipleFrame->send();
 
 ```
-
-##In plans
-
-1. Create subscribe/unsibscribe system
-2. Store channel information into db (mongoDB, mysql)
-3. The ability to create private, public and etc. channels
-4. Socket Authentication and authorization
