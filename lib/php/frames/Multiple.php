@@ -49,7 +49,7 @@ class Multiple extends AFrame implements IFrameFactory {
 	 */
 	public function createChannelEventFrame() {
 		return $this
-				->_nodeSocket
+				->_nodeSocket->getFrameFactory()
 				->createChannelEventFrame()
 				->setAsMultiple($this);
 	}
@@ -59,7 +59,7 @@ class Multiple extends AFrame implements IFrameFactory {
 	 */
 	public function createEventFrame() {
 		return $this
-				->_nodeSocket
+				->_nodeSocket->getFrameFactory()
 				->createEventFrame()
 				->setAsMultiple($this);
 	}
@@ -76,7 +76,7 @@ class Multiple extends AFrame implements IFrameFactory {
 	 */
 	public function createPublicDataFrame() {
 		return $this
-				->_nodeSocket
+				->_nodeSocket->getFrameFactory()
 				->createPublicDataFrame()
 				->setAsMultiple($this);
 	}
@@ -86,7 +86,7 @@ class Multiple extends AFrame implements IFrameFactory {
 	 */
 	public function createInvokeFrame() {
 		return $this
-				->_nodeSocket
+				->_nodeSocket->getFrameFactory()
 				->createInvokeFrame()
 				->setAsMultiple($this);
 	}
@@ -96,7 +96,7 @@ class Multiple extends AFrame implements IFrameFactory {
 	 */
 	public function createJQueryFrame() {
 		return $this
-				->_nodeSocket
+				->_nodeSocket->getFrameFactory()
 				->createJQueryFrame()
 				->setAsMultiple($this);
 	}

@@ -7,10 +7,6 @@ namespace YiiNodeSocket\Console;
  */
 class WinConsole implements ConsoleInterface {
 
-	public function __construct() {
-
-	}
-
 	/**
 	 * @param integer|string $pid
 	 *
