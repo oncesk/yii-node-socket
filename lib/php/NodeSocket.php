@@ -55,6 +55,13 @@ class NodeSocket extends CApplicationComponent {
 	public $socketLogFile;
 
 	/**
+	 * If set to false, any client can connect to websocket server
+	 *
+	 * @var bool
+	 */
+	public $checkClientOrigin = true;
+
+	/**
 	 * @var string
 	 */
 	public $pidFile = 'socket-transport.pid';
