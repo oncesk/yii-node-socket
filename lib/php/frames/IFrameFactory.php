@@ -32,4 +32,14 @@ interface IFrameFactory {
 	 * @return JQuery
 	 */
 	public function createJQueryFrame();
+
+	/**
+	 * @return UserEvent
+	 */
+	public function createUserEventFrame();
+
+	/**
+	 * @return Authentication
+	 */
+	public function createAuthenticationFrame();
 }

@@ -1,7 +1,7 @@
 <?php
 namespace YiiNodeSocket\Frames;
 
-class UserEventFrame extends Event {
+class UserEvent extends Event {
 
 	/**
 	 * @return string
@@ -20,7 +20,7 @@ class UserEventFrame extends Event {
 	/**
 	 * @param integer|array $id
 	 *
-	 * @return UserEventFrame
+	 * @return UserEvent
 	 */
 	public function setUserId($id) {
 		if (!is_array($id)) {

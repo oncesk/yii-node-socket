@@ -1,7 +1,7 @@
 <?php
 namespace YiiNodeSocket\Frames;
 
-class AuthenticationFrame extends AFrame {
+class Authentication extends AFrame {
 
 	/**
 	 * @return bool
