@@ -5,7 +5,7 @@ Connect php, javascript, nodejs in one Yii application.
 
 ####What you can do:
 
-- send event(s) to all clients or in concrete room or in concrete channel (will be soon)
+- send event(s) to all clients or in concrete room or in concrete channel
 - call some function or object method in window context
 - you can change DOM model with jquery from php
 - ability to set up data and get it in your javascript application
