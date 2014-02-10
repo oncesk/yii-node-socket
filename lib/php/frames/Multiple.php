@@ -102,6 +102,27 @@ class Multiple extends AFrame implements IFrameFactory {
 	}
 
 	/**
+	 * @return Authentication
+	 */
+	public function createAuthenticationFrame() {
+		return $this
+				->_nodeSocket->getFrameFactory()
+				->createAuthenticationFrame()
+				->setAsMultiple($this);
+	}
+
+	/**
+	 * @return UserEvent
+	 */
+	public function createUserEventFrame() {
+		return $this
+				->_nodeSocket->getFrameFactory()
+				->createUserEventFrame()
+				->setAsMultiple($this);
+	}
+
+
+	/**
 	 * @param AFrame $frame
 	 *
 	 * @return Multiple
