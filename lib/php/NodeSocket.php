@@ -22,6 +22,11 @@ class NodeSocket extends CApplicationComponent {
 	public $host = '127.0.0.1';
 
 	/**
+	 * @var int by default is once month
+	 */
+	public $cookieLifeTime = 2592000;
+
+	/**
 	 * Port in integer type only
 	 *
 	 * @var int
