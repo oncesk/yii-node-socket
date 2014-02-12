@@ -20,6 +20,7 @@ Connect php, javascript, nodejs in one Yii application.
 
  - linux/unix
  - git
+ - vps or dedicated server (for nodejs process)
 
 #Installation
 
