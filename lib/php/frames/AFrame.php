@@ -164,6 +164,7 @@ abstract class AFrame implements \ArrayAccess {
 		));
 		$client->setHandshakeTimeout($this->_nodeSocket->handshakeTimeout);
 		$client->init();
+
 		$client
 			->createFrame()
 			->endPoint('/server')
