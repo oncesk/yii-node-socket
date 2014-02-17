@@ -6,6 +6,7 @@ Connect php, javascript, nodejs in one Yii application.
 ####What you can do:
 
 - send event(s) to all clients or in concrete room or in concrete channel
+- now you can send events to single (concrete user) by user id!
 - call some function or object method in window context
 - you can change DOM model with jquery from php
 - ability to set up data and get it in your javascript application
@@ -19,6 +20,7 @@ Connect php, javascript, nodejs in one Yii application.
 
  - linux/unix
  - git
+ - vps or dedicated server (for nodejs process)
 
 #Installation
 
@@ -369,6 +371,49 @@ $user1->unSubscribe($user2); // now $user2 can not catch events in channel of $u
 
 ```
  
+####Client authorization
+
+For authorizing client you need send special Authentication frame, you can do it in your ***user*** component in afterLogin event
+
+```php
+
+protected function afterLogin($fromCookie) {
+	parent::afterLogin($fromCookie);
+	
+	$frame = Yii::app()->nodeSocket->getFrameFactory()->createAuthenticationFrame();
+	$frame->setUserId($this->getId());
+	$frame->send();
+}
+
+
+```
+
+After that, this user can receive events only for him.
+See example below, send event only for single (concrete) $user
+
+```php
+
+// $user - the user model, which can receive this event
+
+$event = Yii::app()->nodeSocket->getFrameFactory()->createUserEventFrame();
+$event->setUserId($user->id);
+$event->setEventName('message');
+$event['text'] = 'Hello, how are you?';
+$event->send();
+
+```
+
+and your javascript
+
+```javascript
+
+var socket = new YiiNodeSocket();
+socket.on('message', function (message) {
+	console.log(message.text);
+	// render message
+});
+
+```
  
 ####Client scripts registration
 
@@ -549,3 +594,7 @@ $dataEvent['key'] = $value;
 $multipleFrame->send();
 
 ```
+
+##PS
+
+Sorry for my english :)
