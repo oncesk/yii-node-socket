@@ -1,6 +1,12 @@
 <?php
 namespace YiiNodeSocket\Frame;
 
+/**
+ * todo implement setters and getters
+ *
+ * Class RuntimeServerConfiguration
+ * @package YiiNodeSocket\Frame
+ */
 class RuntimeServerConfiguration extends AFrame {
 
 	/**
