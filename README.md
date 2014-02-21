@@ -18,7 +18,7 @@ Connect php, javascript, nodejs in one Yii application.
 
 ##Requirements
 
- - linux/unix
+ - linux/unix/windows
  - git
  - vps or dedicated server (for nodejs process)
 
