@@ -13,7 +13,8 @@ class WinConsole implements ConsoleInterface {
 	 * @return boolean
 	 */
 	public function stopServer($pid) {
-		// TODO: Implement stopServer() method.
+		$command = 'taskkill /f /PID ' . $pid;
+        	exec($command);
 	}
 
 	/**
@@ -23,9 +24,15 @@ class WinConsole implements ConsoleInterface {
 	 * @return integer pid
 	 */
 	public function startServer($command, $logFile) {
-		echo "Start method is not implemented in WinConsole class\n";
-		// TODO: Implement startServer() method.
-		return false;
+		$command = 'start /b ' . $command . ' > ' . $logFile;
+	        $process = proc_open($command, array(array("pipe", "r"), array("pipe", "w"), array("pipe", "w")), $pipes);
+	        $status = proc_get_status($process);
+	        $pid = $status['pid'];
+	        if ($pid) {
+	            return $this->parseProccess($pid);
+	        } else {
+	            return false;
+	        }
 	}
 
 	/**
@@ -34,6 +41,19 @@ class WinConsole implements ConsoleInterface {
 	 * @return boolean
 	 */
 	public function isInProgress($pid) {
-		// TODO: Implement isInProgress() method.
+		$pidCompare = $this->parseProccess($pid);
+	        if($pidCompare === $pid) {
+	            return true;
+	        }
+	        else {
+	            return false;
+	        }
 	}
+	
+	protected function parseProccess($pid) {
+	        $output = array_filter(explode(" ", shell_exec("wmic process get parentprocessid,processid | find \"$pid\"")));
+	        array_pop($output);
+	        return (int)end($output);
+	}
+	
 }
