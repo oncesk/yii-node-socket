@@ -3,10 +3,6 @@ Yii Node Socket
 
 Connect php, javascript, nodejs in one Yii application.
 
-####Version 0.1
-
-See here <a href="https://github.com/oncesk/yii-node-socket/blob/0.1/README.md">README</a>
-
 ####What you can do:
 
 - send event(s) to all clients or in concrete room or in concrete channel
@@ -602,3 +598,4 @@ $multipleFrame->send();
 ##PS
 
 Sorry for my english :)
+
