@@ -109,17 +109,6 @@ public function actionIndex() {
 
 ###Events
 
-Predefined events:
-
-* `listener.on('connect', function () {})` - "connect" is emitted when the socket connected successfully
-* `listener.on('reconnect', function () {})` - "reconnect" is emitted when socket.io successfully reconnected to the server
-* `listener.on('disconnect', function () {})` - "disconnect" is emitted when the socket disconnected
-
-Your own events:
-
-* `listener.on('update', function (data) {})` - emitted when PHP server emit update event
-* `listener.on('some_event', function (data) {})` - emitted when PHP server emit some_event event
-
 ###Work in javascript
 
 Use `YiiNodeSocket` class
@@ -133,6 +122,22 @@ var socket = new YiiNodeSocket();
 
 // enable debug mode
 socket.debug(true);
+
+socket.onConnect(function () {
+	// fire when connection established
+});
+
+socket.onDisconnect(function () {
+	// fire when connection close or lost
+});
+
+socket.onConnecting(function () {
+	// fire when the socket is attempting to connect with the server
+});
+
+socket.onReconnect(function () {
+	// fire when successfully reconnected to the server
+});
 ```
 
 ####Catch Events
@@ -150,26 +155,29 @@ socket.on('updateBoard', function (data) {
 ####Rooms
 
 ```javascript
-socket.room('testRoom').join(function (success, numberOfRoomSubscribers) {
-	// success - boolean, numberOfRoomSubscribers - number of room members
-	// if error occurred then success = false, and numberOfRoomSubscribers - contains error message
-	if (success) {
-		console.log(numberOfRoomSubscribers + ' clients in room: ' + roomId);
-		// do something
-		
-		// bind events
-		this.on('join', function (newMembersCount) {
-			// fire on client join
-		});
-		
-		this.on('data', function (data) {
-			// fire when server send frame into this room with 'data' event
-		});
-	} else {
-		// numberOfRoomSubscribers - error message
-		alert(numberOfRoomSubscribers);
-	}
+socket.onConnect(function () {
+	socket.room('testRoom').join(function (success, numberOfRoomSubscribers) {
+		// success - boolean, numberOfRoomSubscribers - number of room members
+		// if error occurred then success = false, and numberOfRoomSubscribers - contains error message
+		if (success) {
+			console.log(numberOfRoomSubscribers + ' clients in room: ' + roomId);
+			// do something
+			
+			// bind events
+			this.on('join', function (newMembersCount) {
+				// fire on client join
+			});
+			
+			this.on('data', function (data) {
+				// fire when server send frame into this room with 'data' event
+			});
+		} else {
+			// numberOfRoomSubscribers - error message
+			alert(numberOfRoomSubscribers);
+		}
+	});
 });
+
 ```
 
 ####Channels
@@ -179,26 +187,28 @@ Channel is very similar to the room, but you can controll access to channel for 
 ```javascript
 
 // join to channel, join needed when you try subscribe to channel from javascript, if you subscribed to channel in php you can bind events without join
-var testChannel = socket.channel('test').join(function (success) {
-	// success - boolean
-	if (success) {
-		// fore getting channel attributes
-		console.log(this.getAttributes());
-		
-		// bind event listeners
-		this.on('some_event', function (data) {
-			// fire when server send frame into this room with 'data' event
-		});
-	} else {
-		console.log(this.getError());
-	}
-});
+socket.onConnect(function () {
+	var testChannel = socket.channel('test').join(function (success) {
+		// success - boolean
+		if (success) {
+			// fore getting channel attributes
+			console.log(this.getAttributes());
+			
+			// bind event listeners
+			this.on('some_event', function (data) {
+				// fire when server send frame into this room with 'data' event
+			});
+		} else {
+			console.log(this.getError());
+		}
+	});
+	
+	// you can bind events handlers for some events without join
+	// in this case you should be subscribed to `test` channel
+	socket.channel('test').on('some_event', function (data) {
+	});
 
-// you can bind events handlers for some events without join
-// in this case you should be subscribed to `test` channel
-socket.channel('test').on('some_event', function (data) {
 });
-
 ```
 
 ####Emit events
@@ -228,36 +238,37 @@ socket.on('global.event', function (data) {
 Room event:
 
 ```javascript
-
-var testRoom = socket.room('testRoom').join(function (success, numberOfRoomSubscribers) {
-	// success - boolean, numberOfRoomSubscribers - number of room members
-	// if error occurred then success = false, and numberOfRoomSubscribers - contains error message
-	if (success) {
-		console.log(numberOfRoomSubscribers + ' clients in room: ' + roomId);
-		// do something
-		
-		// bind events
-		this.on('message', function (message) {
-			console.log(message);
-		});
-		
-		this.on('ping', function () {
-			console.log('Ping!');
-		});
-		
-		this.emit('ping'); // emit ping event
-	} else {
-		// numberOfRoomSubscribers - error message
-		alert(numberOfRoomSubscribers);
-	}
-});
-
-// emit message event
-testRoom.emit('message', {
-	message : {
-		id : 12,
-		title : 'This is a test message'
-	}
+socket.onConnect(function () {
+	var testRoom = socket.room('testRoom').join(function (success, numberOfRoomSubscribers) {
+		// success - boolean, numberOfRoomSubscribers - number of room members
+		// if error occurred then success = false, and numberOfRoomSubscribers - contains error message
+		if (success) {
+			console.log(numberOfRoomSubscribers + ' clients in room: ' + roomId);
+			// do something
+			
+			// bind events
+			this.on('message', function (message) {
+				console.log(message);
+			});
+			
+			this.on('ping', function () {
+				console.log('Ping!');
+			});
+			
+			this.emit('ping'); // emit ping event
+		} else {
+			// numberOfRoomSubscribers - error message
+			alert(numberOfRoomSubscribers);
+		}
+	});
+	
+	// emit message event
+	testRoom.emit('message', {
+		message : {
+			id : 12,
+			title : 'This is a test message'
+		}
+	});
 });
 
 ```
