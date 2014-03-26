@@ -22,6 +22,13 @@ class NodeSocket extends CApplicationComponent {
 	public $host = '127.0.0.1';
 
 	/**
+	 * If your session var name is SID or other change this value to it
+	 *
+	 * @var string
+	 */
+	public $sessionVarName = 'PHPSESSID';
+
+	/**
 	 * @var int by default is once month
 	 */
 	public $cookieLifeTime = 2592000;

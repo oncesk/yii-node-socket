@@ -10,5 +10,6 @@ module.exports = {
 	origin : '<?php echo $nodeSocket->getOrigin(); ?>',
 	allowedServers : <?php echo json_encode($nodeSocket->getAllowedServersAddresses()); ?>,
 	dbOptions : <?php echo json_encode($nodeSocket->getDb()->getConnectionOptions()); ?>,
-	checkClientOrigin : <?php echo (int)$nodeSocket->checkClientOrigin; ?>
+	checkClientOrigin : <?php echo (int)$nodeSocket->checkClientOrigin; ?>,
+	sessionVarName : '<?php echo $nodeSocket->sessionVarName; ?>'
 };
