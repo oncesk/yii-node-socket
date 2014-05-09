@@ -30,7 +30,7 @@ Install extension
  * Using git clone
 
 ```bash
-$> git clone git@github.com:oncesk/yii-node-socket.git
+$> git clone https://github.com/oncesk/yii-node-socket.git
 ```
 
 Now go to the folder where you install extension  ***application.ext.yii-node-socket*** and execute<br>
