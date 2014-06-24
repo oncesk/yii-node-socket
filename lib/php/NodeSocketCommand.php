@@ -15,19 +15,19 @@ class NodeSocketCommand extends CConsoleCommand {
 	public $componentName = 'nodeSocket';
 
 	/**
+	 * @var string
+	 */
+	public $pathToNodeJs = 'node';
+
+	/**
 	 * @var int
 	 */
 	protected $_pid;
 
 	/**
-	 * @var string
+	 * @var \YiiNodeSocket\Console\ConsoleInterface
 	 */
-	protected $_command = 'node %s';
-
-	/**
-	 * @var string
-	 */
-	protected $_stopCommand = 'kill %s';
+	private $_console;
 
 	public function actionStart() {
 		if (!$this->_start()) {
@@ -109,7 +109,7 @@ EOD;
 			'server',
 			'server.js'
 		));
-		return sprintf($this->_command, $server);
+		return $this->pathToNodeJs . ' ' . $server;
 	}
 
 	/**
@@ -131,13 +131,7 @@ EOD;
 		if ($pid == 0) {
 			return false;
 		}
-		$command = 'ps -p ' . $pid;
-		exec($command,$op);
-		if (!isset($op[1])) {
-			return false;
-		} else {
-			return true;
-		}
+		return $this->getConsole()->isInProgress($pid);
 	}
 
 	/**
@@ -197,8 +191,7 @@ EOD;
 		$pid = $this->getPid();
 		if ($pid && $this->isInProgress()) {
 			printf("Stopping socket server\n");
-			$command = sprintf($this->_stopCommand, $this->getPid());
-			exec($command);
+			$this->getConsole()->stopServer($this->getPid());
 			if (!$this->isInProgress()) {
 				printf("Server successfully stopped\n");
 				$this->_pid = 0;
@@ -222,13 +215,27 @@ EOD;
 		$this->compileServer();
 		$this->compileClient();
 		printf("Starting server\n");
-		$command = 'nohup ' . $this->makeCommand() . ' > ' . $this->getLogFile() . ' 2>&1 & echo $!';
-		exec($command, $op);
-		$this->_pid = (int) $op[0];
+		$this->_pid = $this->getConsole()->startServer($this->makeCommand(), $this->getLogFile());
 		if ($this->_pid) {
 			printf("Server successfully started\n");
 			return $this->writePid();
 		}
 		return false;
+	}
+
+
+	/**
+	 * @return \YiiNodeSocket\Console\ConsoleInterface
+	 */
+	private function getConsole() {
+		if ($this->_console) {
+			return $this->_console;
+		}
+		if (strpos(PHP_OS, 'WIN') !== false) {
+			$this->_console = new \YiiNodeSocket\Console\WinConsole();
+		} else {
+			$this->_console = new \YiiNodeSocket\Console\UnixConsole();
+		}
+		return $this->_console;
 	}
 }

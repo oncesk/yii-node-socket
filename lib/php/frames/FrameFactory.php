@@ -1,8 +1,10 @@
 <?php
-namespace YiiNodeSocket\Frame;
+namespace YiiNodeSocket\Frames;
 
 require_once 'AFrame.php';
 require_once 'Event.php';
+require_once 'Authentication.php';
+require_once 'UserEvent.php';
 require_once 'ChannelEvent.php';
 require_once 'Multiple.php';
 require_once 'PublicData.php';
@@ -63,5 +65,19 @@ class FrameFactory implements IFrameFactory {
 	 */
 	public function createJQueryFrame() {
 		return new JQuery($this->_nodeSocket);
+	}
+
+	/**
+	 * @return Authentication
+	 */
+	public function createAuthenticationFrame() {
+		return new Authentication($this->_nodeSocket);
+	}
+
+	/**
+	 * @return UserEvent
+	 */
+	public function createUserEventFrame() {
+		return new UserEvent($this->_nodeSocket);
 	}
 }

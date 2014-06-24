@@ -1,5 +1,5 @@
 <?php
-namespace YiiNodeSocket\Frame;
+namespace YiiNodeSocket\Frames;
 
 class ChannelEvent extends Event {
 
@@ -11,13 +11,13 @@ class ChannelEvent extends Event {
 	}
 
 	/**
-	 * @param $channelId
+	 * @param string $action
 	 *
 	 * @return ChannelEvent
 	 */
-	public function setChannel($channelId) {
-		if ((is_string($channelId) || is_int($channelId)) && !empty($channelId)) {
-			$this->addMetaData('channel', $channelId);
+	public function setAction($action) {
+		if ((is_string($action) || is_int($action)) && !empty($action)) {
+			$this->addMetaData('action', $action);
 		}
 		return $this;
 	}
@@ -26,6 +26,6 @@ class ChannelEvent extends Event {
 	 * @return bool
 	 */
 	public function isValid() {
-		return false;
+		return $this->hasMetaData('action');
 	}
 }

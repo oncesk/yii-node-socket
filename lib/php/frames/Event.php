@@ -1,5 +1,5 @@
 <?php
-namespace YiiNodeSocket\Frame;
+namespace YiiNodeSocket\Frames;
 
 class Event extends AFrame {
 
@@ -30,6 +30,18 @@ class Event extends AFrame {
 	public function setRoom($room) {
 		if ((is_string($room) || is_numeric($room)) && !empty($room)) {
 			$this->addMetaData('room', $room);
+		}
+		return $this;
+	}
+
+	/**
+	 * @param string $channel
+	 *
+	 * @return Event
+	 */
+	public function setChannel($channel) {
+		if ((is_string($channel) || is_numeric($channel)) && !empty($channel)) {
+			$this->addMetaData('channel', $channel);
 		}
 		return $this;
 	}

@@ -1,5 +1,5 @@
 <?php
-namespace YiiNodeSocket\Frame;
+namespace YiiNodeSocket\Frames;
 
 abstract class AFrame implements \ArrayAccess {
 
@@ -12,6 +12,7 @@ abstract class AFrame implements \ArrayAccess {
 	const TYPE_PUBLIC_DATA = 'public_data';
 	const TYPE_INVOKE = 'invoke';
 	const TYPE_JQUERY = 'jquery';
+	const TYPE_LOGOUT = 'logout';
 
 	protected $_id;
 
@@ -157,8 +158,14 @@ abstract class AFrame implements \ArrayAccess {
 	protected function emit() {
 		$client = $this->createClient();
 		$client->origin = $this->_nodeSocket->getOrigin();
+		$client->sendCookie = true;
+		$client->cookie = implode('; ', array(
+			'PHPSESSID=' . \Yii::app()->session->getSessionID(),
+			'expires=' . (time() + $this->_nodeSocket->cookieLifeTime)
+		));
 		$client->setHandshakeTimeout($this->_nodeSocket->handshakeTimeout);
 		$client->init();
+
 		$client
 			->createFrame()
 			->endPoint('/server')

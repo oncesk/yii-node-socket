@@ -1,8 +1,8 @@
 <?php
-namespace YiiNodeSocket\Frame;
+namespace YiiNodeSocket\Frames;
 
 require_once __DIR__ . '/../components/frames/JQuerySelector.php';
-use YiiNodeSocket\Component\Frame\JQuerySelector;
+use YiiNodeSocket\Components\Frames\JQuerySelector;
 
 class JQuery extends Event {
 
