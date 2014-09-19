@@ -13,7 +13,7 @@ class WinConsole implements ConsoleInterface {
 	 * @return boolean
 	 */
 	public function stopServer($pid) {
-		$command = 'taskkill /f /PID ' . $pid;
+		$command = 'taskkill /f /PID ' . $this->parseProccess($pid);
         	exec($command);
 	}
 
@@ -29,7 +29,7 @@ class WinConsole implements ConsoleInterface {
 	        $status = proc_get_status($process);
 	        $pid = $status['pid'];
 	        if ($pid) {
-	            return $this->parseProccess($pid);
+	            return $pid;
 	        } else {
 	            return false;
 	        }
@@ -41,17 +41,16 @@ class WinConsole implements ConsoleInterface {
 	 * @return boolean
 	 */
 	public function isInProgress($pid) {
-		$pidCompare = $this->parseProccess($pid);
-	        if($pidCompare === $pid) {
-	            return true;
-	        }
-	        else {
-	            return false;
-	        }
+		$findProccess = $this->parseProccess($pid);
+		if ($findProccess) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	protected function parseProccess($pid) {
-	        $output = array_filter(explode(" ", shell_exec("wmic process get parentprocessid,processid | find \"$pid\"")));
+	        $output = array_filter(explode(" ", shell_exec("wmic process where ParentProcessId=\"$pid\" get processid")));
 	        array_pop($output);
 	        return (int)end($output);
 	}
