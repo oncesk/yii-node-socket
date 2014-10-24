@@ -21,6 +21,7 @@ Connect php, javascript, nodejs in one Yii application.
  - linux/unix/windows
  - git
  - vps or dedicated server (for nodejs process)
+ - curl has to be installed or enabled
 
 #Installation
 
