@@ -10,7 +10,7 @@
 	<li>2. Open "Send simple event" or "Send simple room event" and see result on "Go to this page for catch events example"</li>
 </ul>
 <ul>
-	<li><a href="<?php echo $this->createUrl('nsEventExample/eventListener');?>" target="_blank">Go to this page for catch events example</a></li>
-	<li><a href="<?php echo $this->createUrl('nsEventExample/sendEvent');?>">Send simple event</a></li>
-	<li><a href="<?php echo $this->createUrl('nsEventExample/sendRoomEvent');?>">Send simple room event</a></li>
+	<li><a href="<?php echo $this->createUrl('eventListener');?>" target="_blank">Go to this page for catch events example</a></li>
+	<li><a href="<?php echo $this->createUrl('sendEvent');?>">Send simple event</a></li>
+	<li><a href="<?php echo $this->createUrl('sendRoomEvent');?>">Send simple room event</a></li>
 </ul>

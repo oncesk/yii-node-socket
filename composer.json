@@ -7,5 +7,9 @@
 			"name": "Alexey Panasik",
 			"email": "unnfly@gmail.com"
 		}
-	]
+	],
+        "autoload": {
+            "psr-0": { "YiiNodeSocket": "lib/php/" },
+            "files": ["lib/php/components/Autoload.php"]
+        }
 }

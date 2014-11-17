@@ -1,8 +1,12 @@
 <?php
+namespace YiiNodeSocket;
+
+use Yii;
+
 require_once 'frames/IFrameFactory.php';
 require_once 'frames/FrameFactory.php';
 
-class NodeSocket extends CApplicationComponent {
+class NodeSocket extends yii\base\Component {
 
 	/**
 	 * Node js server host to bind http and socket server
@@ -19,7 +23,7 @@ class NodeSocket extends CApplicationComponent {
 	 *
 	 * @var string
 	 */
-	public $host = '127.0.0.1';
+	public $host = '0.0.0.0';
 
 	/**
 	 * If your session var name is SID or other change this value to it
@@ -114,13 +118,16 @@ class NodeSocket extends CApplicationComponent {
 			'Client.php'
 		));
 
-		spl_autoload_unregister(array('YiiBase','autoload'));
+//		spl_autoload_unregister(array('YiiBase','autoload'));
 		require_once 'components/Autoload.php';
 		\YiiNodeSocket\Component\Autoload::register(__DIR__);
-		spl_autoload_register(array('YiiBase','autoload'));
-
+//		spl_autoload_register(array('YiiBase','autoload'));
+    if (function_exists('__autoload')) {
+        // Be polite and ensure that userland autoload gets retained
+        spl_autoload_register('__autoload');
+    }
 		$this->_frameFactory = new \YiiNodeSocket\Frames\FrameFactory($this);
-		$this->_db = new YiiNodeSocket\Components\Db($this);
+		$this->_db = new \YiiNodeSocket\Components\Db($this);
 		foreach ($this->dbConfiguration as $k => $v) {
 			$this->_db->$k = $v;
 		}
@@ -147,10 +154,10 @@ class NodeSocket extends CApplicationComponent {
 		if ($this->_assetUrl) {
 			return true;
 		}
-		$this->_assetUrl = Yii::app()->assetManager->publish(__DIR__ . '/../js/client');
+		$this->_assetUrl = \Yii::$app->assetManager->publish(__DIR__ . '/../js/client');
 		if ($this->_assetUrl) {
-			Yii::app()->clientScript->registerScriptFile(sprintf("http://%s:%d%s", $this->host, $this->port, '/socket.io/socket.io.js'));
-			Yii::app()->clientScript->registerScriptFile($this->_assetUrl . '/client.js');
+			\Yii::$app->getView()->registerJsFile(sprintf("http://%s:%d%s", $this->host, $this->port, '/socket.io/socket.io.js'));
+			\Yii::$app->getView()->registerJsFile(array_pop($this->_assetUrl) . '/client.js');
 			return true;
 		}
 		return false;
@@ -160,8 +167,9 @@ class NodeSocket extends CApplicationComponent {
 	 * @return string
 	 */
 	public function getOrigin() {
-		$origin = $this->host . ':*';
+		// $origin = $this->host . ':*';
 
+        $origin = '';
 		if ($this->origin) {
 			$o = array();
 			if (is_string($this->origin)) {
@@ -175,6 +183,9 @@ class NodeSocket extends CApplicationComponent {
 				$origin .= ' ' . implode(' ', $o);
 			}
 		}
+        if (!$origin) {
+            $origin = $this->host . ':*';
+        }
 		return $origin;
 	}
 

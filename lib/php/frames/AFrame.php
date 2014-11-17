@@ -44,7 +44,7 @@ abstract class AFrame implements \ArrayAccess {
 	/**
 	 * @param \NodeSocket $nodeSocket
 	 */
-	public function __construct(\NodeSocket $nodeSocket) {
+	public function __construct(\YiiNodeSocket\NodeSocket $nodeSocket) {
 		$this->_nodeSocket = $nodeSocket;
 		$this->_createContainer();
 		$this->init();
@@ -160,7 +160,7 @@ abstract class AFrame implements \ArrayAccess {
 		$client->origin = $this->_nodeSocket->getOrigin();
 		$client->sendCookie = true;
 		$client->cookie = implode('; ', array(
-			'PHPSESSID=' . \Yii::app()->session->getSessionID(),
+			'PHPSESSID=' . \Yii::$app->session->id,
 			'expires=' . (time() + $this->_nodeSocket->cookieLifeTime)
 		));
 		$client->setHandshakeTimeout($this->_nodeSocket->handshakeTimeout);
@@ -237,7 +237,7 @@ abstract class AFrame implements \ArrayAccess {
 			'meta' => array(
 				'id' => $this->getId(),
 				'type' => $this->getType(),
-				'sid' => \Yii::app()->session->sessionID,
+				'sid' => \Yii::$app->session->id,
 				'data' => array()
 			),
 			'data' => array()
