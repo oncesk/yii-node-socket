@@ -109,14 +109,6 @@ class NodeSocket extends yii\base\Component {
 
 	public function init() {
 		parent::init();
-		require_once __DIR__ . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, array(
-			'..',
-			'vendor',
-			'elephant.io',
-			'lib',
-			'ElephantIO',
-			'Client.php'
-		));
 
 //		spl_autoload_unregister(array('YiiBase','autoload'));
 		require_once 'components/Autoload.php';

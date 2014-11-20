@@ -1,15 +1,18 @@
 {
-	"name": "oncesk/yii-node-socket",
-	"description": "Реализует связь между php и client javascript по средству сокет соединения.",
-	"minimum-stability": "stable",
-	"authors": [
-		{
-			"name": "Alexey Panasik",
-			"email": "unnfly@gmail.com"
-		}
-	],
-        "autoload": {
-            "psr-0": { "YiiNodeSocket": "lib/php/" },
-            "files": ["lib/php/components/Autoload.php"]
+    "name": "oncesk/yii-node-socket",
+    "description": "Реализует связь между php и client javascript по средству сокет соединения.",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Alexey Panasik",
+            "email": "unnfly@gmail.com"
         }
+    ],
+    "require": {
+        "oncesk/elephant.io": "*"
+    },
+    "autoload": {
+        "psr-0": { "YiiNodeSocket": "lib/php/" },
+        "files": ["lib/php/Autoload.php"]
+    }
 }
