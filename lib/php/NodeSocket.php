@@ -111,8 +111,8 @@ class NodeSocket extends yii\base\Component {
 		parent::init();
 
 //		spl_autoload_unregister(array('YiiBase','autoload'));
-		require_once 'components/Autoload.php';
-		\YiiNodeSocket\Component\Autoload::register(__DIR__);
+		require_once 'Autoload.php';
+		\YiiNodeSocket\Autoload::register(__DIR__);
 //		spl_autoload_register(array('YiiBase','autoload'));
     if (function_exists('__autoload')) {
         // Be polite and ensure that userland autoload gets retained
@@ -146,10 +146,34 @@ class NodeSocket extends yii\base\Component {
 		if ($this->_assetUrl) {
 			return true;
 		}
-		$this->_assetUrl = \Yii::$app->assetManager->publish(__DIR__ . '/../js/client');
+		$this->_assetUrl = \Yii::$app->assetManager->publish('@nodeWeb');
 		if ($this->_assetUrl) {
 			\Yii::$app->getView()->registerJsFile(sprintf("http://%s:%d%s", $this->host, $this->port, '/socket.io/socket.io.js'));
 			\Yii::$app->getView()->registerJsFile(array_pop($this->_assetUrl) . '/client.js');
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function registerAssets($view) {
+		if ($this->_assetUrl) {
+			return true;
+		}
+        $socketIO = \sprintf("http://%s:%d%p",
+            $this->host,
+            $this->port,
+            '/socket.io/socket.io.js'
+        );
+
+        $view->getAssetManager()->bundles['NodeAssets'] = new \YiiNodeSocket\Assets\NodeAssets();
+        $view->getAssetManager()->bundles['NodeAssets']->js[] = $socketIO;
+        $view->getAssetManager()->bundles['NodeAssets']->publish($view->getAssetManager());
+		$nodeClientAssets = $view->registerAssetBundle('NodeAssets');
+        $this->_assetUrl = $nodeClientAssets->sourcePath;
+		if ($this->_assetUrl) {
 			return true;
 		}
 		return false;

@@ -1,5 +1,3 @@
 node_modules
-client.js
-lib/js/server/server.config.js
 tests/php/bootstrap.php
 /nbproject

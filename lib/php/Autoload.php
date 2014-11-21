@@ -1,32 +1,34 @@
 <?php
-
 namespace YiiNodeSocket;
 
-/**
- * This is just an example.
- */
-class Autoload extends \yii\base\Widget
-{
-    public function run()
-    {
-        spl_autoload_register(function ($className) {
-            $className = ltrim($className, '\\');
-            $fileName = '';
-            $namespace = '';
-            if ($lastNsPos = strripos($className, '\\')) {
-                $namespace = substr($className, 0, $lastNsPos);
-                $className = substr($className, $lastNsPos + 1);
-                $fileName = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
-            }
-            $fileName = __DIR__ . DIRECTORY_SEPARATOR . $fileName . $className . '.php';
-            if (file_exists($fileName)) {
-                require $fileName;
+class Autoload {
 
-                return true;
-            }
+	public static function register($nodeSocketDirectory) {
+		$loader = new Autoload($nodeSocketDirectory);
+		spl_autoload_register(array($loader, 'autoload'));
+	}
 
-            return false;
-        });
+	private $_nodeSocketDirectory;
 
-    }
+	/**
+	 * @param $dir
+	 */
+	public function __construct($dir) {
+		$this->_nodeSocketDirectory = $dir . DIRECTORY_SEPARATOR;
+	}
+
+	public function autoload($className, $classMapOnly=false) {
+		if (strpos($className, 'YiiNodeSocket\\') === 0) {
+			$class = $this->_nodeSocketDirectory;
+			$chunks = explode('\\', $className);
+			array_shift($chunks);
+			$cl = array_pop($chunks);
+			$class .= strtolower(join('/', $chunks)) . '/' . $cl . '.php';
+			if (file_exists($class)) {
+				include $class;
+				return true;
+			}
+			return false;
+		}
+	}
 }
