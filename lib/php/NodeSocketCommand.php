@@ -1,4 +1,7 @@
 <?php
+namespace YiiNodeSocket;
+
+use Yii;
 /**
  * Created by JetBrains PhpStorm.
  * User: once
@@ -7,7 +10,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-class NodeSocketCommand extends CConsoleCommand {
+class NodeSocketCommand extends \yii\console\Controller {
 
 	/**
 	 * @var string
@@ -120,7 +123,7 @@ EOD;
 		if ($logFile) {
 			return $logFile;
 		}
-		return Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'socket-transport.server.log';
+		return \Yii::$app->getRuntimePath() . DIRECTORY_SEPARATOR . 'socket-transport.server.log';
 	}
 
 	/**
@@ -138,9 +141,10 @@ EOD;
 	 * @return NodeSocket
 	 */
 	protected function getComponent() {
-		$component = Yii::app()->getComponent($this->componentName);
-		if (isset($component)) {
-			return $component;
+                $thisComponentName = $this->componentName;
+                
+		if (isset(\Yii::$app->$thisComponentName)) {
+			return \Yii::$app->$thisComponentName;
 		}
 		$this->usageError('Please provide valid socket transport component name like in config');
 	}
@@ -181,7 +185,7 @@ EOD;
 	 * @return string
 	 */
 	protected function getPidFile() {
-		return Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . $this->getComponent()->pidFile;
+		return \Yii::$app->getRuntimePath() . DIRECTORY_SEPARATOR . $this->getComponent()->pidFile;
 	}
 
 	/**
