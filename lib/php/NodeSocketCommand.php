@@ -216,8 +216,8 @@ EOD;
 			printf("Server already started\n");
 			return true;
 		}
-//		$this->compileServer();
-//		$this->compileClient();
+		$this->compileServer();
+		$this->compileClient();
 		printf("Starting server\n");
 		$this->_pid = $this->getConsole()->startServer($this->makeCommand(), $this->getLogFile());
 		if ($this->_pid) {
