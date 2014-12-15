@@ -156,33 +156,13 @@ class NodeSocket extends yii\base\Component {
      * @return bool
      */
     public function registerClientScripts() {
+        
         if ($this->_assetUrl) {
             return true;
         }
-        $this->_assetUrl = \Yii::$app->assetManager->publish('@nodeWeb');
-        if ($this->_assetUrl) {
-            \Yii::$app->getView()->registerJsFile(sprintf("http://%s:%d%s", $this->host, $this->port, '/socket.io/socket.io.js'));
-            \Yii::$app->getView()->registerJsFile(array_pop($this->_assetUrl) . '/client.js');
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * @return bool
-     */
-    public function registerAssets($view) {
-        if ($this->_assetUrl) {
-            return true;
-        }
-        $socketIO = \sprintf("http://%s:%d%p", $this->host, $this->port, '/socket.io/socket.io.js'
-        );
-
-        $view->getAssetManager()->bundles['NodeAssets'] = new \YiiNodeSocket\Assets\NodeAssets();
-        $view->getAssetManager()->bundles['NodeAssets']->js[] = $socketIO;
-        $view->getAssetManager()->bundles['NodeAssets']->publish($view->getAssetManager());
-        $nodeClientAssets = $view->registerAssetBundle('NodeAssets');
-        $this->_assetUrl = $nodeClientAssets->sourcePath;
+        
+        $assets = YiiNodeSocket\Assets\NodeAssets::register(\Yii::$app->getView());
+        $this->_assetUrl = $assets->publish('@nodeWeb');
         if ($this->_assetUrl) {
             return true;
         }

@@ -9,7 +9,7 @@ use yii\web\AssetBundle;
  * @author Woody <Woody@HandBid.com>
  * @since 1.0
  */
-class NodeAssets extends AssetBundle
+class NodeSocketAssets extends AssetBundle
 {
 
     public $sourcePath = '@nodeWeb';
