@@ -2,7 +2,7 @@
 
 namespace YiiNodeSocket;
 
-use Yii;
+use YiiNodeSocket\Assets\NodeSocketAssets;
 
 require_once 'frames/IFrameFactory.php';
 require_once 'frames/FrameFactory.php';
@@ -161,7 +161,7 @@ class NodeSocket extends yii\base\Component {
             return true;
         }
         
-        $assets = YiiNodeSocket\Assets\NodeAssets::register(\Yii::$app->getView());
+        $assets = NodeSocketAssets::register(\Yii::$app->getView());
         $this->_assetUrl = $assets->publish('@nodeWeb');
         if ($this->_assetUrl) {
             return true;
