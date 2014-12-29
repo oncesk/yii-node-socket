@@ -13,7 +13,7 @@ abstract class AComponent {
 	 */
 	protected $_nodeSocket;
 
-	public function __construct(\NodeSocket $nodeSocket) {
+	public function __construct(\YiiNodeSocket\NodeSocket $nodeSocket) {
 		$this->_nodeSocket = $nodeSocket;
 	}
 }

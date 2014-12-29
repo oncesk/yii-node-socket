@@ -1,5 +1,5 @@
 <?php
-namespace YiiNodeSocket\Component;
+namespace YiiNodeSocket;
 
 class Autoload {
 

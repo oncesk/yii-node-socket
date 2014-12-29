@@ -21,7 +21,7 @@ class FrameFactory implements IFrameFactory {
 	/**
 	 * @param \NodeSocket $transport
 	 */
-	public function __construct(\NodeSocket $transport) {
+	public function __construct(\YiiNodeSocket\NodeSocket $transport) {
 		$this->_nodeSocket = $transport;
 	}
 

@@ -2,7 +2,7 @@
 namespace YiiNodeSocket\Behaviors;
 
 use YiiNodeSocket\Components\ArEvent;
-
+use yii\behaviors\AttributeBehavior;
 /**
  * Class ArBehavior
  *
@@ -10,7 +10,7 @@ use YiiNodeSocket\Components\ArEvent;
  *
  * @package YiiNodeSocket\Behavior
  */
-abstract class ArBehavior extends \CActiveRecordBehavior {
+abstract class ArBehavior extends AttributeBehavior {
 
 	/**
 	 * @var string

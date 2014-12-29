@@ -13,8 +13,9 @@ Connect php, javascript, nodejs in one Yii application.
 - send events from javascript for all clients or clients in concrete room or channel
 
 ##Changes
-
- - for frames creation you should use Yii::app()->nodeSocket->getFrameFactory()
+ - Updated for Yii 2.0
+ - Added Namespacing Updated for Yii 2.0
+ - Commposer settings updated to work with yii extension updates
 
 ##Requirements
 
@@ -41,33 +42,51 @@ $> git submodule update
 ```
 
 Yii configuration<br>
- * Configure console command in (***main/console.php***). You can use config below:
+ * Configure console command in (***console/config/main.php***). You can use config below:
 
 ```php
-'commandMap' => array(
-	'node-socket' => 'application.extensions.yii-node-socket.lib.php.NodeSocketCommand'
-)
+    'controllerMap' => [
+        'node-socket' => '\YiiNodeSocket\NodeSocketCommand',
+    ],
 ```
 
- * Register Yii component, need to add into **main.php and console.php**:
+ * Register Yii component, need to add into **frontend/config/main.php in your frontend application**:
 
 ```php
-'nodeSocket' => array(
-	'class' => 'application.extensions.yii-node-socket.lib.php.NodeSocket',
-	'host' => 'localhost',	// default is 127.0.0.1, can be ip or domain name, without http
-	'port' => 3001		// default is 3001, should be integer
-)
+		'nodeSocket' => [
+		    'class' => '\YiiNodeSocket\NodeSocket',
+		    'dbOptions' => '',
+		    'host' => 'localhost',
+		    'allowedServerAddresses' => [
+		        "localhost",
+		        "127.0.0.1"
+		    ],
+		    'origin' => '*:*',
+		    'sessionVarName' => 'PHPSESSID',
+		    'port' => 3001,
+		    'socketLogFile' => '/var/log/node-socket.log',
+		],
 ```
 > Notice: ***host*** should be a domain name like in you virtual host configuration or server ip address if you request page using ip address
+
+ * Configure aliases in the common config in (***common/config/main.php***). 
+ * The first is for Yii to find the PHP Namespace and the second is to find the JS assets.
+ * You can use config below:
+
+```php
+
+    'aliases' => [
+        '@YiiNodeSocket' => '@vendor/oncesk/yii-node-socket/lib/php',
+        '@nodeWeb' => '@vendor/oncesk/yii-node-socket/lib/js'
+    ],
+```
 
 
 > Notice: if you will be use ***behaviors*** or node-socket models, you need to add nodeSocket component in ***preload*** components list
 
 ```php
 
-'preload' => array(
-	'nodeSocket'
-)
+    'bootstrap' => ['log', 'nodeSocket'],
 
 ```
 
@@ -100,11 +119,11 @@ $> ./yiic node-socket getPid # show pid of nodejs process
 ##Javascript
 
 Before use in javascript, register client stripts like here
-
+Depricated in Yii 2.0 - The Asset Manager registers the files on demand.
 ```php
 public function actionIndex() {
 	// register node socket scripts
-	Yii::app()->nodeSocket->registerClientScripts();
+	// No longer needed - Yii::app()->nodeSocket->registerClientScripts();
 }
 ```
 
