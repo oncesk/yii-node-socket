@@ -2,12 +2,13 @@
 
 namespace YiiNodeSocket;
 
+use yii\base\Component;
 use YiiNodeSocket\Assets\NodeSocketAssets;
 
 require_once 'frames/IFrameFactory.php';
 require_once 'frames/FrameFactory.php';
 
-class NodeSocket extends yii\base\Component {
+class NodeSocket extends Component {
 
     /**
      * Node js server host to bind http and socket server
