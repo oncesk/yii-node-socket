@@ -3,6 +3,10 @@ Yii Node Socket
 
 Connect php, javascript, nodejs in one Yii application.
 
+####Yii1
+
+Hi, if you need work with yii1 you can do it from (https://github.com/oncesk/yii-node-socket/tree/2.0.0)
+
 ####What you can do:
 
 - send event(s) to all clients or in concrete room or in concrete channel
