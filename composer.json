@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "oncesk/elephant.io": "*"
+        "wisembly/elephant.io": "*"
     },
     "autoload": {
         "psr-0": { "YiiNodeSocket": "lib/php/" },
