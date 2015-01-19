@@ -12,11 +12,11 @@
         "oncesk/elephant.io": "*"
     },
     "repositories" : [
-	    {
-			"type" : "git",
-			"url" : "https://github.com/oncesk/elephant.io.git"
-		}
-	]
+	{
+		"type" : "git",
+		"url" : "https://github.com/oncesk/elephant.io.git"
+	}
+    ],
     "autoload": {
         "psr-4": {
             "YiiNodeSocket\\": "lib/php/"
