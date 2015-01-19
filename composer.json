@@ -12,7 +12,8 @@
         "oncesk/elephant.io": "*"
     },
     "autoload": {
-        "psr-0": { "YiiNodeSocket": "lib/php/" },
-        "files": ["lib/php/Autoload.php"]
+        "psr-4": {
+            "YiiNodeSocket": "lib/php/"
+        }
     }
 }
