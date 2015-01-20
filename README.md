@@ -33,6 +33,22 @@ Hi, if you need work with yii1 you can do it from (https://github.com/oncesk/yii
 Install nodejs, if not installed see http://nodejs.org/<br>
 Install extension
 
+ * Composer
+ * 
+```javascript
+{
+        "require" : {
+                "oncesk/yii-node-socket" : "2.0.2"
+        },
+        "repositories" : [
+                {
+                        "type" : "git",
+                        "url" : "https://github.com/oncesk/elephant.io.git"
+                }
+        ]
+}
+```
+
  * Using git clone
 
 ```bash
