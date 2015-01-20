@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "oncesk/elephant.io": "dev-master"
+        "oncesk/elephant.io": "*"
     },
     "repositories" : [
 	{
