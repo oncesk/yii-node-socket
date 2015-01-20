@@ -34,7 +34,7 @@ Install nodejs, if not installed see http://nodejs.org/<br>
 Install extension
 
  * Composer
- * 
+
 ```javascript
 {
         "require" : {
