@@ -13,7 +13,7 @@
     },
     "repositories" : [
 	{
-		"type" : "git",
+		"type" : "vcs",
 		"url" : "https://github.com/oncesk/elephant.io.git"
 	}
     ],
