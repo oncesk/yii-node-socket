@@ -38,14 +38,8 @@ Install extension
 ```javascript
 {
         "require" : {
-                "oncesk/yii-node-socket" : "2.0.2"
-        },
-        "repositories" : [
-                {
-                        "type" : "git",
-                        "url" : "https://github.com/oncesk/elephant.io.git"
-                }
-        ]
+                "oncesk/yii-node-socket" : "2.0.3"
+        }
 }
 ```
 
