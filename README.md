@@ -69,7 +69,6 @@ Yii configuration<br>
 ```php
 		'nodeSocket' => [
 		    'class' => '\YiiNodeSocket\NodeSocket',
-		    'dbOptions' => '',
 		    'host' => 'localhost',
 		    'allowedServerAddresses' => [
 		        "localhost",
