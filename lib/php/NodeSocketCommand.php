@@ -60,6 +60,14 @@ class NodeSocketCommand extends \yii\console\Controller {
 		echo (int)$this->getPid() . "\n";
 	}
 
+	/**
+	 * @param $error
+	 */
+	protected function usageError($error) {
+		print "ERROR: " . $error . "\n";
+		exit(1);
+	}
+
 	public function getHelp() {
 		return <<<EOD
 USAGE
@@ -141,10 +149,10 @@ EOD;
 	 * @return NodeSocket
 	 */
 	protected function getComponent() {
-                $thisComponentName = $this->componentName;
+		$nodeSocket = \Yii::$app->get($this->componentName);
                 
-		if (isset(\Yii::$app->$thisComponentName)) {
-			return \Yii::$app->$thisComponentName;
+		if ($nodeSocket) {
+			return $nodeSocket;
 		}
 		$this->usageError('Please provide valid socket transport component name like in config');
 	}
