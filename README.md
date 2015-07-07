@@ -38,7 +38,7 @@ Install extension
 ```javascript
 {
         "require" : {
-                "oncesk/yii-node-socket" : "2.0.3"
+                "oncesk/yii-node-socket" : "2.0.4"
         }
 }
 ```
