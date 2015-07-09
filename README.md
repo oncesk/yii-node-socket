@@ -118,10 +118,10 @@ Use (**./yiic node-socket**)
 
 ```bash
 $> ./yiic node-socket # show help
-$> ./yiic node-socket start # start server
-$> ./yiic node-socket stop # stop server
-$> ./yiic node-socket restart # restart server
-$> ./yiic node-socket getPid # show pid of nodejs process
+$> ./yiic node-socket/start # start server
+$> ./yiic node-socket/stop # stop server
+$> ./yiic node-socket/restart # restart server
+$> ./yiic node-socket/getPid # show pid of nodejs process
 ```
 
 ##Definitions
