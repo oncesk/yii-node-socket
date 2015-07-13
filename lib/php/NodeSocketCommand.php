@@ -39,7 +39,7 @@ class NodeSocketCommand extends \yii\console\Controller {
            ."./yii node-socket/start     # start server\n"
            ."./yii node-socket/stop      # stop server\n"
            ."./yii node-socket/restart   # restart server\n"
-           ."./yii node-socket/get-pid    # show pid of nodejs process\n\n"
+           ."./yii node-socket/get-pid   # show pid of nodejs process\n\n"
         );
 	}
 
