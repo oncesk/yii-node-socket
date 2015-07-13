@@ -32,6 +32,17 @@ class NodeSocketCommand extends \yii\console\Controller {
 	 */
 	private $_console;
 
+	public function actionIndex() {
+        $this->stdout(
+            "node-socket usage: \n\n"
+           ."./yii node-socket           # show help\n"
+           ."./yii node-socket/start     # start server\n"
+           ."./yii node-socket/stop      # stop server\n"
+           ."./yii node-socket/restart   # restart server\n"
+           ."./yii node-socket/getPid    # show pid of nodejs process\n\n"
+        );
+	}
+
 	public function actionStart() {
 		if (!$this->_start()) {
 			$this->usageError("Cannot start server");
