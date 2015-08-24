@@ -1,6 +1,8 @@
 Yii Node Socket
 =================
 
+[![Join the chat at https://gitter.im/oncesk/yii-node-socket](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/oncesk/yii-node-socket?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Connect php, javascript, nodejs in one Yii application.
 
 ####Yii1
