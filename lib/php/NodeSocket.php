@@ -5,8 +5,9 @@ namespace YiiNodeSocket;
 use yii\base\Component;
 use YiiNodeSocket\Assets\NodeSocketAssets;
 
-require_once 'frames/IFrameFactory.php';
-require_once 'frames/FrameFactory.php';
+/**
+ * @method YiiNodeSocket\Frames\IFrameFactory createEventFrame()
+ */
 
 class NodeSocket extends Component {
 
@@ -123,7 +124,7 @@ class NodeSocket extends Component {
 //		spl_autoload_register(array('YiiBase','autoload'));
         if (function_exists('__autoload')) {
             // Be polite and ensure that userland autoload gets retained
-            spl_autoload_register('__autoload');
+            $res =spl_autoload_register('__autoload');
         }
         $this->_frameFactory = new \YiiNodeSocket\Frames\FrameFactory($this);
         $this->_db = new \YiiNodeSocket\Components\Db($this);

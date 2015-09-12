@@ -7,7 +7,7 @@ use YiiNodeSocket\Components\Db\DriverInterface;
  * Class AModel
  * @package YiiNodeSocket\Models
  */
-abstract class AModel extends \CModel{
+abstract class AModel extends \yii\base\Model{
 
 	/**
 	 * @var string
@@ -46,7 +46,9 @@ abstract class AModel extends \CModel{
 
 		$this->_isNewRecord = ($scenario == 'insert');
 		$this->init();
-		$this->afterConstruct();
+                
+//		$this->afterConstruct();
+                
 	}
 
 	/**
@@ -70,13 +72,13 @@ abstract class AModel extends \CModel{
 		}
 	}
 
-	protected function init() {}
+	public function init() {}
 
 	/**
 	 * @return \NodeSocket
 	 */
 	public function getNodeSocket() {
-		return \Yii::app()->nodeSocket;
+		return \Yii::$app->nodeSocket;
 	}
 
 	/**
@@ -94,31 +96,31 @@ abstract class AModel extends \CModel{
 	}
 
 	/**
-	 * @param \CModelEvent $event
+	 * @param \yii\base\ModelEvent $event
 	 */
-	public function onBeforeSave(\CModelEvent $event) {
-		$this->raiseEvent('onBeforeSave', $event);
+	public function onBeforeSave(\yii\base\ModelEvent $event) {
+		$this->trigger('onBeforeSave', $event);
 	}
 
 	/**
-	 * @param \CModelEvent $event
+	 * @param \yii\base\ModelEvent $event
 	 */
-	public function onAfterSave(\CModelEvent $event) {
-		$this->raiseEvent('onAfterSave', $event);
+	public function onAfterSave(\yii\base\ModelEvent $event) {
+		$this->trigger('onAfterSave', $event);
 	}
 
 	/**
-	 * @param \CModelEvent $event
+	 * @param \yii\base\ModelEvent $event
 	 */
-	public function onBeforeDelete(\CModelEvent $event) {
-		$this->raiseEvent('onBeforeDelete', $event);
+	public function onBeforeDelete(\yii\base\ModelEvent $event) {
+		$this->trigger('onBeforeDelete', $event);
 	}
 
 	/**
-	 * @param \CModelEvent $event
+	 * @param \yii\base\ModelEvent $event
 	 */
-	public function onAfterDelete(\CModelEvent $event) {
-		$this->raiseEvent('onAfterDelete', $event);
+	public function onAfterDelete(\yii\base\ModelEvent $event) {
+		$this->trigger('onAfterDelete', $event);
 	}
 
 	/**
@@ -126,7 +128,7 @@ abstract class AModel extends \CModel{
 	 */
 	public function rules() {
 		return array(
-			array('id', 'length', 'allowEmpty' => true),
+			array('id', 'string', 'skipOnEmpty' => true),
 			array('id', 'safe')
 		);
 	}
@@ -217,13 +219,15 @@ abstract class AModel extends \CModel{
 	}
 
 	protected function beforeSave() {
-		$event = new \CModelEvent($this);
+		$event = new \yii\base\ModelEvent();
+                $event->sender = $this;
 		$this->onBeforeSave($event);
 		return $event->isValid;
 	}
 
 	protected function afterSave() {
-		$modelEvent = new \CModelEvent($this);
+		$modelEvent = new \yii\base\ModelEvent();
+                $modelEvent->sender = $this;
 		$this->onAfterSave($modelEvent);
 		if ($modelEvent->isValid) {
 			$event = $this->getNodeSocket()->getFrameFactory()->createChannelEventFrame();
@@ -235,13 +239,15 @@ abstract class AModel extends \CModel{
 	}
 
 	protected function beforeDelete() {
-		$event = new \CModelEvent($this);
+		$event = new \yii\base\ModelEvent();
+                $event->sender = $this;
 		$this->onBeforeDelete($event);
 		return $event->isValid;
 	}
 
 	protected function afterDelete() {
-		$modelEvent = new \CModelEvent($this);
+		$modelEvent = new \yii\base\ModelEvent();
+                $modelEvent->sender = $this;
 		$this->onAfterDelete($modelEvent);
 		if ($modelEvent->isValid) {
 			$event = $this->getNodeSocket()->getFrameFactory()->createChannelEventFrame();

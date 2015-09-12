@@ -1,8 +1,6 @@
 Yii Node Socket
 =================
 
-[![Join the chat at https://gitter.im/oncesk/yii-node-socket](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/oncesk/yii-node-socket?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 Connect php, javascript, nodejs in one Yii application.
 
 ####Yii1
@@ -40,7 +38,7 @@ Install extension
 ```javascript
 {
         "require" : {
-                "oncesk/yii-node-socket" : "2.0.4"
+                "oncesk/yii-node-socket" : "2.0.3"
         }
 }
 ```
@@ -71,6 +69,7 @@ Yii configuration<br>
 ```php
 		'nodeSocket' => [
 		    'class' => '\YiiNodeSocket\NodeSocket',
+		    'dbOptions' => '',
 		    'host' => 'localhost',
 		    'allowedServerAddresses' => [
 		        "localhost",
@@ -120,10 +119,10 @@ Use (**./yiic node-socket**)
 
 ```bash
 $> ./yiic node-socket # show help
-$> ./yiic node-socket/start # start server
-$> ./yiic node-socket/stop # stop server
-$> ./yiic node-socket/restart # restart server
-$> ./yiic node-socket/getPid # show pid of nodejs process
+$> ./yiic node-socket start # start server
+$> ./yiic node-socket stop # stop server
+$> ./yiic node-socket restart # restart server
+$> ./yiic node-socket getPid # show pid of nodejs process
 ```
 
 ##Definitions
