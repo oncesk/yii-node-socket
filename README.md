@@ -64,7 +64,7 @@ Yii configuration<br>
     ],
 ```
 
- * Register Yii component, need to add into **frontend/config/main.php in your frontend application**:
+ * Register Yii component, need to add into **frontend/config/main.php in your frontend application, it's also needed in console/config/main**:
 
 ```php
 		'nodeSocket' => [
@@ -81,7 +81,8 @@ Yii configuration<br>
 		    'socketLogFile' => '/var/log/node-socket.log',
 		],
 ```
-> Notice: ***host*** should be a domain name like in you virtual host configuration or server ip address if you request page using ip address
+> Notice: ***host*** should be a domain name like in you virtual host configuration or server ip address if you request page using ip addres
+> Also, you could see the logs at **console/runtime/socket-transport.server.log** 
 
  * Configure aliases in the common config in (***common/config/main.php***). 
  * The first is for Yii to find the PHP Namespace and the second is to find the JS assets.
@@ -113,18 +114,18 @@ Congratulation, installation completed!
 
 > Notice: if the name of the component will not be **nodeSocket**, your need to use special key in console command --componentName=component_name
 
-###Console command actions
+###Console command actions (Yii2)
 
-Use (**./yiic node-socket**)
+Use (**./yii node-socket**)
 
 ```bash
-$> ./yiic node-socket # show help
-$> ./yiic node-socket start # start server
-$> ./yiic node-socket stop # stop server
-$> ./yiic node-socket restart # restart server
-$> ./yiic node-socket getPid # show pid of nodejs process
+$> ./yii node-socket # show help <-- Not Working
+$> ./yii node-socket start # start server
+$> ./yii node-socket stop # stop server
+$> ./yii node-socket restart # restart server
+$> ./yii node-socket getPid # show pid of nodejs process
 ```
-
+> Notice: in case comes an error about Class User not defined, move the User definition from common/config to frontend/config (or backend)
 ##Definitions
 
  - Frame - data package for nodejs server wrapped into Class. Per one request to nodejs server you can send only 1 frame. For send several frames at a time use Multiple frame.
@@ -139,6 +140,12 @@ public function actionIndex() {
 	// register node socket scripts
 	// No longer needed - Yii::app()->nodeSocket->registerClientScripts();
 }
+```
+> Notice: in order to load assets in Yii2, i needed to add this in the main layout:
+
+```php
+\YiiNodeSocket\Assets\NodeSocketAssets::register($this);
+AppAsset::register($this);
 ```
 
 ###Events
