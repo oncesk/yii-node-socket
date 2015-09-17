@@ -118,6 +118,16 @@ class JQuerySelector {
 		}
 		return $this;
 	}
+        
+        /**
+	 * @param string $class
+	 *
+	 * @return JQuerySelector
+	 */
+	public function play() {		
+                    $this->createAction('play');
+		return $this;
+	}
 
 	/**
 	 * @param string $class
@@ -174,6 +184,14 @@ class JQuerySelector {
 	 */
 	public function remove() {
 		$this->createAction('remove');
+		return $this;
+	}
+        
+        /**
+	 * @return JQuerySelector
+	 */
+	public function get() {
+		$this->createAction('get');
 		return $this;
 	}
 
