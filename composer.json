@@ -1,7 +1,7 @@
 {
     "name": "ratacibernetica/yii2-node-socket",
     "description": "This is a fork of oncesk/yii-node-socket",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "authors": [
 	{
             "name": "Martin Roldan Araujo",
