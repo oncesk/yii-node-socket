@@ -20,7 +20,7 @@ Hi, if you need work with yii1 you can do it from (https://github.com/oncesk/yii
 - call some function or object method in window context
 - you can change DOM model with jquery from php
 - ability to set up data and get it in your javascript application
-- send events from javascript for all clients or clients in concrete room or channel
+- send events from javascript for all clients or clients -in concrete room or channel-
 
 ##Changes
  - Updated for Yii 2.0
@@ -42,32 +42,40 @@ Install extension
  * Composer
 
 ```javascript
-{
-        "require" : {
-                "oncesk/yii-node-socket" : "2.0.3"
-        }
-}
+composer require ratacibernetica/yii2-node-socket
 ```
 
  * Using git clone
 
 ```bash
-$> git clone https://github.com/oncesk/yii-node-socket.git
+$> git clone https://github.com/ratacibernetica/yii2-node-socket.git
 ```
 
-Now go to the folder where you install extension  ***application.ext.yii-node-socket*** and execute<br>
+Now go to the folder where you install extension  ***vendors/ratacibernetica/yii2-node-socket*** and execute<br>
 ```bash
 $> git submodule init
 $> git submodule update
 ```
 
-Yii configuration<br>
+Yii2 configuration<br>
  * Configure console command in (***console/config/main.php***). You can use config below:
 
 ```php
-    'controllerMap' => [
-        'node-socket' => '\YiiNodeSocket\NodeSocketCommand',
-    ],
+	...
+	'controllerMap' => [
+		'node-socket' => '\YiiNodeSocket\NodeSocketCommand',
+	],
+	...
+	'components' => [
+		'nodeSocket' => [
+		    'class' => '\YiiNodeSocket\NodeSocket',
+		    'host' => 'localhost',
+		    'allowedServerAddresses' => [
+		        "localhost",
+		        "127.0.0.1"
+		    ],
+		],
+	],
 ```
 
  * Register Yii component, need to add into **frontend/config/main.php in your frontend application**:
@@ -96,13 +104,14 @@ Yii configuration<br>
 ```php
 
     'aliases' => [
-        '@YiiNodeSocket' => '@vendor/oncesk/yii-node-socket/lib/php',
-        '@nodeWeb' => '@vendor/oncesk/yii-node-socket/lib/js'
-    ],
+        '@YiiNodeSocket' => '@vendor/ratacibernetica/yii2-node-socket/lib/php',
+        '@nodeWeb' => '@vendor/ratacibernetica/yii2-node-socket/lib/js',
+        '@console'=>dirname(dirname(__DIR__)) . '/console',
+    ],   
 ```
 
 
-> Notice: if you will be use ***behaviors*** or node-socket models, you need to add nodeSocket component in ***preload*** components list
+> Notice: if you will be using ***behaviors*** or node-socket models, you need to add nodeSocket component in ***preload*** components list
 
 ```php
 
@@ -119,16 +128,42 @@ Congratulation, installation completed!
 
 > Notice: if the name of the component will not be **nodeSocket**, your need to use special key in console command --componentName=component_name
 
-###Console command actions
+> Notice: It's highly probable that the JS don't load by itself, so we must register the YiiSocketNode Assets in the view/layout.
 
-Use (**./yiic node-socket**)
+```php
+
+use yii\helpers\Html;
+use yii\bootstrap\Nav;
+use yii\bootstrap\NavBar;
+use kartik\form\ActiveForm;
+use frontend\assets\AppAsset;
+use kartik\widgets\AlertBlock;
+
+/* @var $this \yii\web\View */
+/* @var $content string */
+
+
+\YiiNodeSocket\Assets\NodeSocketAssets::register($this);
+AppAsset::register($this);
+?>
+<?php $this->beginPage() ?>
+<!DOCTYPE html>
+<html lang="<?= Yii::$app->language ?>">
+<head>
+...
+```
+Like so.
+
+
+###Console command actions (as administrative user)
+
+Use (**./yii node-socket/<action>**)
 
 ```bash
-$> ./yiic node-socket # show help
-$> ./yiic node-socket start # start server
-$> ./yiic node-socket stop # stop server
-$> ./yiic node-socket restart # restart server
-$> ./yiic node-socket getPid # show pid of nodejs process
+$> ./yii node-socket/start # start server
+$> ./yii node-socket/stop # stop server
+$> ./yii node-socket/restart # restart server
+$> ./yii node-socket/get-pid # show pid of nodejs process
 ```
 
 ##Definitions
@@ -136,16 +171,66 @@ $> ./yiic node-socket getPid # show pid of nodejs process
  - Frame - data package for nodejs server wrapped into Class. Per one request to nodejs server you can send only 1 frame. For send several frames at a time use Multiple frame.
  - room - one or more clients in concrete namespace: every client can create room, other clients can join into concrete room, any client in room can send event in this room.
 
-##Javascript
+###About Yii2's User model
 
-Before use in javascript, register client stripts like here
-Depricated in Yii 2.0 - The Asset Manager registers the files on demand.
+We need to follow these steps to send events to certain Users:
+
 ```php
-public function actionIndex() {
-	// register node socket scripts
-	// No longer needed - Yii::app()->nodeSocket->registerClientScripts();
+    
+/**
+* This is the model class for table "usuer".
+*/
+    ...
+    const EVENT_BEFORE_LOGIN = 'beforeLogin';
+    const EVENT_BEFORE_LOGOUT = 'beforeLogout';
+    const EVENT_AFTER_LOGIN = 'afterLogin';
+    ...
+    /**
+     * Crea un único Frame para autorizar al usuario
+     * y recibir notificaciones exclusivas para él.
+     * @param type $fromCookie
+     */
+    protected function afterLogin($fromCookie) {
+        $frame = \Yii::$app->nodeSocket->getFrameFactory()->createAuthenticationFrame();
+        $frame->setUserId(\Yii::$app->user->id);
+        $frame->send();
+    }
+
+    public function beforeLogin() {
+        
+    }
+
+    public function beforeLogout() {
+        
+    }
+```
+
+####Register these Events
+
+As Yii2 doesnt have those events anymore, we need to add them.
+
+So i created a file named "AppBootstrap":
+```php
+<?php
+namespace frontend\bootstraps;
+use yii\base\BootstrapInterface;
+
+ class AppBootstrap implements BootstrapInterface{
+
+   public function bootstrap($app){
+      $app->user->on(\common\models\Usuario::EVENT_BEFORE_LOGIN,['common\models\Usuario', 'beforeLogin']);
+      $app->user->on(\common\models\Usuario::EVENT_AFTER_LOGIN,['common\models\Usuario', 'afterLogin']);
+      $app->user->on(\common\models\Usuario::EVENT_BEFORE_LOGOUT,['common\models\Usuario', 'beforeLogout']);
+   }
 }
 ```
+
+And add it, indeed, to **frontend/config/main.php**
+```php
+'bootstrap' => ['log','nodeSocket','frontend\bootstraps\AppBootstrap'],
+```
+
+So, we just subscribed the logged user to node's service (or something like that, not sure).
 
 ###Events
 
