@@ -109,6 +109,10 @@ Install ***nodejs*** components in ***application.ext.yii-node-socket.lib.js.ser
 ```bash
 $> npm install
 ```
+If you get errors issuing this command try the following:
+```bash
+$> npm install --no-bin-links
+```
 
 Congratulation, installation completed!
 
@@ -119,7 +123,7 @@ Congratulation, installation completed!
 Use (**./yiic node-socket**)
 
 ```bash
-$> ./yiic node-socket # show help
+$> ./yiic help node-socket # show help
 $> ./yiic node-socket/start # start server
 $> ./yiic node-socket/stop # stop server
 $> ./yiic node-socket/restart # restart server
@@ -249,9 +253,9 @@ socket.onConnect(function () {
 ####Emit events
 
 You can emit event to:
- - all clients
+ - all clients (including the event sender)
+ - all clients (excluding the event sender - broadcasting. Only javascript currently supports broadcasting. PHP broadcasting coming soon)
  - clients in concrete room
-
 
 Global events:
 
@@ -260,7 +264,14 @@ Global events:
 socket.emit('global.event', {
 	message : {
 		id : 12,
-		title : 'This is a test message'
+		title : 'This is a test message to all including sender'
+	}
+});
+
+socket.broadcast.emit('global.event', {
+	message : {
+		id : 12,
+		title : 'This is a test message to all excluding sender'
 	}
 });
 
