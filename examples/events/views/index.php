@@ -4,7 +4,7 @@
  */
 ?>
 <h3>Instruction</h3>
-<b>Don't forget run nodejs server <i style="color: #079c59">./yiic node-socket start</i> before example usage</b>
+<b>Don't forget run nodejs server <i style="color: #079c59">./yiic node-socket/start</i> before example usage</b>
 <ul>
 	<li>1. Open "Go to this page for catch events example" page for catching events</li>
 	<li>2. Open "Send simple event" or "Send simple room event" and see result on "Go to this page for catch events example"</li>
