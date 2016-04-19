@@ -110,6 +110,16 @@ class Multiple extends AFrame implements IFrameFactory {
 				->createAuthenticationFrame()
 				->setAsMultiple($this);
 	}
+	
+	/**
+	 * @return LogoutFrame
+	 */
+	public function createLogoutFrame() {
+		return $this
+				->_nodeSocket->getFrameFactory()
+				->createLogoutFrame()
+				->setAsMultiple($this);
+	}
 
 	/**
 	 * @return UserEvent
