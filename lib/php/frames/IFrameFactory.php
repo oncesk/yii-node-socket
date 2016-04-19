@@ -42,4 +42,9 @@ interface IFrameFactory {
 	 * @return Authentication
 	 */
 	public function createAuthenticationFrame();
+	
+	/**
+	 * @return LogoutFrame
+	 */
+	public function createLogoutFrame();
 }
