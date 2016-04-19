@@ -4,6 +4,7 @@ namespace YiiNodeSocket\Frames;
 require_once 'AFrame.php';
 require_once 'Event.php';
 require_once 'Authentication.php';
+require_once 'LogoutFrame.php';
 require_once 'UserEvent.php';
 require_once 'ChannelEvent.php';
 require_once 'Multiple.php';
@@ -73,7 +74,14 @@ class FrameFactory implements IFrameFactory {
 	public function createAuthenticationFrame() {
 		return new Authentication($this->_nodeSocket);
 	}
-
+	
+	/**
+	 * @return Authentication
+	 */
+	public function createLogoutFrame() {
+		return new LogoutFrame($this->_nodeSocket);
+	}
+	
 	/**
 	 * @return UserEvent
 	 */
