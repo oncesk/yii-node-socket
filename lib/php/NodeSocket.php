@@ -45,7 +45,7 @@ class NodeSocket extends Component {
      *
      * @var int
      */
-    public $port = 3001;
+    public $port = 8443;
 
     /**
      * Can be string, every domain|ip separated by a comma
@@ -78,7 +78,7 @@ class NodeSocket extends Component {
      *
      * @var bool
      */
-    public $checkClientOrigin = true;
+    public $checkClientOrigin = false;
 
     /**
      * @var string
@@ -88,7 +88,7 @@ class NodeSocket extends Component {
     /**
      * @var int timeout for handshaking in miliseconds
      */
-    public $handshakeTimeout = 2000;
+    public $handshakeTimeout = 50000;
 
     /**
      * @var array
