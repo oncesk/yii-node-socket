@@ -5,7 +5,8 @@ class Autoload {
 
 	public static function register($nodeSocketDirectory) {
 		$loader = new Autoload($nodeSocketDirectory);
-		spl_autoload_register(array($loader, 'autoload'));
+		$res = spl_autoload_register(array($loader, 'autoload'));
+                $res;
 	}
 
 	private $_nodeSocketDirectory;

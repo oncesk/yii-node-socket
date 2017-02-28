@@ -61,19 +61,19 @@ class Channel extends AModel {
 			self::SOURCE_PHP_OR_JAVASCRIPT
 		);
 	}
-
+               
 	/**
 	 * @return array
 	 */
 	public function rules() {
 		return array_merge(parent::rules(), array(
-			array('name, is_authentication_required, subscriber_source, event_source', 'required'),
+			array(['name', 'is_authentication_required', 'subscriber_source', 'event_source'], 'required'),
 			array('name', 'validateUniqueName'),
-			array('name', 'length', 'min' => 2),
-			array('properties', 'length', 'max' => 65000, 'allowEmpty' => true),
-			array('subscriber_source, event_source', 'numerical', 'integerOnly' => true),
-			array('subscriber_source, event_source', 'in', 'range' => $this->getSourceList()),
-			array('allowed_roles', 'length', 'min' => 1, 'allowEmpty' => true),
+			array('name', 'string', 'min' => 2),
+			array('properties', 'string', 'max' => 65000, 'skipOnEmpty' => true),
+			array(['subscriber_source', 'event_source'], 'integer'),
+			array(['subscriber_source', 'event_source'], 'in', 'range' => $this->getSourceList()),
+			array('allowed_roles', 'string', 'min' => 1, 'skipOnEmpty' => true),
 			array('create_date', 'safe')
 		));
 	}
@@ -158,9 +158,9 @@ class Channel extends AModel {
 	/**
 	 * @return bool
 	 */
-	protected function beforeValidate() {
+	public function beforeValidate() {
 		if (is_array($this->properties) || is_object($this->properties)) {
-			$this->properties = \CJSON::encode($this->properties);
+			$this->properties = \yii\helpers\Json::encode($this->properties);
 		} else if (!is_string($this->properties)) {
 			$this->properties = '';
 		}
@@ -184,7 +184,7 @@ class Channel extends AModel {
 
 	protected function afterLoad() {
 		if ($this->properties) {
-			$this->properties = \CJSON::decode($this->properties);
+			$this->properties = \yii\helpers\Json::decode($this->properties);
 		}
 	}
 }

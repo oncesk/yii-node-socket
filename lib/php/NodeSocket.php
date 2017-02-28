@@ -5,8 +5,9 @@ namespace YiiNodeSocket;
 use yii\base\Component;
 use YiiNodeSocket\Assets\NodeSocketAssets;
 
-require_once 'frames/IFrameFactory.php';
-require_once 'frames/FrameFactory.php';
+/**
+ * @method YiiNodeSocket\Frames\IFrameFactory createEventFrame()
+ */
 
 class NodeSocket extends Component {
 
@@ -44,7 +45,7 @@ class NodeSocket extends Component {
      *
      * @var int
      */
-    public $port = 3001;
+    public $port = 8443;
 
     /**
      * Can be string, every domain|ip separated by a comma
@@ -77,7 +78,7 @@ class NodeSocket extends Component {
      *
      * @var bool
      */
-    public $checkClientOrigin = true;
+    public $checkClientOrigin = false;
 
     /**
      * @var string
@@ -87,7 +88,7 @@ class NodeSocket extends Component {
     /**
      * @var int timeout for handshaking in miliseconds
      */
-    public $handshakeTimeout = 2000;
+    public $handshakeTimeout = 50000;
 
     /**
      * @var array
@@ -123,7 +124,7 @@ class NodeSocket extends Component {
 //		spl_autoload_register(array('YiiBase','autoload'));
         if (function_exists('__autoload')) {
             // Be polite and ensure that userland autoload gets retained
-            spl_autoload_register('__autoload');
+            $res =spl_autoload_register('__autoload');
         }
         $this->_frameFactory = new \YiiNodeSocket\Frames\FrameFactory($this);
         $this->_db = new \YiiNodeSocket\Components\Db($this);

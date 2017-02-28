@@ -1,15 +1,15 @@
 <?php
 namespace YiiNodeSocket\Frames;
 
-require_once 'AFrame.php';
-require_once 'Event.php';
-require_once 'Authentication.php';
-require_once 'UserEvent.php';
-require_once 'ChannelEvent.php';
-require_once 'Multiple.php';
-require_once 'PublicData.php';
-require_once 'Invoke.php';
-require_once 'JQuery.php';
+require_once __DIR__.'/AFrame.php';
+require_once __DIR__.'/Event.php';
+require_once __DIR__.'/Authentication.php';
+require_once __DIR__.'/UserEvent.php';
+require_once __DIR__.'/ChannelEvent.php';
+require_once __DIR__.'/Multiple.php';
+require_once __DIR__.'/PublicData.php';
+require_once __DIR__.'/Invoke.php';
+require_once __DIR__.'/JQuery.php';
 
 class FrameFactory implements IFrameFactory {
 
@@ -29,7 +29,8 @@ class FrameFactory implements IFrameFactory {
 	 * @return Event
 	 */
 	public function createEventFrame() {
-		return new Event($this->_nodeSocket);
+		$evt = new Event($this->_nodeSocket);
+                return $evt;
 	}
 
 	/**

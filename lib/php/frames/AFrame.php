@@ -159,6 +159,7 @@ abstract class AFrame implements \ArrayAccess {
 		$client = $this->createClient();
 		$client->origin = $this->_nodeSocket->getOrigin();
 		$client->sendCookie = true;
+//		$client->setSslCert('/var/www/html/hola-trabajo-web/vendor/ratacibernetica/yii2-node-socket/lib/js/server/ssl/server.crt');
 		$client->cookie = implode('; ', array(
 			'PHPSESSID=' . \Yii::$app->session->id,
 			'expires=' . (time() + $this->_nodeSocket->cookieLifeTime)
@@ -179,7 +180,7 @@ abstract class AFrame implements \ArrayAccess {
 	 */
 	protected function createClient() {
 		return new \ElephantIO\Client(
-			sprintf('http://%s:%s', $this->_nodeSocket->host, $this->_nodeSocket->port),
+			sprintf('https://%s:%s', $this->_nodeSocket->host, $this->_nodeSocket->port),
 			'socket.io',
 			1,
 			false

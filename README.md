@@ -1,4 +1,10 @@
-Yii Node Socket
+####Disclaimer
+This fork is under development to make it work with Yii2. As of now, i haven't checked the subscription feature,
+Many parts of code have been rewritten and tested only in a project, so i guess this doesn't work *not out of the box* .
+
+Be warned.
+
+Yii2 Node Socket
 =================
 
 Connect php, javascript, nodejs in one Yii application.

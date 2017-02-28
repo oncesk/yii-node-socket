@@ -91,7 +91,8 @@ class ArChannel extends ArBehavior {
 		$this->attributesToChannel($this->_channel);
 		$this->_channel->name = $this->getChannelName();
 
-		$event = new ArEvent($this);
+		$event = new ArEvent();
+                $event->sender = $this;
 		$event->name = 'onChannelSave';
 		$event->error = !$this->_channel->save();
 		$this->triggerModelEvent($event);
@@ -101,7 +102,8 @@ class ArChannel extends ArBehavior {
 		if ($channel = $this->getChannel()) {
 			$this->attributesToChannel($channel);
 
-			$event = new ArEvent($this);
+			$event = new ArEvent();
+                        $event->sender = $this;
 			$event->name = 'onChannelSave';
 			$event->error = !$channel->save();
 			$this->triggerModelEvent($event);
@@ -124,9 +126,10 @@ class ArChannel extends ArBehavior {
 		if (isset($this->_channel)) {
 			return $this->_channel;
 		}
-		$this->_channel = Channel::model()->findByAttributes(array(
+		$channel = Channel::model()->findByAttributes(array(
 			'name' => $this->getChannelName()
 		));
+                $this->_channel = $channel;
 		return $this->_channel;
 	}
 
@@ -180,8 +183,8 @@ class ArChannel extends ArBehavior {
 	protected function getChannelName() {
 		$pk = $this->getOwner()->getPrimaryKey();
 		if (is_array($pk)) {
-			$pk = md5(\CJSON::encode($pk));
+			$pk = md5(\yii\helpers\Json::encode($pk));
 		}
-		return get_class($this->getOwner()) . ':' . $pk;
+		return $pk;//get_class($this->getOwner()) . ':' . $pk;
 	}
 }

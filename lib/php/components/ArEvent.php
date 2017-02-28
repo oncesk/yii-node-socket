@@ -1,8 +1,8 @@
 <?php
 namespace YiiNodeSocket\Components;
 
-class ArEvent extends \CModelEvent {
+class ArEvent extends \yii\base\ModelEvent {
 
-	public $name;
+	public $name;	
 	public $error = false;
 }
