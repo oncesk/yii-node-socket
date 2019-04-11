@@ -26,6 +26,8 @@ class NodeSocket extends Component {
      * @var string
      */
     public $host = '0.0.0.0';
+    
+   
 
     /**
      * If your session var name is SID or other change this value to it
@@ -113,6 +115,22 @@ class NodeSocket extends Component {
      * @var \ElephantIO\Client
      */
     protected $_client;
+    
+    /**
+     * SSL keys
+     *
+     * @var string
+     */
+    public $filePem;
+    public $fileCrt;
+    
+    /**
+     * Elephant.io URL http or https
+     *
+     * @var string 
+     */
+    public $protocol;
+   
 
     public function init() {
         parent::init();
